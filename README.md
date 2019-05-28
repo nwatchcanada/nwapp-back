@@ -17,8 +17,8 @@ The following section explains how to setup the application.
 1. Clone a copy of the project somewhere on your machine, we'll be saving to the following locaiton.
 
   ```
-  mkdir ~/python/github.com/nwapp;
-  cd ~/python/github.com/nwapp;
+  mkdir ~/python/github.com/nwatchcanda;
+  cd ~/python/github.com/nwatchcanda;
   git clone https://github.com/nwapp/nwapp-back.git;
   cd nwapp-back
   ```
