@@ -82,11 +82,11 @@ This project uses the ``PostGres`` database and as a result requires setup befor
   redis-cli FLUSHDB;
   python manage.py makemigrations
   python manage.py migrate
-  python manage.py init_nwapp
-  python manage.py init_crop_data_sheets
-  python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
-  python manage.py setup_resource_server_authorization
-  python manage.py collectstatic
+  //python manage.py init_nwapp
+  //python manage.py init_crop_data_sheets
+  //python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
+  //python manage.py setup_resource_server_authorization
+  //python manage.py collectstatic
   ```
 
 2. Register the app with the following social-auth services. Also read [this tutorial](https://simpleisbetterthancomplex.com/tutorial/2016/10/24/how-to-add-social-login-to-django.html) on setting these up.
@@ -95,32 +95,4 @@ This project uses the ``PostGres`` database and as a result requires setup befor
     https://github.com/settings/applications/new
     https://apps.twitter.com/
     https://facebook.com/
-    ```
-
-3. If you would like to have some random test data available for your app, feel free to run any of theses.
-
-    ```
-    # Smallest dataset
-    python manage.py seed_database 1 1 1000
-
-    # Small dataset
-    python manage.py seed_database 5 10 2500
-
-    # Medium dataset
-    python manage.py seed_database 25 20 5000
-
-    # Large dataset
-    python manage.py seed_database 100 30 10000
-
-    # Gigantic dataset
-    python manage.py seed_database 10000 50 100000
-
-    # Epic dataset
-    python manage.py seed_database 100000 75 1000000
-    ```
-
-4. If you would like to have some random test data to a specific user, feel free to run:
-
-    ```
-    python manage.py seed_user "bart@mikasoftware.com" 1 2500
     ```
