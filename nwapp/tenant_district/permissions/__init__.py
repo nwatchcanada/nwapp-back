@@ -1,0 +1,2 @@
+from tenant_district.permissions.district_permissions import CanListCreateDistrictPermission
+from tenant_district.permissions.district_permissions import CanRetrieveUpdateDestroyDistrictPermission

@@ -16,6 +16,7 @@ from rest_framework import authentication, viewsets, permissions, status,  parse
 from rest_framework.response import Response
 
 from tenant_district.serializers.district_list_serializer import DistrictListSerializer
+from tenant_district.permissions import CanListCreateDistrictPermission, CanRetrieveUpdateDestroyDistrictPermission
 from tenant_foundation.models import District
 from tenant_foundation.drf import CanListTenantPermission
 
@@ -44,9 +45,9 @@ class DistrictListCreateAPIView(generics.ListAPIView):
     serializer_class = DistrictListSerializer
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
-        # permissions.IsAuthenticated,
+        permissions.IsAuthenticated,
         CanListTenantPermission,
-        # CanRetrieveUpdateDestroyInvoicePermission
+        CanListCreateDistrictPermission
     )
     parser_classes = (
         parsers.FormParser,
