@@ -22,7 +22,7 @@ from oauth2_provider.models import (
     RefreshToken
 )
 
-from shared_foundation.models import User
+from shared_foundation.models import SharedUser
 
 
 class Command(BaseCommand):
@@ -34,15 +34,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # email = options['email'][0]
 
-        # user = User.objects.filter(email=email).first()
+        # user = SharedUser.objects.filter(email=email).first()
         # if user is None:
         #     raise CommandError(_('No user exists for entered email.'))
 
         application, created = Application.objects.update_or_create(
-            name=settings.MIKAPONICS_RESOURCE_SERVER_NAME,
+            name=settings.NWAPP_RESOURCE_SERVER_NAME,
             defaults={
                 "user": None,
-                "name": settings.MIKAPONICS_RESOURCE_SERVER_NAME,
+                "name": settings.NWAPP_RESOURCE_SERVER_NAME,
                 "skip_authorization": True,
                 "authorization_grant_type": AbstractApplication.GRANT_PASSWORD,
                 "client_type": AbstractApplication.CLIENT_CONFIDENTIAL
