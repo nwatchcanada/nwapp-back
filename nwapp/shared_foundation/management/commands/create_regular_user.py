@@ -37,6 +37,7 @@ class Command(BaseCommand):
 
         # Create the user.
         user = SharedUser.objects.create(
+            tenant=1,
             first_name=first_name,
             last_name=last_name,
             email=email,

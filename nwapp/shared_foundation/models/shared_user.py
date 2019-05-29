@@ -153,14 +153,12 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
     #
     # SYSTEM UNIQUE IDENTIFIER & TENANCY
     #
-    
+
     tenant = models.ForeignKey(
         "SharedOrganization",
         help_text=_('The tenant this user belongs to.'),
-        blank=True,
-        null=True,
         related_name="users",
-        on_delete=models.SET_NULL
+        on_delete=models.CASCADE
     )
     email = models.EmailField( # THIS FIELD IS REQUIRED.
         _("Email"),

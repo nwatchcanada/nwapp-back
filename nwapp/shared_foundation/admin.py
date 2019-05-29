@@ -11,7 +11,7 @@ from shared_foundation.models import *
 # Define a new SharedUser admin
 class SharedUserAdmin(BaseUserAdmin):
     raw_id_fields = ['tenant', 'referred_by',]
-    list_display = ['email', 'is_staff', 'is_active', 'was_email_activated',  'referred_by',]
+    list_display = ['email', 'is_staff', 'is_active', 'was_email_activated',  'tenant',]
     list_filter = ('is_staff',  'is_active', 'was_email_activated', )
 
     fieldsets = (
