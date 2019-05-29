@@ -14,7 +14,7 @@ from djmoney.money import Money
 from oauthlib.common import generate_token
 
 from shared_foundation.constants import *
-from shared_foundation.models import SharedOrganization
+from shared_foundation.models import SharedOrganization, SharedGroup
 
 
 class Command(BaseCommand):
@@ -41,6 +41,12 @@ class Command(BaseCommand):
                 "locality": "London",
             }
         )
+        SharedGroup.objects.update_or_create(id=1, defaults={'id': 1, 'name': 'Executive'})
+        SharedGroup.objects.update_or_create(id=2, defaults={'id': 2, 'name': 'Manager'})
+        SharedGroup.objects.update_or_create(id=3, defaults={'id': 3, 'name': 'Frontline Staff'})
+        SharedGroup.objects.update_or_create(id=4, defaults={'id': 4, 'name': 'Associate'})
+        SharedGroup.objects.update_or_create(id=5, defaults={'id': 5, 'name': 'Area Coordinator'})
+        SharedGroup.objects.update_or_create(id=6, defaults={'id': 6, 'name': 'Member'})
 
         # from django.contrib.sites.models import Site # https://docs.djangoproject.com/en/dev/ref/contrib/sites/#caching-the-current-site-object
         # current_site = Site.objects.get_current()
