@@ -15,12 +15,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """
         Run manually in console:
-        python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
+        python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika" 1;
         """
         parser.add_argument('email', nargs='+', type=str)
         parser.add_argument('password', nargs='+', type=str)
         parser.add_argument('first_name', nargs='+', type=str)
         parser.add_argument('last_name', nargs='+', type=str)
+        parser.add_argument('tenant_id', nargs='+', type=int)
 
     def handle(self, *args, **options):
         # Get the user inputs.
@@ -28,6 +29,7 @@ class Command(BaseCommand):
         password = options['password'][0]
         first_name = options['first_name'][0]
         last_name = options['last_name'][0]
+        tenant_id = options['tenant_id'][0]
 
         # Defensive Code: Prevent continuing if the email already exists.
         if SharedUser.objects.filter(email=email).exists():
@@ -56,7 +58,7 @@ class Command(BaseCommand):
             has_signed_tos = True,
             tos_agreement = tos_agreement,
             tos_signed_on = timezone.now(),
-            tenant=1, # The `public` organization.
+            tenant=tenant_id,
         )
 
         # Generate and assign the password.
