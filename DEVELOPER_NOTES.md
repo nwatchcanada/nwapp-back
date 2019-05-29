@@ -20,6 +20,7 @@ pip install django-hosts                  # Django subdomains support
 pip install django-filter                 # Generic system for filtering Django QuerySets based on user selections
 pip install django-rq                     # Redis Queue Library
 pip install rq-scheduler                  # Redis Queue Scheduler Library
+pip install django-redis-cache            # Django cache backend powered by Redis
 pip install python-dateutil               # Useful extensions to the standard Python datetime features
 pip install django-anymail[mailgun]       # Third-Party Email
 pip install django-ipware                 # Best attempt to get IP address while keeping it DRY.

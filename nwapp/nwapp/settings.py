@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     # 'social_django',
     'storages',
     'django_hosts',
+    'redis_cache',
 
     # Our Apps
     'shared_foundation',
@@ -291,6 +292,20 @@ DEFAULT_FILE_STORAGE = 'nwapp.s3utils.PublicMediaStorage'
 
 AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
 PRIVATE_FILE_STORAGE = 'nwapp.s3utils.PrivateMediaStorage'
+
+
+
+"""
+django-redis-cache
+https://github.com/sebleier/django-redis-cache
+"""
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+    },
+}
 
 
 
