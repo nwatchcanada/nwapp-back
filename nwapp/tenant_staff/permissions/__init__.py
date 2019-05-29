@@ -1,0 +1,2 @@
+from tenant_staff.permissions.staff_permissions import CanListCreateStaffPermission
+from tenant_staff.permissions.staff_permissions import CanRetrieveUpdateDestroyStaffPermission
