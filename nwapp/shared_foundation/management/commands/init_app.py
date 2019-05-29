@@ -41,3 +41,12 @@ class Command(BaseCommand):
                 "locality": "London",
             }
         )
+
+        # from django.contrib.sites.models import Site # https://docs.djangoproject.com/en/dev/ref/contrib/sites/#caching-the-current-site-object
+        # current_site = Site.objects.get_current()
+        # current_site.domain = settings.NWAPP_BACKEND_HTTP_DOMAIN
+        # current_site.save()
+        #
+        # self.stdout.write(
+        #     self.style.SUCCESS(_('Successfully updated site object.'))
+        # )

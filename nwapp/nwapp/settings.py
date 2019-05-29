@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     # Our Apps
     'shared_foundation',
     'tenant_foundation',
+    'tenant_district',
 ]
 
 AUTH_USER_MODEL = 'shared_foundation.SharedUser'
@@ -124,6 +125,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'nwapp.urls'
+
+# A dictionary of urlconf module paths, keyed by their subdomain.
+SUBDOMAIN_URLCONFS = {
+    # None: 'nwapp.urls.frontend',  # no subdomain, e.g. ``example.com``
+    # 'www': 'nwapp.urls.frontend',
+    '*': 'nwapp.urls.tenant_district',
+}
 
 TEMPLATES = [
     {

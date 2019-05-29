@@ -10,11 +10,13 @@ urlpatterns = ([
 
     # Allow the following apps for being accessed without language string.
     path('', include('shared_foundation.urls')),
+    path('', include('tenant_district.urls')),
 ])
 
 # Add support for language specific context URLs.
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('shared_foundation.urls')),
+    path('', include('tenant_district.urls')),
     prefix_default_language=True
 )

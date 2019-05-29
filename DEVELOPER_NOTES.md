@@ -16,7 +16,7 @@ pip install Pillow                        # Req: ImageField
 pip install djangorestframework           # RESTful API Endpoint Generator
 pip install django-extra-fields           # Django REST Framework extensions
 pip install gunicorn                      # Web-Server Helper
-pip install django-db-multitenant         # Multi-Tenancy per database handler
+pip install django-subdomains             # Django subdomains support
 pip install django-filter                 # Generic system for filtering Django QuerySets based on user selections
 pip install django-rq                     # Redis Queue Library
 pip install rq-scheduler                  # Redis Queue Scheduler Library
