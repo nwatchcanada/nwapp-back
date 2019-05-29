@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.contrib.postgres.indexes import BrinIndex
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction
@@ -166,6 +167,13 @@ class SharedOrganization(models.Model):
     '''
     Methods
     '''
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        """
+        Override the save function so we can add extra functionality.
+        """
+        cache.delete(self.subdomain) # Clear cache for subdomain key.
+        super(SharedOrganization, self).save(force_insert, force_update, *args, **kwargs)
 
     def __str__(self):
         return str(self.subdomain)
