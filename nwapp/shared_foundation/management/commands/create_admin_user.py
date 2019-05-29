@@ -58,7 +58,7 @@ class Command(BaseCommand):
             has_signed_tos = True,
             tos_agreement = tos_agreement,
             tos_signed_on = timezone.now(),
-            tenant=tenant_id,
+            tenant_id=tenant_id,
         )
 
         # Generate and assign the password.
