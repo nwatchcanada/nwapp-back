@@ -10,7 +10,7 @@ from shared_foundation.models import *
 
 # Define a new SharedUser admin
 class SharedUserAdmin(BaseUserAdmin):
-    raw_id_fields = ['referred_by',]
+    raw_id_fields = ['tenant', 'referred_by',]
     list_display = ['email', 'is_staff', 'is_active', 'was_email_activated',  'referred_by',]
     list_filter = ('is_staff',  'is_active', 'was_email_activated', )
 
@@ -20,7 +20,7 @@ class SharedUserAdmin(BaseUserAdmin):
         ),
 
         ('Global Settings',
-            {'fields': ('timezone',)}
+            {'fields': ('tenant', 'timezone',)}
         ),
 
         ('Permissions',
@@ -68,10 +68,10 @@ admin.site.unregister(Group) # Developers note: We want to user our proxy instea
 class SharedOrganizationAdmin(admin.ModelAdmin):
     raw_id_fields = []
     list_filter = []
-    list_display = ['schema', 'name',]
-    ordering = ['-schema',]
+    list_display = ['subdomain', 'name',]
+    ordering = ['subdomain',]
     readonly_fields = [
-        'created_at', 'created_by', 'created_from',
+        'id', 'created_at', 'created_by', 'created_from',
         'created_from_is_public', 'last_modified_at', 'last_modified_by',
         'last_modified_from', 'last_modified_from_is_public',
     ]

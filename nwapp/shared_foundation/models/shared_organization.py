@@ -30,10 +30,10 @@ class SharedOrganizationManager(models.Manager):
             obj.delete()
 
 
-def validate_schema(value):
-    if any(c.islower() for c in value):
+def validate_subdomain(value):
+    if any(c.isupper() for c in value):
         raise ValidationError(
-            _('%(value)s cannot contain any uppercase characters, it must all be lowercase.'),
+            _('%(value)s cannot contain any uppercase characters in subdomain, it must all be lowercase characters.'),
             params={'value': value},
         )
 
@@ -79,14 +79,17 @@ class SharedOrganization(models.Model):
     #  FIELDS
     #
 
-    schema = models.CharField(
-        _("Schema"),
+    id = models.BigAutoField(
+        _("ID"),
+        primary_key=True,
+    )
+    subdomain = models.CharField(
+        _("subdomain"),
         max_length=255,
-        help_text=_('The schema name used for this organization.'),
+        help_text=_('The subdomain name used for this organization.'),
         db_index=True,
         unique=True,
-        primary_key=True,
-        validators=[validate_schema]
+        validators=[validate_subdomain]
     )
     name = models.CharField(
         _("Name"),
@@ -150,10 +153,10 @@ class SharedOrganization(models.Model):
     '''
 
     def __str__(self):
-        return str(self.schema)
+        return str(self.subdomain)
 
     def get_absolute_url(self):
-        return "/shared-organization/"+str(self.schema)
+        return "/shared-organization/"+str(self.subdomain)
 
     def get_pretty_type_of(self):
         return "Production Inspection"

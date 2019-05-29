@@ -20,7 +20,7 @@ from shared_foundation.constants import *
 class Command(BaseCommand):
     """
     EXAMPLE:
-    python manage.py init_mikaponics
+    python manage.py init_app
     """
 
     help = _('Sets up the web-application for the first time.')
@@ -29,6 +29,7 @@ class Command(BaseCommand):
         '''
         Create the default store of our application.
         '''
+        pass
         # store, was_created = Store.objects.update_or_create(
         #     id=1,
         #     defaults={
