@@ -1,0 +1,2 @@
+from tenant_foundation.drf.permissions.tenant_permissions import CanListTenantPermission
+from tenant_foundation.drf.permissions.tenant_permissions import CanRetrieveUpdateDestroyTenantPermission

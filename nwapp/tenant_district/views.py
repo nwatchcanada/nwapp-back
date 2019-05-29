@@ -17,6 +17,7 @@ from rest_framework.response import Response
 
 from tenant_district.serializers.district_list_serializer import DistrictListSerializer
 from tenant_foundation.models import District
+from tenant_foundation.drf import CanListTenantPermission
 
 
 # class DistrictFilter(filters.FilterSet):
@@ -44,7 +45,7 @@ class DistrictListAPIView(generics.ListAPIView):
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
         # permissions.IsAuthenticated,
-        # IsAuthenticatedAndIsActivePermission,
+        CanListTenantPermission,
         # CanRetrieveUpdateDestroyInvoicePermission
     )
     parser_classes = (
@@ -60,8 +61,7 @@ class DistrictListAPIView(generics.ListAPIView):
         """
         Get list data.
         """
-        s = self.request.subdomain
-        ip = self.request.client_ip
-        print(s, ip)
-        queryset = District.objects.order_by('name')
+        queryset = District.objects.filter(
+            tenant=self.request.tenant
+        ).order_by('name')
         return queryset
