@@ -55,7 +55,8 @@ class Command(BaseCommand):
             shipping_email = email,
             has_signed_tos = True,
             tos_agreement = tos_agreement,
-            tos_signed_on = timezone.now()
+            tos_signed_on = timezone.now(),
+            tenant=1, # The `public` organization.
         )
 
         # Generate and assign the password.
