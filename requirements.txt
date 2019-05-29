@@ -1,3 +1,5 @@
+boto3==1.9.157
+botocore==1.12.157
 certifi==2019.3.9
 chardet==3.0.4
 Click==7.0
@@ -15,9 +17,11 @@ django-oauth-toolkit==1.2.0
 django-rq==2.0
 django-storages==1.7.1
 djangorestframework==3.9.4
+docutils==0.14
 Faker==1.0.7
 gunicorn==19.9.0
 idna==2.8
+jmespath==0.9.4
 oauthlib==3.0.1
 p==0.0.0
 Pillow==6.0.0
@@ -29,6 +33,7 @@ redis==3.2.1
 requests==2.22.0
 rq==1.0
 rq-scheduler==0.9
+s3transfer==0.2.0
 six==1.12.0
 sqlparse==0.3.0
 text-unidecode==1.2

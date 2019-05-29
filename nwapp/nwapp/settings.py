@@ -87,20 +87,12 @@ INSTALLED_APPS = [
     # 'social_django',
     'storages',
 
-    # # Our Apps
-    # 'account',
-    # 'dashboard',
-    # 'device',
-    # 'instrument',
-    # 'foundation',
-    # 'ecommerce',
-    # 'production',
-    # 'alert',
-    # 'task',
-    # 'data'
+    # Our Apps
+    'shared_foundation',
+    'tenant_foundation',
 ]
 
-# AUTH_USER_MODEL = 'foundation.User'
+AUTH_USER_MODEL = 'shared_foundation.SharedUser'
 
 AUTHENTICATION_BACKENDS = [
     # # Social-sign in authentication.
@@ -108,9 +100,9 @@ AUTHENTICATION_BACKENDS = [
     # 'social_core.backends.twitter.TwitterOAuth',
     # 'social_core.backends.facebook.FacebookOAuth2',
 
-    #  # Custom authentication.
-    # 'foundation.backends.NWAppEmailPasswordAuthenticationBackend',
-    # 'foundation.backends.NWAppPasswordlessAuthenticationBackend',
+     # Custom authentication.
+    'shared_foundation.backends.NWAppEmailPasswordAuthenticationBackend',
+    'shared_foundation.backends.NWAppPasswordlessAuthenticationBackend',
 
     # oAuth 2.0 authentication.
     'oauth2_provider.backends.OAuth2Backend',

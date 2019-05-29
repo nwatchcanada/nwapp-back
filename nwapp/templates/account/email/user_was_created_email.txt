@@ -1,0 +1,15 @@
+{% load staticfiles i18n foundation_tags %}
+
+Attention staff,
+
+A new user has been created with the following details:
+
+First Name: {{ user.first_name }}
+Last Name: {{ user.last_name }}
+Email: {{ user.email }}
+
+Thank you,
+Mikaponics Team
+
+Click here for web-view
+{{ web_view_url }}

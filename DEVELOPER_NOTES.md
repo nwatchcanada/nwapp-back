@@ -27,6 +27,7 @@ pip install django-money                  # Money fields for django forms and mo
 pip install Faker                         # Library that generates fake data for you.
 pip install freezegun                     # Python datetime override library
 pip install django-storages               # Collection of custom storage backends for Django.
+pip install boto3                         # AWS S3 Bindings
 ```
 
 DigitalOcean Tutorials:

@@ -1,0 +1,1 @@
+from shared_foundation.models.shared_user import SharedUser
