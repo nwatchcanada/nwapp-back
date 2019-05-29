@@ -53,6 +53,18 @@ class SharedUserAdmin(BaseUserAdmin):
 admin.site.register(SharedUser, SharedUserAdmin)
 
 
+
+
+class SharedGroupAdmin(admin.ModelAdmin):
+    raw_id_fields = []
+    list_filter = []
+    list_display = ['name',]
+    ordering = []
+    readonly_fields = []
+
+admin.site.register(SharedGroup, SharedGroupAdmin)
+admin.site.unregister(Group) # Developers note: We want to user our proxy instead!
+
 class SharedOrganizationAdmin(admin.ModelAdmin):
     raw_id_fields = []
     list_filter = []

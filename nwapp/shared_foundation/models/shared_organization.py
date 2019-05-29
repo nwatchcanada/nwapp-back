@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.contrib.postgres.indexes import BrinIndex
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction
 from django.template.defaultfilters import slugify
@@ -27,6 +28,14 @@ class SharedOrganizationManager(models.Manager):
     def delete_all(self):
         for obj in SharedOrganization.objects.iterator(chunk_size=500):
             obj.delete()
+
+
+def validate_schema(value):
+    if any(c.islower() for c in value):
+        raise ValidationError(
+            _('%(value)s cannot contain any uppercase characters, it must all be lowercase.'),
+            params={'value': value},
+        )
 
 
 class SharedOrganization(models.Model):
@@ -77,6 +86,7 @@ class SharedOrganization(models.Model):
         db_index=True,
         unique=True,
         primary_key=True,
+        validators=[validate_schema]
     )
     name = models.CharField(
         _("Name"),
