@@ -100,6 +100,21 @@ class SharedOrganization(models.Model):
         _("Description"),
         help_text=_('A short description of this organization.'),
     )
+    country = models.CharField(
+        _("Country"),
+        max_length=127,
+        help_text=_('The country. For example, USA. You can also provide the two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements">ISO 3166-1 alpha-2</a> country code.'),
+    )
+    region = models.CharField(
+        _("Region"),
+        max_length=127,
+        help_text=_('The region. For example, CA.'),
+    )
+    locality = models.CharField(
+        _("Locality"),
+        max_length=127,
+        help_text=_('The locality. For example, Mountain View.'),
+    )
 
     #
     #  SYSTEM FIELDS

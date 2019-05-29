@@ -35,6 +35,9 @@ class Command(BaseCommand):
                 'id': 1,
                 'subdomain': 'public',
                 'name': 'Public Domain',
-                'description': 'Used as shared domain.'
+                'description': 'Used as shared domain.',
+                'country': "Canada",
+                "region": "Ontario",
+                "locality": "London",
             }
         )
