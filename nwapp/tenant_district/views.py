@@ -60,5 +60,8 @@ class DistrictListAPIView(generics.ListAPIView):
         """
         Get list data.
         """
+        s = self.request.subdomain
+        ip = self.request.client_ip
+        print(s, ip)
         queryset = District.objects.order_by('name')
         return queryset

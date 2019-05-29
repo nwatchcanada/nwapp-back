@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     'djmoney',
     # 'social_django',
     'storages',
+    'django_hosts',
 
     # Our Apps
     'shared_foundation',
@@ -111,6 +112,7 @@ AUTHENTICATION_BACKENDS = [
 
 
 MIDDLEWARE = [
+    'django_hosts.middleware.HostsRequestMiddleware',         # Third Party
     'corsheaders.middleware.CorsMiddleware',                  # Third Party
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -119,19 +121,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'shared_foundation.middleware.subdomain_middleware.SubdomainMiddleware', # Custom App
+    'shared_foundation.middleware.ip_middleware.IPMiddleware', # Custom App
     'django.middleware.locale.LocaleMiddleware',              # Extra Django App
     'oauth2_provider.middleware.OAuth2TokenMiddleware',       # Third Party
     # 'social_django.middleware.SocialAuthExceptionMiddleware', # Third Party
+    'django_hosts.middleware.HostsResponseMiddleware',        # Third Party
 ]
 
 ROOT_URLCONF = 'nwapp.urls'
-
-# A dictionary of urlconf module paths, keyed by their subdomain.
-SUBDOMAIN_URLCONFS = {
-    # None: 'nwapp.urls.frontend',  # no subdomain, e.g. ``example.com``
-    # 'www': 'nwapp.urls.frontend',
-    '*': 'nwapp.urls.tenant_district',
-}
 
 TEMPLATES = [
     {
@@ -249,6 +247,14 @@ LANGUAGES = (
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, "locale"),
 )
+
+
+'''
+django-hosts
+'''
+
+ROOT_HOSTCONF = 'nwapp.hosts'  # Change `mysite` to the name of your project
+DEFAULT_HOST = 'www'  # Name of the default host, we will create it in the next steps
 
 
 

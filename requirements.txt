@@ -11,6 +11,7 @@ django-db-multitenant==0.3.2
 django-environ==0.4.5
 django-extra-fields==1.2.1
 django-filter==2.1.0
+django-hosts==3.0
 django-ipware==2.1.0
 django-money==0.14.4
 django-oauth-toolkit==1.2.0
