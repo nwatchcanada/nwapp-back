@@ -15,12 +15,12 @@ from rest_framework import generics
 from rest_framework import authentication, viewsets, permissions, status,  parsers, renderers
 from rest_framework.response import Response
 
-from tenant_district.serializers.district_list_serializer import DistrictListSerializer
-from tenant_foundation.models import District
+from tenant_staff.serializers import StaffListSerializer
+from shared_foundation.models import SharedUser
 from tenant_foundation.drf import CanListTenantPermission
 
 
-# class DistrictFilter(filters.FilterSet):
+# class StaffFilter(filters.FilterSet):
 #     def enhanced_type_of_filter(self, name, value):
 #         """
 #         Filter method used to INCLUDE the "other" option along with the filtered
@@ -28,20 +28,20 @@ from tenant_foundation.drf import CanListTenantPermission
 #         option to always be listed regardless of time being filtered.
 #         """
 #         return self.filter(
-#             Q(type_of=District.TYPE_OF.NONE)|
+#             Q(type_of=Staff.TYPE_OF.NONE)|
 #             Q(type_of=value)
 #         )
 #
 #     type_of = filters.NumberFilter(method=enhanced_type_of_filter)
 #
 #     class Meta:
-#         model = District
+#         model = Staff
 #         fields = ['type_of',]
 
 
-class DistrictListCreateAPIView(generics.ListAPIView):
+class StaffListAPIView(generics.ListAPIView):
     authentication_classes= (OAuth2Authentication,)
-    serializer_class = DistrictListSerializer
+    serializer_class = StaffListSerializer
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
         # permissions.IsAuthenticated,
@@ -55,13 +55,13 @@ class DistrictListCreateAPIView(generics.ListAPIView):
     )
     renderer_classes = (renderers.JSONRenderer,)
     filter_backends = (filters.DjangoFilterBackend,)
-    # filterset_class = DistrictFilter
+    # filterset_class = StaffFilter
 
     def get_queryset(self):
         """
         Get list data.
         """
-        queryset = District.objects.filter(
+        queryset = SharedUser.objects.filter(
             tenant=self.request.tenant
-        ).order_by('name')
+        ).order_by('id')
         return queryset

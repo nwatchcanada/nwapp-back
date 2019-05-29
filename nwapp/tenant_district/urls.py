@@ -5,7 +5,7 @@ from tenant_district.views import *
 
 urlpatterns = (
     path('api/districts',
-        DistrictListAPIView.as_view(),
-        name='mikaponics_crop_life_cycle_stage_list_api_endpoint'
+        DistrictListCreateAPIView.as_view(),
+        name='mikaponics_district_list_create_api_endpoint'
     ),
 )

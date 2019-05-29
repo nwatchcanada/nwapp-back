@@ -10,10 +10,12 @@ class CanListTenantPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         # Check to see if the user is anonymous or not.
         if request.user.is_anonymous:
+            print("CanListTenantPermission | Anonymous users cannot view.")
             return False
 
         # Check to see if the request is inside a subdomain or not.
         if request.subdomain == "www" or request.subdomain == None:
+            print("CanListTenantPermission | Not a tenant subdomain.")
             return False
 
         # Check to see if the authenticated user's tenant membership belongs
@@ -26,6 +28,7 @@ class CanListTenantPermission(permissions.BasePermission):
         # print(request.user.tenant)
 
         # Deny permission because the above condition was not met.
+        print("CanListTenantPermission | Not a member of tenant.")
         return False
 
 
