@@ -1,1 +1,2 @@
 from shared_foundation.models.shared_user import SharedUser
+from shared_foundation.models.shared_organization import SharedOrganization
