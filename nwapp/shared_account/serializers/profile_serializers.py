@@ -22,6 +22,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     token = serializers.SerializerMethodField()
     scope = serializers.SerializerMethodField()
     schema = serializers.SerializerMethodField()
+    group_membership_id = serializers.SerializerMethodField()
 
     # # --- Misc Fields ---
     # report_email_frequency = serializers.CharField(required=False,allow_blank=True,)
@@ -85,6 +86,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             'token',
             'scope',
             'schema',
+            'group_membership_id',
 
             # --- User Details ---
             'email',
@@ -143,6 +145,13 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
 
     def get_schema(self, obj):
         return obj.tenant.schema
+
+    def get_group_membership_id(self, obj):
+        group = obj.groups.first()
+        group_id = None
+        if group:
+            group_id = group.id
+        return group_id
 
     def get_token(self, obj):
         return self.context.get('token', None)
