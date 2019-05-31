@@ -31,10 +31,10 @@ class SharedOrganizationManager(models.Manager):
             obj.delete()
 
 
-def validate_subdomain(value):
+def validate_schema(value):
     if any(c.isupper() for c in value):
         raise ValidationError(
-            _('%(value)s cannot contain any uppercase characters in subdomain, it must all be lowercase characters.'),
+            _('%(value)s cannot contain any uppercase characters in schema, it must all be lowercase characters.'),
             params={'value': value},
         )
 
@@ -84,13 +84,13 @@ class SharedOrganization(models.Model):
         _("ID"),
         primary_key=True,
     )
-    subdomain = models.CharField(
-        _("subdomain"),
+    schema = models.CharField(
+        _("schema"),
         max_length=255,
-        help_text=_('The subdomain name used for this organization.'),
+        help_text=_('The schema used for this organization.'),
         db_index=True,
         unique=True,
-        validators=[validate_subdomain]
+        validators=[validate_schema]
     )
     name = models.CharField(
         _("Name"),
@@ -172,14 +172,14 @@ class SharedOrganization(models.Model):
         """
         Override the save function so we can add extra functionality.
         """
-        cache.delete(self.subdomain) # Clear cache for subdomain key.
+        cache.delete(self.schema) # Clear cache for schema key.
         super(SharedOrganization, self).save(force_insert, force_update, *args, **kwargs)
 
     def __str__(self):
-        return str(self.subdomain)
+        return str(self.schema)
 
     def get_absolute_url(self):
-        return "/shared-organization/"+str(self.subdomain)
+        return "/shared-organization/"+str(self.schema)
 
     def get_pretty_type_of(self):
         return "Production Inspection"

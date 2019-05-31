@@ -33,7 +33,7 @@ class Command(BaseCommand):
             id=1,
             defaults={
                 'id': 1,
-                'subdomain': 'public',
+                'schema': 'public',
                 'name': 'Public Domain',
                 'description': 'Used as shared domain.',
                 'country': "Canada",

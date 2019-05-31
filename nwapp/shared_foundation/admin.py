@@ -68,8 +68,8 @@ admin.site.unregister(Group) # Developers note: We want to user our proxy instea
 class SharedOrganizationAdmin(admin.ModelAdmin):
     raw_id_fields = []
     list_filter = []
-    list_display = ['subdomain', 'name',]
-    ordering = ['subdomain',]
+    list_display = ['schema', 'name',]
+    ordering = ['schema',]
     readonly_fields = [
         'id', 'created_at', 'created_by', 'created_from',
         'created_from_is_public', 'last_modified_at', 'last_modified_by',

@@ -13,9 +13,9 @@ class CanListTenantPermission(permissions.BasePermission):
             print("CanListTenantPermission | Anonymous users cannot view.")
             return False
 
-        # Check to see if the request is inside a subdomain or not.
-        if request.subdomain == "www" or request.subdomain == None:
-            print("CanListTenantPermission | Not a tenant subdomain.")
+        # Check to see if the request is inside a schema or not.
+        if request.schema == "www" or request.schema == None:
+            print("CanListTenantPermission | Not a tenant schema.")
             return False
 
         # Check to see if the authenticated user's tenant membership belongs

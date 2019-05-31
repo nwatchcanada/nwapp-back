@@ -21,6 +21,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     # --- Authentication Credentials ---
     token = serializers.SerializerMethodField()
     scope = serializers.SerializerMethodField()
+    schema = serializers.SerializerMethodField()
 
     # # --- Misc Fields ---
     # report_email_frequency = serializers.CharField(required=False,allow_blank=True,)
@@ -83,6 +84,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             # --- Authentication Credentials ---
             'token',
             'scope',
+            'schema',
 
             # --- User Details ---
             'email',
@@ -138,6 +140,9 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             # 'shipping_email',
             # 'shipping_telephone',
         )
+
+    def get_schema(self, obj):
+        return obj.tenant.schema
 
     def get_token(self, obj):
         return self.context.get('token', None)

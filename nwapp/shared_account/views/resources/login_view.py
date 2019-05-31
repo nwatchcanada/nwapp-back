@@ -48,7 +48,7 @@ class SharedLoginAPIView(APIView):
         login(self.request, authenticated_user)
 
         # Get our web application authorization.
-        application = Application.objects.filter(name=settings.MIKAPONICS_RESOURCE_SERVER_NAME).first()
+        application = Application.objects.filter(name=settings.NWAPP_RESOURCE_SERVER_NAME).first()
 
         # Generate our "NEW" access token which does not have a time limit.
         # We want to generate a new token every time because the user may be

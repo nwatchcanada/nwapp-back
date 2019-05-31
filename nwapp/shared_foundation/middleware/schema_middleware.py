@@ -3,10 +3,10 @@ from django.core.cache import cache
 from shared_foundation.models import SharedOrganization
 
 
-class SubdomainMiddleware:
+class SchemaMiddleware:
     """
-    Middleware responsible for attaching the subdomain to every request made
-    to our system, if a subdomain type of request was made.
+    Middleware responsible for attaching the schema to every request made
+    to our system, if a schema type of request was made.
 
     This middleware is dependent on the ``django-hosts`` library to work.
     """
@@ -19,25 +19,25 @@ class SubdomainMiddleware:
         # the view (and later middleware) are called.
 
         # STEP 1:
-        # Use `django-hosts` to check the host & subdomain, then extract
-        # the subdomain value.
+        # Use `django-hosts` to check the host & schema, then extract
+        # the schema value.
         domain_parts = request.get_host().split('.')
-        subdomain = "www"
+        schema = "www"
         if(len(domain_parts) >= 2):
-            subdomain = domain_parts[0].lower()
+            schema = domain_parts[0].lower()
 
         # STEP 2:
-        # Lookup the subdomain in the cache
-        tenant = cache.get(subdomain)
+        # Lookup the schema in the cache
+        tenant = cache.get(schema)
         if tenant is None:
-            tenant = SharedOrganization.objects.filter(subdomain=subdomain).first()
+            tenant = SharedOrganization.objects.filter(schema=schema).first()
             if tenant:
-                print("SubdomainMiddleware | Cached:", subdomain)
-                cache.set(subdomain, tenant, None)
+                print("SchemaMiddleware | Cached:", schema)
+                cache.set(schema, tenant, None)
 
         # STEP 3:
-        # Attach the `tenant` and `subdomain` to the `request`.
-        request.subdomain = subdomain
+        # Attach the `tenant` and `schema` to the `request`.
+        request.schema = schema
         request.tenant = tenant
 
         response = self.get_response(request)
