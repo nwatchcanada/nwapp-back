@@ -91,6 +91,7 @@ INSTALLED_APPS = [
 
     # Our Apps
     'shared_foundation',
+    'shared_account',
     'tenant_foundation',
     'tenant_district',
     'tenant_staff',
