@@ -41,7 +41,6 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         """
         Retrieve
         """
-        print("SharedProfileRetrieveUpdateAPIView | START")
         self.check_object_permissions(request, request.user)  # Validate permissions.
 
         # Fetch our application and token for the user.
@@ -55,7 +54,6 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
             'access_token': access_token,
             'refresh_token': access_token.refresh_token
         })
-        print("SharedProfileRetrieveUpdateAPIView | FINISH")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @transaction.atomic
