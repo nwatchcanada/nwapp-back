@@ -28,6 +28,7 @@ from django.utils.crypto import get_random_string
 from faker import Faker
 
 from shared_foundation import constants
+from shared_foundation.models.shared_group import SharedGroup
 
 
 def _createHash():
@@ -654,21 +655,27 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         else:
             return "/onboard"
 
-    # def invalidate(self, method_name):
-    #     """
-    #     Function used to clear the cache for the cached property functions.
-    #     """
-    #     try:
-    #         if method_name == 'draft_invoice':
-    #             del self.draft_invoice
-    #         elif method_name == 'latest_invoice':
-    #             del self.latest_invoice
-    #         else:
-    #             raise Exception("Method name not found.")
-    #     except AttributeError:
-    #         pass
+    def invalidate(self, method_name):
+        """
+        Function used to clear the cache for the cached property functions.
+        """
+        try:
+            if method_name == 'is_executive':
+                del self.draft_invoice
+            else:
+                raise Exception("Method name not found.")
+        except AttributeError:
+            pass
 
     def get_now(self):
         user_timezone = pytz_timezone(self.timezone)
         now_utc = datetime.now(pytz_timezone('UTC'))
         return now_utc.astimezone(user_timezone)
+
+    @cached_property
+    def is_executive(self):
+        """
+        Returns either True or False depending on if this user belongs to the
+        executive group.
+        """
+        return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.EXECUTIVE).exists()

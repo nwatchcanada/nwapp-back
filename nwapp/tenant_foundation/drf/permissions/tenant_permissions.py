@@ -18,6 +18,10 @@ class CanListTenantPermission(permissions.BasePermission):
             print("CanListTenantPermission | Not a tenant schema.")
             return False
 
+        # Administrative permission needs to be evaluated before moving forward.
+        if request.user.is_staff or request.user.is_executive:
+            return True
+
         # Check to see if the authenticated user's tenant membership belongs
         # to the request tenant.
         if request.user.tenant == request.tenant:

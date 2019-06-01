@@ -12,6 +12,8 @@ from rest_framework import authentication, viewsets, permissions, status,  parse
 from rest_framework.response import Response
 
 from tenant_dashboard.serializers import DashboardSerializer
+from shared_foundation.drf import DisableOptionsPermission
+from tenant_foundation.drf import CanListTenantPermission
 
 
 class DashboardAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -19,6 +21,8 @@ class DashboardAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DashboardSerializer
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
+        DisableOptionsPermission,
+        CanListTenantPermission,
         permissions.IsAuthenticated,
         # IsAuthenticatedAndIsActivePermission,
         # CanRetrieveUpdateDestroyInvoicePermission
@@ -33,9 +37,8 @@ class DashboardAPIView(generics.RetrieveUpdateDestroyAPIView):
     @transaction.atomic
     def get(self, request):
         tenant = request.tenant
-        print(tenant)
         self.check_object_permissions(request, request.user)  # Validate permissions.
-        serializer = DashboardSerializer(request.user, context={
+        serializer = DashboardSerializer(tenant, context={
             'authenticated_by': request.user,
             'authenticated_from': request.client_ip,
             'authenticated_from_is_public': request.client_ip_is_routable,
