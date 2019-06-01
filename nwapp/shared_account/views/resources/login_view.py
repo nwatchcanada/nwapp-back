@@ -55,7 +55,7 @@ class SharedLoginAPIView(APIView):
         # logging in from multiple locations and may log out from multiple
         # locations so we don't want the user using the same token every time.
         aware_dt = timezone.now()
-        expires_dt = aware_dt.replace(aware_dt.year + 1776)
+        expires_dt = aware_dt + timezone.timedelta(days=1)
         access_token = AccessToken.objects.create(
             application=application,
             user=authenticated_user,
