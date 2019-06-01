@@ -19,17 +19,10 @@ logger = logging.getLogger(__name__)
 
 class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     # --- Authentication Credentials ---
-    token = serializers.SerializerMethodField()
-    scope = serializers.SerializerMethodField()
+    access_token = serializers.SerializerMethodField()
+    refresh_token = serializers.SerializerMethodField()
     schema = serializers.SerializerMethodField()
     group_membership_id = serializers.SerializerMethodField()
-
-    # # --- Misc Fields ---
-    # report_email_frequency = serializers.CharField(required=False,allow_blank=True,)
-    # type_of = serializers.CharField(required=False,allow_blank=True,)
-    # customer_id = serializers.CharField(read_only=True,)
-    # customer_data = serializers.JSONField(read_only=True,)
-    # subscription_status = serializers.CharField(read_only=True,)
 
     # --- User Details ---
     email = serializers.CharField(required=True,allow_blank=False,)
@@ -40,51 +33,14 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     # birthdate = serializers.CharField(required=False,allow_blank=True,)
     # nationality = serializers.CharField(required=False,allow_blank=True,)
     # gender = serializers.CharField(required=False,allow_blank=True,)
-    #
-    # # --- Billing ---
-    # billing_given_name = serializers.CharField(required=True,allow_blank=False,)
-    # billing_last_name = serializers.CharField(required=True,allow_blank=False,)
-    # billing_country = serializers.CharField(required=True,allow_blank=False,)
-    # billing_region = serializers.CharField(required=True,allow_blank=False,)
-    # billing_locality = serializers.CharField(required=True,allow_blank=False,)
-    # billing_postal_code = serializers.CharField(required=True,allow_blank=False,)
-    # billing_street_address = serializers.CharField(required=True,allow_blank=False,)
-    # billing_street_address_extra = serializers.CharField(required=False,allow_blank=True,)
-    # billing_postal_code = serializers.CharField(required=True,allow_blank=False,)
-    # billing_post_office_box_number = serializers.CharField(required=False,allow_blank=True,)
-    # billing_email = serializers.CharField(required=True,allow_blank=False,)
-    # billing_telephone = serializers.CharField(required=True,allow_blank=False,)
-    #
-    # # --- Shipping ---
-    # is_shipping_different_then_billing = serializers.BooleanField(required=True,)
-    # shipping_given_name = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_last_name = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_country = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_region = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_locality = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_postal_code = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_street_address = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_street_address_extra = serializers.CharField(required=False,allow_blank=True,allow_null=True,)
-    # shipping_postal_code = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_post_office_box_number = serializers.CharField(required=False,allow_blank=True,allow_null=True,)
-    # shipping_email = serializers.CharField(required=True,allow_blank=False,)
-    # shipping_telephone = serializers.CharField(required=True,allow_blank=False,)
-    #
-    # # --- Misc ---
-    # timezone = serializers.CharField(required=False,allow_blank=False,)
-    # was_email_activated = serializers.ReadOnlyField()
-    # was_onboarded = serializers.ReadOnlyField()
-    # onboarding_survey_data = serializers.ReadOnlyField()
-    # dashboard_path = serializers.CharField(read_only=True, source="get_dashboard_path",)
-    # latest_invoice = InvoiceListCreateSerializer(read_only=True, many=False)
-    # referral_link = serializers.SerializerMethodField()
+
 
     # Meta Information.
     class Meta:
         fields = (
             # --- Authentication Credentials ---
-            'token',
-            'scope',
+            'access_token',
+            'refresh_token',
             'schema',
             'group_membership_id',
 
@@ -93,54 +49,6 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             'first_name',
             'middle_name',
             'last_name',
-
-            # # --- Misc Fields ---
-            # 'report_email_frequency',
-            # 'type_of',
-            # 'customer_id',
-            # 'customer_data',
-            # 'subscription_status',
-            # 'was_email_activated',
-            # 'was_onboarded',
-            # 'onboarding_survey_data',
-            # 'is_ok_to_email',
-            # 'is_ok_to_text',
-            # 'location',
-            # 'created_at',
-            # 'last_modified_at',
-            # 'dashboard_path',
-            # 'timezone',
-            # 'latest_invoice',
-            # 'referral_link',
-            #
-            # # --- Billing ---
-            # 'billing_given_name',
-            # 'billing_last_name',
-            # 'billing_country',
-            # 'billing_region',
-            # 'billing_locality',
-            # 'billing_postal_code',
-            # 'billing_street_address',
-            # 'billing_street_address_extra',
-            # 'billing_postal_code',
-            # 'billing_post_office_box_number',
-            # 'billing_email',
-            # 'billing_telephone',
-            #
-            # # --- Shipping ---
-            # 'is_shipping_different_then_billing',
-            # 'shipping_given_name',
-            # 'shipping_last_name',
-            # 'shipping_country',
-            # 'shipping_region',
-            # 'shipping_locality',
-            # 'shipping_postal_code',
-            # 'shipping_street_address',
-            # 'shipping_street_address_extra',
-            # 'shipping_postal_code',
-            # 'shipping_post_office_box_number',
-            # 'shipping_email',
-            # 'shipping_telephone',
         )
 
     def get_schema(self, obj):
@@ -153,11 +61,25 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             group_id = group.id
         return group_id
 
-    def get_token(self, obj):
-        return self.context.get('token', None)
+    def get_access_token(self, obj):
+        access_token = self.context.get('access_token', None)
+        if access_token:
+            return {
+                'token': str(access_token),
+                'expires': int(access_token.expires.timestamp()),
+                'scope': str(access_token.scope)
+            }
+        return None
 
-    def get_scope(self, obj):
-        return self.context.get('scope', None)
+    def get_refresh_token(self, obj):
+        refresh_token = self.context.get('refresh_token', None)
+        if refresh_token:
+            revoked_at = int(refresh_token.revoked.timestamp()) if refresh_token.revoked is not None else None
+            return {
+                'token': str(refresh_token),
+                'revoked': revoked_at,
+            }
+        return None
 
     # def get_referral_link(self, obj):
     #     return settings.MIKAPONICS_FRONTEND_HTTP_PROTOCOL + settings.MIKAPONICS_FRONTEND_HTTP_DOMAIN + "/register/"+str(obj.referral_code)

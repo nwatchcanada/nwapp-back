@@ -364,7 +364,8 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
+        'shared_foundation.drf.permissions.DisableOptionsPermission',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -379,6 +380,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.parsers.MultiPartParser',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'DEFAULT_METADATA_CLASS': None,
     'PAGE_SIZE': 100
 }
 

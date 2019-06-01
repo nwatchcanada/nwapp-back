@@ -13,6 +13,7 @@ from rest_framework import authentication, viewsets, permissions, status,  parse
 from rest_framework.response import Response
 
 from shared_account.serializers import SharedProfileInfoRetrieveUpdateSerializer
+from shared_foundation.drf.permissions import DisableOptionsPermission
 
 
 class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -20,6 +21,7 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SharedProfileInfoRetrieveUpdateSerializer
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
+        DisableOptionsPermission,
         permissions.IsAuthenticated,
         # IsAuthenticatedAndIsActivePermission,
         # CanRetrieveUpdateDestroyInvoicePermission
@@ -39,6 +41,7 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         """
         Retrieve
         """
+        print("SharedProfileRetrieveUpdateAPIView | START")
         self.check_object_permissions(request, request.user)  # Validate permissions.
 
         # Fetch our application and token for the user.
@@ -49,9 +52,10 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
             'authenticated_by': request.user,
             'authenticated_from': request.client_ip,
             'authenticated_from_is_public': request.client_ip_is_routable,
-            'token': str(access_token),
-            'scope': 'read,write,introspection'
+            'access_token': access_token,
+            'refresh_token': access_token.refresh_token
         })
+        print("SharedProfileRetrieveUpdateAPIView | FINISH")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @transaction.atomic
@@ -69,8 +73,8 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
             'authenticated_by': request.user,
             'authenticated_from': request.client_ip,
             'authenticated_from_is_public': request.client_ip_is_routable,
-            'token': str(access_token),
-            'scope': 'read,write,introspection'
+            'access_token': access_token,
+            'refresh_token': access_token.refresh_token
         })
         serializer.is_valid(raise_exception=True)
         serializer.save()

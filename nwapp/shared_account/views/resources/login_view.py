@@ -64,11 +64,18 @@ class SharedLoginAPIView(APIView):
             scope='read,write,introspection'
         )
 
+        refresh_token = RefreshToken.objects.create(
+            application = application,
+            user = authenticated_user,
+            access_token=access_token,
+            token=generate_token()
+        )
+
         serializer = SharedProfileInfoRetrieveUpdateSerializer(request.user, many=False, context={
             'authenticated_by': request.user,
             'authenticated_from': request.client_ip,
             'authenticated_from_is_public': request.client_ip_is_routable,
-            'token': str(access_token),
-            'scope': access_token.scope,
+            'access_token': access_token,
+            'refresh_token': refresh_token
         })
         return Response(serializer.data, status=status.HTTP_200_OK)
