@@ -95,6 +95,7 @@ INSTALLED_APPS = [
     'tenant_district',
     'tenant_staff',
     'api',
+    'tenant_dashboard',
 ]
 
 AUTH_USER_MODEL = 'shared_foundation.SharedUser'

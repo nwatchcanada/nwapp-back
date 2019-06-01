@@ -1,0 +1,1 @@
+from tenant_dashboard.serializers.dashboard_serializers import DashboardSerializer
