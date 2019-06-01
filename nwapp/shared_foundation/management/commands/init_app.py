@@ -41,6 +41,21 @@ class Command(BaseCommand):
                 "locality": "London",
             }
         )
+        organization = SharedOrganization.objects.update_or_create(
+            id=1,
+            defaults={
+                'id': 2,
+                'schema': 'london',
+                'name': 'Neighbourhood Watch London',
+                'description': 'We build safe & vibrant communities through crime education and prevention programs.',
+                'country': "Canada",
+                "region": "Ontario",
+                "locality": "London",
+                # "address": "652 Elizabeth St",
+                # "postal": "N5Y 0A2",
+                # "phone": "(519) 661-4533",
+            }
+        )
         SharedGroup.objects.update_or_create(id=1, defaults={'id': 1, 'name': 'Executive'})
         SharedGroup.objects.update_or_create(id=2, defaults={'id': 2, 'name': 'Manager'})
         SharedGroup.objects.update_or_create(id=3, defaults={'id': 3, 'name': 'Frontline Staff'})

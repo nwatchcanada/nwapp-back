@@ -32,13 +32,12 @@ class DashboardAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     @transaction.atomic
     def get(self, request):
-        client_ip, is_routable = get_client_ip(self.request)
+        tenant = request.tenant
+        print(tenant)
         self.check_object_permissions(request, request.user)  # Validate permissions.
         serializer = DashboardSerializer(request.user, context={
             'authenticated_by': request.user,
-            'authenticated_from': client_ip,
-            'authenticated_from_is_public': is_routable,
-            'token': None,
-            'scope': None,
+            'authenticated_from': request.client_ip,
+            'authenticated_from_is_public': request.client_ip_is_routable,
         })
         return Response(serializer.data, status=status.HTTP_200_OK)
