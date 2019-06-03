@@ -341,16 +341,6 @@ https://github.com/ottoyiu/django-cors-headers
 '''
 
 CORS_ORIGIN_ALLOW_ALL=True
-CORS_ALLOW_HEADERS = (
-    'x-requested-with',
-    'content-disposition',
-    'accept-encoding',
-    'content-type',
-    'accept',
-    'origin',
-    'authorization',
-    'x-csrftoken'
-)
 
 
 '''
@@ -372,12 +362,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        # 'rest_framework.renderers.BrowsableAPIRenderer'  # Not to be used in prod.
     ],
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
-        # 'rest_framework.parsers.FormParser',
-        # 'rest_framework.parsers.MultiPartParser',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'DEFAULT_METADATA_CLASS': None,
