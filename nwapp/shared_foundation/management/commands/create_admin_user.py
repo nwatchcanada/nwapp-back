@@ -6,7 +6,7 @@ from django.template.loader import render_to_string  # HTML / TXT
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from shared_foundation.models import SharedUser
+from shared_foundation.models import SharedUser, SharedGroup
 
 
 class Command(BaseCommand):
@@ -15,13 +15,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """
         Run manually in console:
-        python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika" 1;
+        python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
         """
         parser.add_argument('email', nargs='+', type=str)
         parser.add_argument('password', nargs='+', type=str)
         parser.add_argument('first_name', nargs='+', type=str)
         parser.add_argument('last_name', nargs='+', type=str)
-        parser.add_argument('tenant_id', nargs='+', type=int)
 
     def handle(self, *args, **options):
         # Get the user inputs.
@@ -29,7 +28,8 @@ class Command(BaseCommand):
         password = options['password'][0]
         first_name = options['first_name'][0]
         last_name = options['last_name'][0]
-        tenant_id = options['tenant_id'][0]
+        group_id = SharedGroup.GROUP_MEMBERSHIP.EXECUTIVE
+        tenant_id = 1 # Public tenant.
 
         # Defensive Code: Prevent continuing if the email already exists.
         if SharedUser.objects.filter(email=email).exists():
@@ -64,6 +64,9 @@ class Command(BaseCommand):
         # Generate and assign the password.
         user.set_password(password)
         user.save()
+
+        # Attach the user to a specific group.
+        user.groups.add(group_id)
 
         # For debugging purposes.
         self.stdout.write(
