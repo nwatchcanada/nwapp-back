@@ -29,13 +29,6 @@ class SharedLogoutAPIView(APIView):
     authentication_classes= (OAuth2Authentication,)
     throttle_classes = ()
     permission_classes = ()
-    parser_classes = (
-        parsers.FormParser,
-        parsers.MultiPartParser,
-        parsers.JSONParser,
-    )
-
-    renderer_classes = (renderers.JSONRenderer,)
 
     def post(self, request):
         authenticated_user = None

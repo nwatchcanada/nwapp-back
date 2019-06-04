@@ -26,12 +26,6 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         # IsAuthenticatedAndIsActivePermission,
         # CanRetrieveUpdateDestroyInvoicePermission
     )
-    parser_classes = (
-        parsers.FormParser,
-        parsers.MultiPartParser,
-        parsers.JSONParser,
-    )
-    renderer_classes = (renderers.JSONRenderer,)
 
     def get_queryset(self):
         return self.request.user
