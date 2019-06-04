@@ -28,14 +28,7 @@ class SharedLoginAPIView(APIView):
     """
     throttle_classes = ()
     permission_classes = ()
-    parser_classes = (
-        parsers.FormParser,
-        parsers.MultiPartParser,
-        parsers.JSONParser,
-    )
-
-    renderer_classes = (renderers.JSONRenderer,)
-
+    
     def post(self, request):
         # Serializer to get our login details.
         serializer = SharedLoginSerializer(data=request.data, context={
