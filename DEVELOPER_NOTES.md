@@ -15,6 +15,7 @@ pip install django-oauth-toolkit          # oAuth 2.0 Client and Provider Framew
 pip install Pillow                        # Req: ImageField
 pip install djangorestframework           # RESTful API Endpoint Generator
 pip install django-extra-fields           # Django REST Framework extensions
+pip install djangorestframework-msgpack   # Message Pack Support for Django REST
 pip install gunicorn                      # Web-Server Helper
 pip install django-filter                 # Generic system for filtering Django QuerySets based on user selections
 pip install django-rq                     # Redis Queue Library
