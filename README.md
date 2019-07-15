@@ -1,4 +1,6 @@
 # nwapp-back
+[![Documentation Status](https://readthedocs.org/projects/nwapp-docs/badge/?version=latest)](https://nwapp-docs.readthedocs.io/en/latest/?badge=latest)
+
 Online aquaponics / hydroponic device monitoring portal implemented in Python and powered by Django.
 
 
