@@ -88,6 +88,11 @@ This project uses the ``PostGres`` database and as a result requires setup befor
   python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
   python manage.py setup_resource_server_authorization
   python manage.py collectstatic
+  python manage.py create_regular_user "london" "bart+management@mikasoftware.com" "123password" "Bart" "Mika" 2;
+  python manage.py create_regular_user "london" "bart+staff@mikasoftware.com" "123password" "Bart" "Mika" 3;
+  python manage.py create_regular_user "london" "bart+associate@mikasoftware.com" "123password" "Bart" "Mika" 4;
+  python manage.py create_regular_user "london" "bart+area@mikasoftware.com" "123password" "Bart" "Mika" 5;
+  python manage.py create_regular_user "london" "bart+member@mikasoftware.com" "123password" "Bart" "Mika" 6;
   ```
 
 2. Register the app with the following social-auth services. Also read [this tutorial](https://simpleisbetterthancomplex.com/tutorial/2016/10/24/how-to-add-social-login-to-django.html) on setting these up.
