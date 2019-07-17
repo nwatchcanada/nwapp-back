@@ -97,3 +97,7 @@ This project uses the ``PostGres`` database and as a result requires setup befor
     https://apps.twitter.com/
     https://facebook.com/
     ```
+
+## Contact
+
+Do you have any questions? Join our [mailing list](https://groups.google.com/forum/#!forum/nwl-app) and ask your questions there.
