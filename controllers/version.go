@@ -1,48 +1,39 @@
 package controllers
 
 import (
-    "fmt"
+    // "fmt"
     "net/http"
-"io/ioutil";"log"
-    "github.com/vmihailenco/msgpack"
+    "io/ioutil";"log"
     "github.com/ugorji/go/codec"
 )
 
-// https://stackoverflow.com/questions/53546967/convert-from-and-to-messagepack
 
 /**
  *  Returns the version of the web-service.
+ *
+ *  SPECIAL THANKS:
+ *  https://stackoverflow.com/questions/53546967/convert-from-and-to-messagepack
  */
 func GetVersion(w http.ResponseWriter, r *http.Request) {
-    type Item struct {
-		Version string
-        LastUpdate string
-	}
-
-	b, err := msgpack.Marshal(&Item{
-        Version: "0.0.1",
-        LastUpdate: "July, 23, 2019",
-    })
-	if err != nil {
-		panic(err)
-	}
+    var data []byte
+    original := map[string]string{"Version": "0.0.1"}
+    enc := codec.NewEncoderBytes(&data, new(codec.MsgpackHandle))
+    if err := enc.Encode(&original); err != nil {
+        panic(err)
+    }
+    // fmt.Printf("Encoded: %v\n", data) // for debugging purpsoes only.
 
     w.WriteHeader(http.StatusOK)
     w.Header().Set("Content-Type", "application/msgpack")
-    w.Write(b)
-
-	// var item Item
-	// err = msgpack.Unmarshal(b, &item)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println(item.Foo)
-	// // Output: bar
+    w.Write(data)
 }
 
 /**
  *  Returns the posted name, function used for API developers to write test code
  *  to confirm our API service works.
+ *
+ *  SPECIAL THANKS:
+ *  https://stackoverflow.com/questions/53546967/convert-from-and-to-messagepack
  */
 func PostHello(w http.ResponseWriter, r *http.Request) {
     //
@@ -51,7 +42,7 @@ func PostHello(w http.ResponseWriter, r *http.Request) {
     // STEP 1: Get our binary data from the request.
     buf, err := ioutil.ReadAll(r.Body)
     if err!=nil {log.Fatal("request",err)}
-    fmt.Println("BUF", buf) // For debugging purposes only.
+    // fmt.Println("BUF", buf) // For debugging purposes only.
 
     // STEP 2: Create the map we will be converting our data to.
     decoded := make(map[string]string)
@@ -61,7 +52,7 @@ func PostHello(w http.ResponseWriter, r *http.Request) {
     if err := dec.Decode(&decoded); err != nil {
         panic(err)
     }
-    fmt.Printf("Decoded: %v\n", decoded["name"]) // for debugging purpsoes only.
+    // fmt.Printf("Decoded: %v\n", decoded["name"]) // for debugging purpsoes only.
 
     //
     // WRITE FOR RESPNSE
@@ -72,12 +63,9 @@ func PostHello(w http.ResponseWriter, r *http.Request) {
     if err := enc.Encode(&original); err != nil {
         panic(err)
     }
-    fmt.Printf("Encoded: %v\n", data) // for debugging purpsoes only.
-
-
+    // fmt.Printf("Encoded: %v\n", data) // for debugging purpsoes only.
 
     w.WriteHeader(http.StatusOK)
     w.Header().Set("Content-Type", "application/msgpack")
     w.Write(data)
-
 }
