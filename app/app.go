@@ -1,13 +1,13 @@
 package app
 
 import (
-    "database/sql"
     "fmt"
     "net/http"
     // "strings"
     "log"
 
     _ "github.com/lib/pq"
+    "github.com/jmoiron/sqlx"
     "github.com/gorilla/mux"
     "github.com/gorilla/handlers"
     "github.com/urfave/negroni"
@@ -22,35 +22,21 @@ import (
  */
 type App struct {
     Router *mux.Router
-    DB *sql.DB
+    DB *sqlx.DB
 }
 
 /**
  *  Initialize the web-application with the database credentials.
  */
 func (a *App) Initialize(dbHost, dbPort, dbUser, dbPassword, dbName string) {
+    // Initialize our API endpoints.
     a.Router = mux.NewRouter()
     a.Router.HandleFunc("/hello", controllers.PostHello).Methods("OPTIONS","POST")
     a.Router.HandleFunc("/version", controllers.GetVersion).Methods("OPTIONS","GET")
     a.Router.HandleFunc("/api/login", account.PostLogin).Methods("OPTIONS","POST")
 
-    psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
-       "password=%s dbname=%s sslmode=disable",
-       dbHost, dbPort, dbUser, dbPassword, dbName)
-
-    var db *sql.DB
-    var err error
-
-    db, err = sql.Open("postgres", psqlInfo)
-    if err != nil {
-        panic(err)
-    }
-    err = db.Ping()
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println("Database successfully connected!")
-    a.DB = db
+    // Initialize and connect our database.
+    a.DB = InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
 }
 
 /**
