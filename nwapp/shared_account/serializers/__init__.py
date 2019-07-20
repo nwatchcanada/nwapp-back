@@ -1,7 +1,0 @@
-# from shared_account.serializers.activate_serializers import ActivateSerializer
-from shared_account.serializers.logout_serializers import SharedLogoutSerializer
-from shared_account.serializers.login_serializers import SharedLoginSerializer
-# from shared_account.serializers.register_serializers import RegisterSerializer
-# from shared_account.serializers.send_password_reset_serializer import SendPasswordResetSerializer
-# from shared_account.serializers.reset_password_serializer import ResetPasswordSerializer
-from shared_account.serializers.profile_serializers import SharedProfileInfoRetrieveUpdateSerializer

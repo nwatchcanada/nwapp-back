@@ -1,9 +1,0 @@
-{% load staticfiles i18n foundation_tags %}
-
-Welcome to Mikaponics!
-
-We're excited that you've chosen to join our community! You're just one click away from activating your account.
-{{ url }}
-
-Click here for web-view
-{{ web_view_url }}

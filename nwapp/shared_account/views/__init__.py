@@ -1,4 +1,0 @@
-from shared_account.views.resources.login_view import SharedLoginAPIView
-from shared_account.views.resources.logout_view import SharedLogoutAPIView
-from shared_account.views.resources.profile_view import SharedProfileRetrieveUpdateAPIView
-from shared_account.views.resources.refresh_view import SharedRefreshTokenAPIView

@@ -1,1 +1,0 @@
-from tenant_district.serializers.district_list_serializer import DistrictListSerializer

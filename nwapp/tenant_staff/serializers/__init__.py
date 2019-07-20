@@ -1,1 +1,0 @@
-from tenant_staff.serializers.staff_list_serializer import StaffListSerializer
