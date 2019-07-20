@@ -7,6 +7,7 @@ import (
     "log"
 
     "github.com/gorilla/mux"
+    "github.com/gorilla/handlers"
     "github.com/urfave/negroni"
 
     "github.com/nwatchcanada/nwapp-back/controllers"
@@ -25,7 +26,8 @@ type App struct {
  */
 func (a *App) Initialize(user, password, dbname string) {
     a.Router = mux.NewRouter()
-    a.Router.HandleFunc("/", controllers.GetVersion).Methods("GET")
+    a.Router.HandleFunc("/hello", controllers.PostHello).Methods("OPTIONS","POST")
+    a.Router.HandleFunc("/", controllers.GetVersion).Methods("OPTIONS","GET")
 }
 
 /**
@@ -37,7 +39,14 @@ func (a *App) Run(addr string) {
     n := negroni.Classic() // Includes some default middlewares
     n.UseHandler(a.Router)
 
-    err := http.ListenAndServe(addr, n)
+    // https://stackoverflow.com/questions/47309286/axios-does-not-send-post-to-golang-api
+    // https://gist.github.com/marshyon/12d78db8ed8dfd3c242a9a94bb185917
+    n2 := handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+    handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+    handlers.AllowedOrigins([]string{"*"}))(n)
+
+    // Start our server.
+    err := http.ListenAndServe(addr, n2)
 	if err != nil {
 		log.Fatal(err)
 	}
