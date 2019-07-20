@@ -25,6 +25,14 @@ The following section explains how to setup the application.
   cd nwapp-back
   ```
 
+#### Deployment
+
+```
+cd ~/go/srcgithub.com/nwatchcanda/nwapp-back;
+go build
+mv nwapp-back nwapp-back.exe 
+```
+
 #### Database Setup
 This project uses the ``PostGres`` database and as a result requires setup before running. The following instructions are to be run in your ``PostGres`` console:
 

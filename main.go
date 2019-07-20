@@ -1,19 +1,17 @@
 package main
 
 import (
-    // "fmt"
-    "net/http"
-    // "strings"
-    "log"
-
-    "github.com/nwatchcanada/nwapp-back/controllers"
+    "github.com/nwatchcanada/nwapp-back/app"
 )
 
 
+/**
+ *  Main entry point into our web-application.
+ */
 func main() {
-    http.HandleFunc("/", controllers.SayhelloName) // set router
-    err := http.ListenAndServe(":8080", nil) // set listen port
-    if err != nil {
-        log.Fatal("ListenAndServe: ", err)
-    }
+
+
+    a := app.App{}
+    a.Initialize(user, password, dbname)
+    a.Run(":8080")
 }

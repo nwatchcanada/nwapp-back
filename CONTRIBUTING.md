@@ -20,4 +20,5 @@ go get -u github.com/gorilla/mux          # HTTP router and URL matcher
 go get -u github.com/joho/godotenv        # Environment Variable Loader
 go get -u jinzhu/gorm                     # ORM
 go get -u dgrijalva/jwt-go                # JWT Library
+go get -u github.com/vmihailenco/msgpack  # MessagePack encoding for Golang
 ```
