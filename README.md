@@ -30,7 +30,7 @@ The following section explains how to setup the application.
 ```
 cd ~/go/srcgithub.com/nwatchcanda/nwapp-back;
 go build
-mv nwapp-back nwapp-back.exe 
+mv nwapp-back nwapp-back.exe
 ```
 
 #### Database Setup

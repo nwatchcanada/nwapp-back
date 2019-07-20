@@ -18,7 +18,8 @@ go get -u github.com/gorilla/mux          # HTTP router and URL matcher
 go get -u github.com/urfave/negroni       # Idiomatic HTTP Middleware
 go get -u github.com/ugorji/go/codec      # MessagePack encoding for Golang
 go get -u github.com/joho/godotenv        # Environment Variable Loader
+go get -u github.com/lib/pq               # Postgres DB Driver
+go get -u github.com/jmoiron/sqlx         # General purpose extensions to golang's database/sql 
 
-go get -u jinzhu/gorm                     # ORM
 go get -u dgrijalva/jwt-go                # JWT Library
 ```

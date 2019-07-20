@@ -19,14 +19,16 @@ func main() {
     if err != nil {
         log.Fatal("Error loading .env file")
     }
-    dbUsername := os.Getenv("DB_USERNAME")
+    dbHost := os.Getenv("DB_HOST")
+    dbport := os.Getenv("DB_PORT")
+    dbUser := os.Getenv("DB_USER")
     dbPassword := os.Getenv("DB_PASSWORD")
     dbName := os.Getenv("DB_NAME")
     appAddress := os.Getenv("APP_ADDRESS")
 
     // Initialize our application.
     a := app.App{}
-    a.Initialize(dbUsername, dbPassword, dbName)
+    a.Initialize(dbHost, dbport, dbUser, dbPassword, dbName)
 
     // Start and run our application.
     a.Run(appAddress)
