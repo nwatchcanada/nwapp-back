@@ -14,5 +14,10 @@ Here are the libraries that this project utilizes, please update this list as
 new libraries get added.
 
 ```bash
+go get -u github.com/urfave/negroni       # Idiomatic HTTP Middleware
 
+go get -u github.com/gorilla/mux          # HTTP router and URL matcher
+go get -u github.com/joho/godotenv        # Environment Variable Loader
+go get -u jinzhu/gorm                     # ORM
+go get -u dgrijalva/jwt-go                # JWT Library
 ```
