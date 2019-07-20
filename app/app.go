@@ -27,7 +27,7 @@ type App struct {
 func (a *App) Initialize(user, password, dbname string) {
     a.Router = mux.NewRouter()
     a.Router.HandleFunc("/hello", controllers.PostHello).Methods("OPTIONS","POST")
-    a.Router.HandleFunc("/", controllers.GetVersion).Methods("OPTIONS","GET")
+    a.Router.HandleFunc("/version", controllers.GetVersion).Methods("OPTIONS","GET")
 }
 
 /**
