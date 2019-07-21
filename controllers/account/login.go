@@ -13,6 +13,10 @@ import (
 
 
 func PostLogin(w http.ResponseWriter, r *http.Request) {
+    // Set our header.
+    w.Header().Set("Content-Type", "application/json")
+
+    // Take our request and validate the credentials inputted by the user.
     s := serializers.LoginSerializer{Request: r}
     user, err := s.Deserialize()
     if err != nil {
@@ -22,37 +26,16 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    fmt.Printf("%+v\n", user)
-
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusBadRequest)
-
-    // //
-    // // READ FROM REQUEST
-    // //
-    // // STEP 1: Get our binary data from the request.
-    // buf, err := ioutil.ReadAll(r.Body)
-    // if err!=nil {
-    //     fmt.Println(err)
-    //     w.WriteHeader(http.StatusBadRequest)
-    //     return
-    // }
-    //
-    // var data LoginData
-    //
-    // // De-serialize bytes into our struct object.
-    // err = json.Unmarshal(buf, &data)
-    // if err != nil {
-    //     fmt.Println(err)
-    //     fmt.Printf("%+v\n", data)
-    //     w.WriteHeader(http.StatusBadRequest)
-    //     return
-    // }
-    //
-    // fmt.Printf("%+v\n", data.Email)
-    // fmt.Printf("%+v\n", data.Password)
-//
-    // w.WriteHeader(http.StatusBadRequest)
+    // If we get to this line of code then we will be serializing our `User`
+    // and returning our data.
+    profileSerializer := serializers.ProfileSerializer{Request: r,}
+    b, e := profileSerializer.Serialize(user)
+    if e != nil {
+        fmt.Println(e)
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    w.Write(b) // Return our `[]byte` data.
 }
 
 //https://stackoverflow.com/questions/3316762/what-is-deserialize-and-serialize-in-json
