@@ -5,10 +5,13 @@ import (
     "database/sql"
     "fmt"
     // "log"
+
+    "github.com/nwatchcanada/nwapp-back/utils"
 )
 
 
 type User struct {
+    TenantId          int64          `db:"tenant_id"`
     Id                int64          `db:"id"`
     FirstName         sql.NullString `db:"first_name"`
     LastName          sql.NullString `db:"last_name"`
@@ -38,6 +41,7 @@ func CreateUserTable(dropExistingTable bool) {
     // * https://www.postgresql.org/docs/9.5/datatype.html
 
     stmt := `CREATE TABLE users (
+        tenant_id bigint NOT NULL,
         id bigserial PRIMARY KEY,
         first_name VARCHAR (50) NOT NULL,
         last_name VARCHAR (50) NOT NULL,
@@ -52,8 +56,11 @@ func CreateUserTable(dropExistingTable bool) {
 }
 
 
-
-func FindUserByEmail(email string) (*User, bool) {
+/**
+ *  Function will return the `user` struct if it exists in the database or
+ *  return an error.
+ */
+func FindUserByEmail(email string) (*User, error) {
     user := User{} // The struct which will be populated from the database.
 
     // DEVELOPERS NOTE:
@@ -63,10 +70,34 @@ func FindUserByEmail(email string) (*User, bool) {
 
     // Handling non existing item
     if err == sql.ErrNoRows {
-        return nil, false
+        return nil, nil
     } else if err != nil {
-        panic(err)
+        return nil, err
     }
 
-    return &user, true
+    return &user, nil
+}
+
+
+/**
+ *  Function will create a user, if validation passess, and reutrns the `user` 
+ *  struct else returns the error.
+ */
+func CreateUser(email string, firstName string, lastName string, password string, tenantId int64) (*User, error) {
+    // Step 1: Hash our user's password for added security or error on any condition.
+    passwordHash, err := utils.HashPassword(password)
+    if err != nil {
+        return nil, err
+    }
+
+    // Step 2: Generate SQL statement for creating a new `user` in `postgres`.
+    statement := `INSERT INTO users (email, first_name, last_name, password_hash, tenant_id) VALUES ($1, $2, $3, $4, $5)`
+
+    // Step 3: Execute our SQL statement and either return our new user or
+    //         our error.
+    _, err = db.Exec(statement, email, firstName, lastName, passwordHash, tenantId)
+    if err != nil {
+        return nil, err
+    }
+    return FindUserByEmail(email)
 }

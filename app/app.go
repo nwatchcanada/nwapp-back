@@ -3,7 +3,7 @@ package app
 import (
     "fmt"
     "net/http"
-    // "strings"
+    "runtime"
     "log"
 
     _ "github.com/lib/pq"
@@ -16,6 +16,13 @@ import (
     "github.com/nwatchcanada/nwapp-back/controllers"
     "github.com/nwatchcanada/nwapp-back/controllers/account"
 )
+
+/**
+ * Initialize our applications shared functions.
+ */
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())  // Use all CPU cores
+}
 
 
 /**

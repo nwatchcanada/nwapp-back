@@ -37,8 +37,8 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("Decoded: %v\n", decoded) // for debugging purpsoes only.
 
     email := decoded["email"]
-    user, found := models.FindUserByEmail(email)
-    if found {
+    user, err := models.FindUserByEmail(email)
+    if err != nil {
         fmt.Println(user.PasswordHash.String)
     } //TODO: WRITE CODE HERE TO HANDLE TRTUE / FALSE CONDITIONS.
 
