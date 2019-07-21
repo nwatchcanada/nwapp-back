@@ -5,18 +5,15 @@ import (
     "database/sql"
     "fmt"
     // "log"
-
-    _ "github.com/lib/pq"
-    "github.com/jmoiron/sqlx"
 )
 
 
 type User struct {
-    Id            int64          `db:"id"`
-    FirstName     sql.NullString `db:"first_name"`
-    LastName      sql.NullString `db:"last_name"`
-    Password      sql.NullString `db:"password"`
-    Email         sql.NullString `db:"email"`
+    Id                int64          `db:"id"`
+    FirstName         sql.NullString `db:"first_name"`
+    LastName          sql.NullString `db:"last_name"`
+    PasswordHash      sql.NullString `db:"password_hash"`
+    Email             sql.NullString `db:"email"`
 }
 
 
@@ -27,12 +24,12 @@ type User struct {
 /**
  *  Function will create the `users` table in the database.
  */
-func CreateUserTable(db *sqlx.DB, dropExistingTable bool) {
+func CreateUserTable(dropExistingTable bool) {
     if dropExistingTable {
         drop_stmt := "DROP TABLE users;"
         results, err := db.Exec(drop_stmt)
         if err != nil {
-            fmt.Println("UserDAO", results, err)
+            fmt.Println("User Model:", results, err)
         }
     }
 
@@ -44,7 +41,7 @@ func CreateUserTable(db *sqlx.DB, dropExistingTable bool) {
         id bigserial PRIMARY KEY,
         first_name VARCHAR (50) NOT NULL,
         last_name VARCHAR (50) NOT NULL,
-        password VARCHAR (255) NOT NULL,
+        password_hash VARCHAR (511) NOT NULL,
         email VARCHAR (255) UNIQUE NOT NULL
     );`
     results, err := db.Exec(stmt)
@@ -56,7 +53,7 @@ func CreateUserTable(db *sqlx.DB, dropExistingTable bool) {
 
 
 
-func FindUserByEmail(db *sqlx.DB, email string) (*User, bool) {
+func FindUserByEmail(email string) (*User, bool) {
     user := User{} // The struct which will be populated from the database.
 
     // DEVELOPERS NOTE:

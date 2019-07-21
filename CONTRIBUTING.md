@@ -20,6 +20,7 @@ go get -u github.com/ugorji/go/codec      # MessagePack encoding for Golang
 go get -u github.com/joho/godotenv        # Environment Variable Loader
 go get -u github.com/lib/pq               # Postgres DB Driver for Golang
 go get -u github.com/jmoiron/sqlx         # General purpose extensions to golang's database/sql
+go get -u golang.org/x/crypto/bcrypt      # Bycrypt Hashing Algorithm
 
 go get -u dgrijalva/jwt-go                # JWT Library
 ```

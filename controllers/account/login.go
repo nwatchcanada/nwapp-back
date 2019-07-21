@@ -5,6 +5,8 @@ import (
     "net/http"
     "io/ioutil";"log"
     "github.com/ugorji/go/codec"
+
+    "github.com/nwatchcanada/nwapp-back/models"
 )
 
 
@@ -33,6 +35,12 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
         panic(err)
     }
     fmt.Printf("Decoded: %v\n", decoded) // for debugging purpsoes only.
+
+    email := decoded["email"]
+    user, found := models.FindUserByEmail(email)
+    if found {
+        fmt.Println(user.PasswordHash.String)
+    } //TODO: WRITE CODE HERE TO HANDLE TRTUE / FALSE CONDITIONS.
 
     //
     // WRITE FOR RESPNSE

@@ -12,6 +12,7 @@ import (
     "github.com/gorilla/handlers"
     "github.com/urfave/negroni"
 
+    "github.com/nwatchcanada/nwapp-back/models"
     "github.com/nwatchcanada/nwapp-back/controllers"
     "github.com/nwatchcanada/nwapp-back/controllers/account"
 )
@@ -35,8 +36,11 @@ func (a *App) Initialize(dbHost, dbPort, dbUser, dbPassword, dbName string) {
     a.Router.HandleFunc("/version", controllers.GetVersion).Methods("OPTIONS","GET")
     a.Router.HandleFunc("/api/login", account.PostLogin).Methods("OPTIONS","POST")
 
-    // Initialize and connect our database.
-    a.DB = InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
+    // Initialize and connect our database layer for the entire application.
+    a.DB = models.InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
+
+    // Create our models
+    models.CreateUserTable(false)
 }
 
 /**
