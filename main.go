@@ -3,10 +3,17 @@ package main
 import (
     "log"
     "os"
+    "runtime"
     "github.com/joho/godotenv"
 
     "github.com/nwatchcanada/nwapp-back/app"
 )
+
+
+// Initialize our applications shared functions.
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())  // Use all CPU cores
+}
 
 
 /**

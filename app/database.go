@@ -6,6 +6,8 @@ import (
 
     _ "github.com/lib/pq"
     "github.com/jmoiron/sqlx"
+
+    "github.com/nwatchcanada/nwapp-back/models"
 )
 
 
@@ -20,5 +22,13 @@ func InitDB(dbHost, dbPort, dbUser, dbPassword, dbName string) (*sqlx.DB) {
         panic(err)
     }
     fmt.Println("Database successfully connected!")
+
+    // // The following
+    // results, err := db.Exec(models.CreateUserTableSQLStatement())
+    // fmt.Println(results, err)
+    // The following code will create our tables.
+    models.CreateUserTable(db, false)
+
+    
     return db;
 }
