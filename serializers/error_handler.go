@@ -7,7 +7,9 @@ import (
 
 /**
  * The purpose of this code is to provide our serializers a way output errors
- * exactly how it is done in the `Django REST Framework`.
+ * exactly how it is done in the `Django REST Framework`. This code is to be
+ * used by our serializers and our API will returns errors in same manner as
+ * if we were using `Django REST Framework`.
  */
 
 

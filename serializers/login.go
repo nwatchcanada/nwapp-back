@@ -13,7 +13,7 @@ import (
 
 
 /**
- *  Type used for our login serializer.
+ * The login serializer data-structure.
  */
 type LoginSerializer struct {
     Request *http.Request
@@ -21,6 +21,9 @@ type LoginSerializer struct {
 }
 
 
+/**
+ *  The data-structure we want to format our user submitted to the API.
+ */
 type LoginRequest struct {
     Email    string
     Password string
@@ -33,7 +36,8 @@ type LoginRequest struct {
  *  we will return our user model.
  */
 func (s *LoginSerializer) Deserialize() (*models.User, bool) {
-    // Initialize our serializer error handler.
+    // Initialize our serializer error handler which will return errors
+    // in the same manner that `Django REST Framework` returns.
     s.ErrorHandler = s.ErrorHandler.New()
 
     // Extract our binary data from the `request`.

@@ -16,9 +16,9 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
     // Set our header.
     w.Header().Set("Content-Type", "application/json")
 
-    // Take our request and validate the credentials inputted by the user.
+    // Take our `request` and validate the credentials inputted by the user.
     // If the validation fails or we have any errors then we'll stop right
-    // here and output our errors.
+    // here and output our errors by the API.
     s := serializers.LoginSerializer{Request: r}
     user, hasError := s.Deserialize()
     if hasError {
@@ -28,12 +28,8 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 
     // If we get to this line of code then we will be serializing our `User`
     // and returning our data.
-    profileSerializer := serializers.ProfileSerializer{Request: r,}
-    b, e := profileSerializer.Serialize(user)
-    if e != nil {
-        // http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
+    profileSerializer := serializers.ProfileSerializer{Request: r}
+    b := profileSerializer.Serialize(user)
     w.Write(b) // Return our `[]byte` data.
 }
 
