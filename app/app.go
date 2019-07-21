@@ -47,7 +47,8 @@ func (a *App) Initialize(dbHost, dbPort, dbUser, dbPassword, dbName string) {
     a.DB = models.InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
 
     // Create our models
-    models.CreateUserTable(false)
+    models.CreateTenantTable(false)
+    models.CreateUserTable(false)    
 }
 
 /**

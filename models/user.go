@@ -4,7 +4,6 @@ package models
 import (
     "database/sql"
     "fmt"
-    // "log"
 
     "github.com/nwatchcanada/nwapp-back/utils"
 )
@@ -50,7 +49,7 @@ func CreateUserTable(dropExistingTable bool) {
     );`
     results, err := db.Exec(stmt)
     if err != nil {
-        fmt.Println("UserDAO", results, err)
+        fmt.Println("User Model", results, err)
     }
     return
 }
@@ -80,7 +79,7 @@ func FindUserByEmail(email string) (*User, error) {
 
 
 /**
- *  Function will create a user, if validation passess, and reutrns the `user` 
+ *  Function will create a user, if validation passess, and reutrns the `user`
  *  struct else returns the error.
  */
 func CreateUser(email string, firstName string, lastName string, password string, tenantId int64) (*User, error) {
