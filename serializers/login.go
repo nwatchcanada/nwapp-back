@@ -1,8 +1,8 @@
 package serializers
 
 import (
-    "errors"
-    "fmt"
+    // "errors"
+    // "fmt"
     "net/http"
     "io/ioutil"
     "encoding/json"
@@ -17,10 +17,11 @@ import (
  */
 type LoginSerializer struct {
     Request *http.Request
+    ErrorHandler *SerializerErrorHandler
 }
 
 
-type LoginData struct {
+type LoginRequest struct {
     Email    string
     Password string
 }
@@ -31,29 +32,38 @@ type LoginData struct {
  *  the database and validate the password, if everything was a success then
  *  we will return our user model.
  */
-func (s *LoginSerializer) Deserialize() (*models.User, error) {
+func (s *LoginSerializer) Deserialize() (*models.User, bool) {
+    // Initialize our serializer error handler.
+    s.ErrorHandler = s.ErrorHandler.New()
+
+    // Extract our binary data from the `request`.
     buf, err := ioutil.ReadAll(s.Request.Body)
     if err!=nil {
-        return nil, err
+        s.ErrorHandler.Add("NonFieldError", "Invalid format received")
+        return nil, true
     }
 
-    var data LoginData
+    var data LoginRequest
 
     // De-serialize bytes into our struct object.
     err = json.Unmarshal(buf, &data)
     if err != nil {
-        fmt.Println(err)
-        fmt.Printf("%+v\n", data)
-        return nil, errors.New("Email does not exist.")
+        s.ErrorHandler.Add("NonFieldError", "Missing fields.")
+        return nil, true
     }
 
     // Lookup our user.
     user, _ := models.FindUserByEmail(data.Email)
+    if user == nil {
+        s.ErrorHandler.Add("Email", "Account does not exist for the email.")
+        return nil, true
+    }
 
     var isCorrectPassword bool = utils.CheckPasswordHash(data.Password, user.PasswordHash.String)
     if isCorrectPassword {
-        return user, nil
+        return user, false
     } else {
-        return nil, errors.New("Incorrect password.")
+        s.ErrorHandler.Add("Password", "Incorrect password.")
+        return nil, true
     }
 }

@@ -1,7 +1,7 @@
 package account
 
 import (
-    "fmt"
+    // "fmt"
     "net/http"
     // "io/ioutil"
     // "encoding/json"
@@ -17,12 +17,12 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
 
     // Take our request and validate the credentials inputted by the user.
+    // If the validation fails or we have any errors then we'll stop right
+    // here and output our errors.
     s := serializers.LoginSerializer{Request: r}
-    user, err := s.Deserialize()
-    if err != nil {
-        fmt.Println(err)
-        fmt.Printf("%+v\n", user)
-        w.WriteHeader(http.StatusBadRequest)
+    user, hasError := s.Deserialize()
+    if hasError {
+        s.ErrorHandler.WriteBadRequestErrors(w)
         return
     }
 
@@ -31,8 +31,7 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
     profileSerializer := serializers.ProfileSerializer{Request: r,}
     b, e := profileSerializer.Serialize(user)
     if e != nil {
-        fmt.Println(e)
-        w.WriteHeader(http.StatusBadRequest)
+        // http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
     w.Write(b) // Return our `[]byte` data.
