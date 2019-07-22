@@ -18,8 +18,16 @@ func PaginatorCtx(next http.Handler) http.Handler {
             pageIndex = 1
         }
 
+        pageSizeString := r.FormValue("page_size")
+        pageSize, err2 := strconv.ParseUint(pageSizeString, 10, 64)
+        if err2 != nil {
+            // DEVELOPERS NOTE: ALWAYS DEFINE 100 IF NOT SPECIFIED.
+            pageSize = 100
+        }
+
         // Attach the 'page' parameter value to our context to be used.
 		ctx := context.WithValue(r.Context(), "pageParm", pageIndex)
+        ctx = context.WithValue(ctx, "pageSizeParam", pageSize)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
