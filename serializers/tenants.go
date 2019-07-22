@@ -19,6 +19,11 @@ type TenantListSerializer struct {
 }
 
 
+/**
+ *  The following structures are used to convert our database rows into
+ *  API formatted output.
+ */
+
 type TenantListItemResponse struct {
     Name    string `json:"name"`
     Schema  string `json:"schema"`
@@ -30,6 +35,10 @@ type TenantListResponse struct {
     Results    []TenantListItemResponse  `json:"results"`
 }
 
+
+/**
+ *  Function converts the `sqlx` formatted `rows` into our API formatted output.
+ */
 func (s *TenantListSerializer) translate(rows []models.Tenant) []TenantListItemResponse {
     results := []TenantListItemResponse{}
     for _, v := range rows {
@@ -47,8 +56,8 @@ func (s *TenantListSerializer) translate(rows []models.Tenant) []TenantListItemR
  *  Function will serialize the model `profile` data into a []byte format
  *  ready for output by our API as JSON data.
  */
-func (s *TenantListSerializer) Serialize(tenants []models.Tenant, context map[string]interface{}) []byte {
-    results := s.translate(tenants)
+func (s *TenantListSerializer) Serialize(rows []models.Tenant, context map[string]interface{}) []byte {
+    results := s.translate(rows)
 
     page := context["page"].(uint64)
     count := context["count"].(uint64)
@@ -61,7 +70,7 @@ func (s *TenantListSerializer) Serialize(tenants []models.Tenant, context map[st
     // Serialize our data.
     b, err := json.Marshal(tenantList)
     if err != nil {
-        panic(err)
+        panic(err) // Any errors are a result of programming error.
     }
 
     return b
