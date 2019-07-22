@@ -92,7 +92,8 @@ func (a *App) Run(addr string) {
     r.Get("/version", controllers.GetVersion)
     r.Get("/hello", controllers.PostHello)
     // r.Post("/api/v1/public/register", controllers.RegisterFunc)
-    r.Post("/api/v1/public/login", account.PostLogin)
+    r.Post("/api/v1/login", account.PostLogin)
+    r.Post("/api/v1/refresh-token", account.RefreshTokenHandler)
 
     //------------------------------------------------------------------------//
 	// Load up our protected API endpoints. The following API endpoints can   //

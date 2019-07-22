@@ -43,7 +43,7 @@ func GenerateJWTToken(email string, groupId uint8, tenantSchema string) (string,
         "email": email,
         "groupId": groupId,
         "tenantSchema": tenantSchema,
-        "exp": time.Now().Add(time.Minute * 15).Unix(),
+        "exp": time.Now().Add(time.Minute * 1).Unix(),
     }
 
     // Generate our new JWT token.
@@ -97,4 +97,29 @@ func GetJWTClaimsFromContext(ctx context.Context) (string, string, uint8) {
     var gid uint8 = uint8(groupId)
 
     return rawEmail.(string), rawTenantSchema.(string),  gid
+}
+
+/**
+ *  Modified from: https://github.com/go-chi/jwtauth/blob/master/jwtauth.go#L88
+ */
+func VerifyToken(tokenStr string) (*jwt.Token, bool) {
+    // Get our JWT token authority.
+    ja := GetJWTTokenAuthority()
+
+    // Verify the token
+	token, err := ja.Decode(tokenStr)
+	if err != nil {
+        return nil, false
+    }
+
+    if token == nil || !token.Valid {
+		return nil, false
+	}
+
+	// // Verify signing algorithm
+	// if token.Method != ja.signer {
+	// 	return false
+	// }
+
+    return token, true
 }
