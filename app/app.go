@@ -12,6 +12,7 @@ import (
     "github.com/gorilla/handlers"
     "github.com/urfave/negroni"
 
+    "github.com/nwatchcanada/nwapp-back/app/middleware"
     "github.com/nwatchcanada/nwapp-back/models"
     "github.com/nwatchcanada/nwapp-back/controllers"
     "github.com/nwatchcanada/nwapp-back/controllers/account"
@@ -43,12 +44,20 @@ func (a *App) Initialize(dbHost, dbPort, dbUser, dbPassword, dbName string) {
     a.Router.HandleFunc("/version", controllers.GetVersion).Methods("OPTIONS","GET")
     a.Router.HandleFunc("/api/login", account.PostLogin).Methods("OPTIONS","POST")
 
+    secure := a.Router.PathPrefix("/api").Subrouter()
+    secure.HandleFunc("/profile", account.GetProfile).Methods("OPTIONS","GET")
+
+    s := mux.NewRouter()
+    s.HandleFunc("/api/profile", account.GetProfile).Methods("OPTIONS","GET")
+    s.Use(middleware.JWTMiddleware)
+    a.Router.Handle("/api/profile", s)
+
     // Initialize and connect our database layer for the entire application.
     a.DB = models.InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
 
     // Create our models
     models.CreateTenantTable(false)
-    models.CreateUserTable(false)    
+    models.CreateUserTable(false)
 }
 
 /**
