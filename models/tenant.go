@@ -10,7 +10,7 @@ import (
 
 
 type Tenant struct {
-    Id                int64          `db:"id"`
+    Id                uint64          `db:"id"`
     Schema            sql.NullString `db:"schema"`
     Name              sql.NullString `db:"name"`
 }
@@ -53,7 +53,7 @@ func CreateTenantTable(dropExistingTable bool) {
  *  Function will return the `tenant` struct if it exists in the database or
  *  return an error.
  */
-func FindTenantById(id int64) (*Tenant, error) {
+func FindTenantById(id uint64) (*Tenant, error) {
     tenant := Tenant{} // The struct which will be populated from the database.
 
     // DEVELOPERS NOTE:
@@ -112,14 +112,7 @@ func CreateTenant(schema string, name string) (*Tenant, error) {
 }
 
 
-/**
- *  Function will return paginated list of tenants.
- */
-func FetchTenants(page, pageSize int) ([]Tenant) {
-    // Defensive Code: Catch programmer error.
-    if page < 0 { panic("Page must start at 1.") }
-    if pageSize < 0 { panic("pageSize must be at least 1.") }
-
+func fetchTenantsRoutine(page, pageSize int, resultOp chan []Tenant) {
     t := []Tenant{}
     offset := (page - 1) * pageSize
     limit := pageSize
@@ -139,5 +132,36 @@ func FetchTenants(page, pageSize int) ([]Tenant) {
     // instead of `passing by value`. Passing reference is more efficient then
     // passing by values - see "Memory Optmization" the link at
     // via https://golangbot.com/arrays-and-slices/
-    return t[:]
+    resultOp <- t[:]
+}
+
+func countTotalTenantsRoutine(countOp chan uint) {
+    var count uint
+    _ = db.Get(&count, "SELECT count(*) FROM tenants")
+    countOp <- count
+}
+
+
+/**
+ *  Function will return paginated list of tenants.
+ */
+func FetchTenants(page, pageSize int) ([]Tenant, uint) {
+    // Defensive Code: Catch programmer error.
+    if page < 0 { panic("Page must start at 1.") }
+    if pageSize < 0 { panic("pageSize must be at least 1.") }
+
+    // Setup the `channels`.
+    resultCh := make(chan []Tenant)
+    countCh := make(chan uint)
+
+    // Run the following functions concurrently.
+    go fetchTenantsRoutine(page, pageSize, resultCh)
+    go countTotalTenantsRoutine(countCh)
+
+    // Block the main function until we have results from our concurrently
+    // running `goroutines`.
+    tenants, count := <-resultCh, <-countCh
+
+    // Return our data.
+    return tenants, count
 }

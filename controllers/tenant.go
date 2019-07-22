@@ -9,9 +9,9 @@ import (
 
 
 func TenantListHandler(w http.ResponseWriter, r *http.Request) {
-    tenants := models.FetchTenants(1, 50)
+    tenants, totalCount := models.FetchTenants(1, 50)
 
-    fmt.Println(tenants)
+    fmt.Println(tenants, totalCount)
 
     // // Extract the current email from the request context. It is important
     // // to note that this context must be AFTER the `ProfileCtx` middleware.
