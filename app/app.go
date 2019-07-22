@@ -21,7 +21,7 @@ import (
 
     "github.com/nwatchcanada/nwapp-back/models"
     "github.com/nwatchcanada/nwapp-back/controllers"
-    "github.com/nwatchcanada/nwapp-back/controllers/account"
+    account_controllers "github.com/nwatchcanada/nwapp-back/controllers/account"
     "github.com/nwatchcanada/nwapp-back/utils"
     app_mw "github.com/nwatchcanada/nwapp-back/app/middleware"
 )
@@ -92,8 +92,8 @@ func (a *App) Run(addr string) {
     r.Get("/version", controllers.GetVersion)
     r.Get("/hello", controllers.PostHello)
     // r.Post("/api/v1/public/register", controllers.RegisterFunc)
-    r.Post("/api/v1/login", account.PostLogin)
-    r.Post("/api/v1/refresh-token", account.RefreshTokenHandler)
+    r.Post("/api/v1/login", account_controllers.PostLogin)
+    r.Post("/api/v1/refresh-token", account_controllers.RefreshTokenHandler)
 
     //------------------------------------------------------------------------//
 	// Load up our protected API endpoints. The following API endpoints can   //
@@ -121,7 +121,10 @@ func (a *App) Run(addr string) {
 		//--------------------------------------------------------------------//
 
 		// User
-		r.Get("/api/v1/profile", account.GetProfile)
+		r.Get("/api/v1/profile", account_controllers.GetProfile)
+
+        // Shared Organizations
+        r.Get("/api/v1/tenants", controllers.TenantListHandler)
     })
 
     //------------------------------------------------------------------------//

@@ -4,6 +4,8 @@ package models
 import (
     "database/sql"
     "fmt"
+
+    // "github.com/jmoiron/sqlx"
 )
 
 
@@ -107,4 +109,35 @@ func CreateTenant(schema string, name string) (*Tenant, error) {
         return nil, err
     }
     return FindTenantBySchema(schema)
+}
+
+
+/**
+ *  Function will return paginated list of tenants.
+ */
+func FetchTenants(page, pageSize int) ([]Tenant) {
+    // Defensive Code: Catch programmer error.
+    if page < 0 { panic("Page must start at 1.") }
+    if pageSize < 0 { panic("pageSize must be at least 1.") }
+
+    t := []Tenant{}
+    offset := (page - 1) * pageSize
+    limit := pageSize
+
+    // Make a paginated fetch to our data. Since we are assuming:
+    // (1) no data record
+    // (2) expecting the primary key IDs to be exactly sequential integers (incremented by 1)
+    // (3) auto-increment will not be manually modified by programmer
+    // As a result, we can use our tables `id` value as our offset. This idea was from:
+    // https://developer.wordpress.com/2014/02/14/an-efficient-alternative-to-paging-with-sql-offsets/
+    err := db.Select(&t, "SELECT * FROM tenants WHERE id > $1 LIMIT $2", offset, limit)
+    if err != nil {
+        panic(err)
+    }
+
+    // We are creating a `slice` of the array so we are `passing by reference`
+    // instead of `passing by value`. Passing reference is more efficient then
+    // passing by values - see "Memory Optmization" the link at
+    // via https://golangbot.com/arrays-and-slices/
+    return t[:]
 }

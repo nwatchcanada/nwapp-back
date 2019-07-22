@@ -10,6 +10,9 @@ import (
  * exactly how it is done in the `Django REST Framework`. This code is to be
  * used by our serializers and our API will returns errors in same manner as
  * if we were using `Django REST Framework`.
+ *
+ * Here are some useful articles used in developing this code:
+ * (1) https://stackoverflow.com/questions/3316762/what-is-deserialize-and-serialize-in-json
  */
 
 

@@ -43,7 +43,7 @@ func GenerateJWTToken(email string, groupId uint8, tenantSchema string) (string,
         "email": email,
         "groupId": groupId,
         "tenantSchema": tenantSchema,
-        "exp": time.Now().Add(time.Minute * 1).Unix(),
+        "exp": time.Now().Add(time.Minute * 15).Unix(), // MAKE SHORT-LIVED
     }
 
     // Generate our new JWT token.
@@ -52,7 +52,7 @@ func GenerateJWTToken(email string, groupId uint8, tenantSchema string) (string,
     // Create our claims data for the JWT token.
     refreshClaims := jwt.MapClaims{
         "email": email,
-        "exp": time.Now().Add(time.Hour * 24).Unix(),
+        "exp": time.Now().Add(time.Hour * 24).Unix(), // MAKE LONG-LIVED
     }
 
     // Generate our new JWT token.

@@ -11,11 +11,7 @@ import (
 )
 
 
-
 func PostLogin(w http.ResponseWriter, r *http.Request) {
-    // Set our header.
-    w.Header().Set("Content-Type", "application/json")
-
     // Take our `request` and validate the credentials inputted by the user.
     // If the validation fails or we have any errors then we'll stop right
     // here and output our errors by the API.
@@ -39,5 +35,3 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
     b := profileSerializer.Serialize(user, context)
     w.Write(b) // Return our `[]byte` data.
 }
-
-//https://stackoverflow.com/questions/3316762/what-is-deserialize-and-serialize-in-json

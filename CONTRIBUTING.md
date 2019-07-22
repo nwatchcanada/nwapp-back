@@ -28,3 +28,13 @@ go get -u github.com/dgrijalva/jwt-go     # JWT Library
 
 go get -u github.com/go-chi/docgen
 ```
+
+## What conventions do we use?
+
+### Database Pagination
+We do not delete any record, we simply set the state to be **deleted, archived, inactive, etc** state. We keep the data for auditing purposes and because we are implementing our offset as our ID for to do pagination. This decision was from [this article](https://developer.wordpress.com/2014/02/14/an-efficient-alternative-to-paging-with-sql-offsets/).
+
+
+### API Design
+
+(1) https://cloud.google.com/apis/design/design_patterns#list_pagination
