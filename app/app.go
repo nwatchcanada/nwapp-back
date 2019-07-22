@@ -123,8 +123,8 @@ func (a *App) Run(addr string) {
 		// User
 		r.Get("/api/v1/profile", account_controllers.GetProfile)
 
-        // Shared Organizations
-        r.Get("/api/v1/tenants", controllers.TenantListHandler)
+        // Tenants
+        r.With(app_mw.PaginatorCtx).Get("/api/v1/tenants", controllers.TenantListHandler)
     })
 
     //------------------------------------------------------------------------//

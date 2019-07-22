@@ -112,7 +112,7 @@ func CreateTenant(schema string, name string) (*Tenant, error) {
 }
 
 
-func fetchTenantsRoutine(page, pageSize int, resultOp chan []Tenant) {
+func fetchTenantsRoutine(page uint64, pageSize uint64, resultOp chan []Tenant) {
     t := []Tenant{}
     offset := (page - 1) * pageSize
     limit := pageSize
@@ -135,8 +135,8 @@ func fetchTenantsRoutine(page, pageSize int, resultOp chan []Tenant) {
     resultOp <- t[:]
 }
 
-func countTotalTenantsRoutine(countOp chan uint) {
-    var count uint
+func countTotalTenantsRoutine(countOp chan uint64) {
+    var count uint64
     _ = db.Get(&count, "SELECT count(*) FROM tenants")
     countOp <- count
 }
@@ -145,14 +145,14 @@ func countTotalTenantsRoutine(countOp chan uint) {
 /**
  *  Function will return paginated list of tenants.
  */
-func FetchTenants(page, pageSize int) ([]Tenant, uint) {
+func FetchTenants(page uint64, pageSize uint64) ([]Tenant, uint64) {
     // Defensive Code: Catch programmer error.
     if page < 0 { panic("Page must start at 1.") }
     if pageSize < 0 { panic("pageSize must be at least 1.") }
 
     // Setup the `channels`.
     resultCh := make(chan []Tenant)
-    countCh := make(chan uint)
+    countCh := make(chan uint64)
 
     // Run the following functions concurrently.
     go fetchTenantsRoutine(page, pageSize, resultCh)

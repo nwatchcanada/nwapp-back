@@ -25,7 +25,7 @@ type ProfileResponse struct {
     TenantSchema string `json:"tenant_schema"`
     AccessToken  string `json:"access_token,omitempty"`
     RefreshToken string `json:"refresh_token,omitempty"`
-    GroupId      uint8 `json:"group_id"`
+    GroupId      uint8  `json:"group_id"`
 }
 
 /**
