@@ -14,7 +14,7 @@ import (
 )
 
 /**
- *  go run main.go add_user "bart@mikasoftware.com" "bart" "mika" "123password" 1
+ *  go run main.go add_user "bart@mikasoftware.com" "bart" "mika" "123password" 1 "london" 1
  */
 
 func init() {
@@ -26,8 +26,8 @@ var addUserCmd = &cobra.Command{
     Short: "Creates a new user",
     Long:  `Command will create a new user in our application.`,
     Args: func(cmd *cobra.Command, args []string) error {
-        if len(args) < 5 {
-          return errors.New("requires the following fields: email, first name, last name, password, tenant id")
+        if len(args) < 7 {
+          return errors.New("requires the following fields: email, first name, last name, password, tenant id, tenant schema, group id")
         }
         return nil
     },
@@ -38,9 +38,12 @@ var addUserCmd = &cobra.Command{
         lastName := args[2]
         password := args[3]
         tenantIdString := args[4]
+        tenantSchema := args[5]
+        groupIdString := args[6]
 
         // Minor modifications.
         tenantId, _ := strconv.ParseInt(tenantIdString, 10, 64)
+        groupId, _ := strconv.ParseInt(groupIdString, 10, 64)
 
         // We will load up all our environment settings variables from the `.env`
         // file and have it ready for our application.
@@ -56,7 +59,7 @@ var addUserCmd = &cobra.Command{
 
         // Initialize and connect our database layer for the command.
         models.InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
-        user, err := models.CreateUser(email, firstName, lastName, password, tenantId)
+        user, err := models.CreateUser(email, firstName, lastName, password, tenantId, tenantSchema, groupId)
         if err != nil {
             fmt.Println("Failed creating user!")
             fmt.Println(err)

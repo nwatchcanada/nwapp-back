@@ -19,11 +19,13 @@ type ProfileSerializer struct {
  *  The data-structure that we will be returning when the `user` is serialized.
  */
 type ProfileResponse struct {
-    Email string `json:"email"`
-    FirstName string `json:"first_name"`
-    LastName string `json:"last_name"`
-    AccessToken string `json:"access_token,omitempty"`
+    Email        string `json:"email"`
+    FirstName    string `json:"first_name"`
+    LastName     string `json:"last_name"`
+    TenantSchema string `json:"tenant_schema"`
+    AccessToken  string `json:"access_token,omitempty"`
     RefreshToken string `json:"refresh_token,omitempty"`
+    GroupId      uint8 `json:"group_id"`
 }
 
 /**
@@ -36,6 +38,8 @@ func (s *ProfileSerializer) Serialize(user *models.User, context map[string]stri
         Email: user.Email.String,
         FirstName: user.FirstName.String,
         LastName: user.LastName.String,
+        TenantSchema: user.TenantSchema.String,
+        GroupId: user.GroupId,
     }
 
     // If a context exists then that let us look inside and see if we have

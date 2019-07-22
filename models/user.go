@@ -11,11 +11,13 @@ import (
 
 type User struct {
     TenantId          int64          `db:"tenant_id"`
+    TenantSchema      sql.NullString `db:"tenant_schema"`
     Id                int64          `db:"id"`
     FirstName         sql.NullString `db:"first_name"`
     LastName          sql.NullString `db:"last_name"`
     PasswordHash      sql.NullString `db:"password_hash"`
     Email             sql.NullString `db:"email"`
+    GroupId           uint8          `db:"group_id"`
 }
 
 
@@ -41,11 +43,13 @@ func CreateUserTable(dropExistingTable bool) {
 
     stmt := `CREATE TABLE users (
         tenant_id bigint NOT NULL,
+        tenant_schema VARCHAR (127) NOT NULL,
         id bigserial PRIMARY KEY,
         first_name VARCHAR (50) NOT NULL,
         last_name VARCHAR (50) NOT NULL,
         password_hash VARCHAR (511) NOT NULL,
-        email VARCHAR (255) UNIQUE NOT NULL
+        email VARCHAR (255) UNIQUE NOT NULL,
+        group_id TINYINT NOT NULL
     );`
     results, err := db.Exec(stmt)
     if err != nil {
@@ -82,7 +86,7 @@ func FindUserByEmail(email string) (*User, error) {
  *  Function will create a user, if validation passess, and reutrns the `user`
  *  struct else returns the error.
  */
-func CreateUser(email string, firstName string, lastName string, password string, tenantId int64) (*User, error) {
+func CreateUser(email string, firstName string, lastName string, password string, tenantId int64, tenantSchema string, groupId int64) (*User, error) {
     // Step 1: Hash our user's password for added security or error on any condition.
     passwordHash, err := utils.HashPassword(password)
     if err != nil {
@@ -90,11 +94,11 @@ func CreateUser(email string, firstName string, lastName string, password string
     }
 
     // Step 2: Generate SQL statement for creating a new `user` in `postgres`.
-    statement := `INSERT INTO users (email, first_name, last_name, password_hash, tenant_id) VALUES ($1, $2, $3, $4, $5)`
+    statement := `INSERT INTO users (email, first_name, last_name, password_hash, tenant_id, tenant_schema, group_id) VALUES ($1, $2, $3, $4, $5, $6, $7)`
 
     // Step 3: Execute our SQL statement and either return our new user or
     //         our error.
-    _, err = db.Exec(statement, email, firstName, lastName, passwordHash, tenantId)
+    _, err = db.Exec(statement, email, firstName, lastName, passwordHash, tenantId, tenantSchema, groupId)
     if err != nil {
         return nil, err
     }
