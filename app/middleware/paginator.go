@@ -6,9 +6,11 @@ import (
 	"net/http"
 )
 
-// Middleware used to extract the `page` paramter from the URL and save it
-// in the context.
-func PaginatorCtx(next http.Handler) http.Handler {
+/**
+ *  Middleware which checks to see if the URL has a `page` and or `page_size`
+ *  parameter in it and extracts the value.
+ */
+func Paginator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         // Setup our variables for the paginator.
         pageString := r.FormValue("page")

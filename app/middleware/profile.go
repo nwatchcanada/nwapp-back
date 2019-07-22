@@ -17,8 +17,8 @@ func ProfileCtx(next http.Handler) http.Handler {
         email, schema, groupId := utils.GetJWTClaimsFromContext(r.Context())
 
         ctx := context.WithValue(r.Context(), "userEmail", email)
-        ctx2 := context.WithValue(ctx, "userSchema", schema)
-        ctx3 := context.WithValue(ctx2, "userGroupId", groupId)
-		next.ServeHTTP(w, r.WithContext(ctx3))
+        ctx = context.WithValue(ctx, "userSchema", schema)
+        ctx = context.WithValue(ctx, "userGroupId", groupId)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

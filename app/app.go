@@ -72,6 +72,7 @@ func (a *App) Run(addr string) {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.URLFormat)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+    r.Use(app_mw.Subdomain)
 
     // Basic CORS
     // for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
@@ -124,7 +125,10 @@ func (a *App) Run(addr string) {
 		r.Get("/api/v1/profile", account_controllers.GetProfile)
 
         // Tenants
-        r.With(app_mw.PaginatorCtx).Get("/api/v1/tenants", controllers.TenantListHandler)
+        r.With(app_mw.Paginator).Get("/api/v1/tenants", controllers.TenantListHandler)
+
+        // Dashboard
+        r.Get("/api/v1/dashboard", controllers.DashboardHandler)
     })
 
     //------------------------------------------------------------------------//
