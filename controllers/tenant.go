@@ -1,13 +1,11 @@
 package controllers
 
 import (
-    "fmt"
+    // "fmt"
     "net/http"
 
-    // "github.com/go-chi/chi"
     "github.com/nwatchcanada/nwapp-back/models"
-
-    // "github.com/nwatchcanada/nwapp-back/serializers"
+    "github.com/nwatchcanada/nwapp-back/serializers"
 )
 
 
@@ -18,10 +16,15 @@ func TenantListHandler(w http.ResponseWriter, r *http.Request) {
     // STEP 2: Fetch our objects.
     tenants, totalCount := models.FetchTenants(page, 50)
 
-    fmt.Println(tenants, totalCount)
+    // STEP 3: Create our context.
+    c := make(map[string]interface{})
+    c["count"] = totalCount
+    c["page"] = page
 
-    // // Serialize our user data for API response output.
-    // profileSerializer := serializers.ProfileSerializer{Request: r}
-    // b := profileSerializer.Serialize(user, nil)
-    // w.Write(b) // Return our `[]byte` data.
+    // STEP 4: Serialize our data for API response output.
+    tenantListSerializer := serializers.TenantListSerializer{Request: r}
+    b := tenantListSerializer.Serialize(tenants, c)
+
+    // STEP 5: Output our data from the API.
+    w.Write(b) // Return our `[]byte` data.
 }
