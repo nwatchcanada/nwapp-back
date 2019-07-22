@@ -6,7 +6,7 @@ import (
     // "io/ioutil"
     // "encoding/json"
 
-    // "github.com/nwatchcanada/nwapp-back/models"
+    "github.com/nwatchcanada/nwapp-back/utils"
     "github.com/nwatchcanada/nwapp-back/serializers"
 )
 
@@ -26,10 +26,17 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // Generate our access and refresh tokens and added them into our profile
+    // serializer as a context..
+    t, rf, _ := utils.GenerateTokenPair()
+    context := make(map[string]string)
+    context["AccessToken"] = t
+    context["RefreshToken"] = rf
+
     // If we get to this line of code then we will be serializing our `User`
     // and returning our data.
     profileSerializer := serializers.ProfileSerializer{Request: r}
-    b := profileSerializer.Serialize(user)
+    b := profileSerializer.Serialize(user, context)
     w.Write(b) // Return our `[]byte` data.
 }
 

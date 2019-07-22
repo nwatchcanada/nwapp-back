@@ -22,18 +22,27 @@ type ProfileResponse struct {
     Email string `json:"email"`
     FirstName string `json:"first_name"`
     LastName string `json:"last_name"`
+    AccessToken string `json:"access_token,omitempty"`
+    RefreshToken string `json:"refresh_token,omitempty"`
 }
 
 /**
  *  Function will serialize the model `profile` data into a []byte format
  *  ready for output by our API as JSON data.
  */
-func (s *ProfileSerializer) Serialize(user *models.User ) []byte {
+func (s *ProfileSerializer) Serialize(user *models.User, context map[string]string) []byte {
     // Define the structure we will be outputting.
     profile := ProfileResponse{
         Email: user.Email.String,
         FirstName: user.FirstName.String,
         LastName: user.LastName.String,
+    }
+
+    // If a context exists then that let us look inside and see if we have
+    // our JWT credentials in there.
+    if context != nil {
+        profile.AccessToken = context["AccessToken"]
+        profile.RefreshToken = context["RefreshToken"]
     }
 
     // Serialize our data.
