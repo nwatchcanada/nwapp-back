@@ -28,7 +28,7 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 
     // Generate our access and refresh tokens and added them into our profile
     // serializer as a context..
-    t, rf, _ := utils.GenerateTokenPair()
+    t, rf := utils.GenerateJWTToken(user.Email.String, user.GroupId, user.TenantSchema.String)
     context := make(map[string]string)
     context["AccessToken"] = t
     context["RefreshToken"] = rf

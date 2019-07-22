@@ -49,7 +49,7 @@ func CreateUserTable(dropExistingTable bool) {
         last_name VARCHAR (50) NOT NULL,
         password_hash VARCHAR (511) NOT NULL,
         email VARCHAR (255) UNIQUE NOT NULL,
-        group_id TINYINT NOT NULL
+        group_id INT NOT NULL
     );`
     results, err := db.Exec(stmt)
     if err != nil {

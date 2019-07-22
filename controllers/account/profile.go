@@ -1,22 +1,23 @@
 package account
 
 import (
-    // "fmt"
     "net/http"
-    // "io/ioutil"
-    // "encoding/json"
-
-    // "github.com/nwatchcanada/nwapp-back/utils"
-    // "github.com/nwatchcanada/nwapp-back/serializers"
+    "github.com/nwatchcanada/nwapp-back/models"
+    "github.com/nwatchcanada/nwapp-back/serializers"
 )
 
 
-
 func GetProfile(w http.ResponseWriter, r *http.Request) {
-    // Set our header.
-    w.Header().Set("Content-Type", "application/json")
+    // Extract the current email from the request context. It is important
+    // to note that this context must be AFTER the `ProfileCtx` middleware.
+    ctx := r.Context()
+    email := ctx.Value("userEmail").(string)
 
-    w.WriteHeader(http.StatusInternalServerError)
+    // Lookup our user profile account.
+    user, _ := models.FindUserByEmail(email)
+
+    // Serialize our user data for API response output.
+    profileSerializer := serializers.ProfileSerializer{Request: r}
+    b := profileSerializer.Serialize(user, nil)
+    w.Write(b) // Return our `[]byte` data.
 }
-
-//https://stackoverflow.com/questions/3316762/what-is-deserialize-and-serialize-in-json
