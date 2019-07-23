@@ -1,9 +1,15 @@
 # nwapp-back
 [![Documentation Status](https://readthedocs.org/projects/nwapp-docs/badge/?version=latest)](https://nwapp-docs.readthedocs.io/en/latest/?badge=latest)
 
-## Description
+## Overview
 
 TODO: DESCRIPTION
+
+## Prerequisites
+You must have the following installed before proceeding. If you are missing any one of these then you cannot begin.
+
+* ``Go 1.12.7``
+* ``Postgres 10``
 
 ## Documentation
 
