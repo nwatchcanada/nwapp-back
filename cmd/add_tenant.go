@@ -4,16 +4,18 @@ import (
     "errors"
     "fmt"
     "os"
-    "log"
 
     "github.com/spf13/cobra"
-    "github.com/joho/godotenv"
 
     "github.com/nwatchcanada/nwapp-back/models"
 )
 
 /**
- *  go run main.go add_tenant "london" "Neighbourhood Watch Canada London"
+ * DEVELOPERS RUN:
+ * $ go run main.go add_tenant "london" "Neighbourhood Watch Canada London"
+ *
+ * DEVOPS RUN:
+ * $ $GOBIN/nwapp-back add_tenant "london" "Neighbourhood Watch Canada London"
  */
 
 func init() {
@@ -35,17 +37,13 @@ var addTenantCmd = &cobra.Command{
         schema := args[0]
         name := args[1]
 
-        // We will load up all our environment settings variables from the `.env`
-        // file and have it ready for our application.
-        err := godotenv.Load()
-        if err != nil {
-            log.Fatal("Error loading .env file")
-        }
-        dbHost := os.Getenv("DB_HOST")
-        dbPort := os.Getenv("DB_PORT")
-        dbUser := os.Getenv("DB_USER")
-        dbPassword := os.Getenv("DB_PASSWORD")
-        dbName := os.Getenv("DB_NAME")
+        // Load up our `environment variables` from our operating system.
+        dbHost := os.Getenv("NWAPP_DB_HOST")
+        dbPort := os.Getenv("NWAPP_DB_PORT")
+        dbUser := os.Getenv("NWAPP_DB_USER")
+        dbPassword := os.Getenv("NWAPP_DB_PASSWORD")
+        dbName := os.Getenv("NWAPP_DB_NAME")
+        // appAddress := os.Getenv("NWAPP_APP_ADDRESS")
 
         // Initialize and connect our database layer for the command.
         models.InitDB(dbHost, dbPort, dbUser, dbPassword, dbName)
