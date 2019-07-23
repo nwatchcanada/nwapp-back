@@ -49,19 +49,17 @@ This project uses the ``PostGres`` database and as a result requires setup befor
 
 
 #### Environment Variables Setup
-1. Populate the environment variables for our project.
+1. Populate the environment variables for our project by running the following in your console:
 
+  ```bash
+  #!/bin/bash
+  export NWAPP_DB_HOST="localhost"
+  export NWAPP_DB_PORT="5432"
+  export NWAPP_DB_USER="django"
+  export NWAPP_DB_PASSWORD="123password"
+  export NWAPP_DB_NAME="nwapp_golang_db"
+  export NWAPP_APP_ADDRESS="127.0.0.1:8000"
   ```
-  ./setup_credentials.sh
-  ```
-
-2. Go inside the environment variables.
-
-  ```
-  vi ./nwapp/nwapp/.env
-  ```
-
-3. Edit the file to suite your needs.
 
 ## Contact
 
