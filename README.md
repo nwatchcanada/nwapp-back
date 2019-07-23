@@ -1,4 +1,6 @@
-# nwapp-back
+![Neighbourhood Watch Canada](https://github.com/nwatchcanada/nwapp-docs/blob/master/docs/img/nwl-logo-256x256.png)
+
+# Neighbourhood Watch Canada App Backend
 [![Documentation Status](https://readthedocs.org/projects/nwapp-docs/badge/?version=latest)](https://nwapp-docs.readthedocs.io/en/latest/?badge=latest)
 
 ## Overview
