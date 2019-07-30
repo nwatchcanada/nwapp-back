@@ -30,6 +30,16 @@ go get -u github.com/go-chi/docgen
 
 ## What conventions do we use?
 
+### Code Style
+
+Follow the [golang](https://golang.org/doc/effective_go.html) coding style as specified by [golang.org](https://golang.org).
+
+Please run the ``gofmt`` application on all your code submissions.
+
+```
+gofmt -w -s nwapp-back
+```
+
 ### Database Pagination
 We do not delete any record, we simply set the state to be **deleted, archived, inactive, etc** state. We keep the data for auditing purposes and because we are implementing our offset as our ID for to do pagination. This decision was from [this article](https://developer.wordpress.com/2014/02/14/an-efficient-alternative-to-paging-with-sql-offsets/).
 
