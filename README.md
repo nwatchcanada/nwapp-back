@@ -2,6 +2,7 @@
 
 # Neighbourhood Watch Canada App Backend
 [![Documentation Status](https://readthedocs.org/projects/nwapp-docs/badge/?version=latest)](https://nwapp-docs.readthedocs.io/en/latest/?badge=latest)
+[![Go Report Card](https://goreportcard.com/badge/github.com/nwatchcanada/nwapp-back)](https://goreportcard.com/report/github.com/nwatchcanada/nwapp-back)
 
 ## Overview
 

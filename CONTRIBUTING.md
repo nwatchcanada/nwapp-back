@@ -40,6 +40,10 @@ Please run the ``gofmt`` application on all your code submissions.
 gofmt -w -s nwapp-back
 ```
 
+### Quality Standards
+
+Please run the [GoReportCard](https://goreportcard.com/) on this project.
+
 ### Database Pagination
 We do not delete any record, we simply set the state to be **deleted, archived, inactive, etc** state. We keep the data for auditing purposes and because we are implementing our offset as our ID for to do pagination. This decision was from [this article](https://developer.wordpress.com/2014/02/14/an-efficient-alternative-to-paging-with-sql-offsets/).
 
