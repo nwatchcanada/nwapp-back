@@ -19,16 +19,16 @@ pip install django-tenants                # Django tenants using PostgreSQL Sche
 pip install Pillow                        # Req: ImageField
 pip install django-ipware                 # Best attempt to get IP address while keeping it DRY.
 pip install Faker                         # Library that generates fake data for you.
-
+pip install django-rq                     # Redis Queue Library
+pip install django-redis-cache            # Django cache backend powered by Redis
+pip install rq-scheduler                  # Redis Queue Scheduler Library
 pip install django-cors-headers           # Enable CORS in Headers
+
 pip install django-oauth-toolkit          # oAuth 2.0 Client and Provider Framework
 pip install djangorestframework           # RESTful API Endpoint Generator
 pip install django-extra-fields           # Django REST Framework extensions
 pip install gunicorn                      # Web-Server Helper
 pip install django-filter                 # Generic system for filtering Django QuerySets based on user selections
-pip install django-rq                     # Redis Queue Library
-pip install rq-scheduler                  # Redis Queue Scheduler Library
-pip install django-redis-cache            # Django cache backend powered by Redis
 pip install python-dateutil               # Useful extensions to the standard Python datetime features
 pip install django-anymail[mailgun]       # Third-Party Email
 pip install django-money                  # Money fields for django forms and models.

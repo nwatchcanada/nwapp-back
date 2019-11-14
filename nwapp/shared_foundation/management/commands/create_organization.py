@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_rq import get_queue, get_worker
 from shared_foundation import constants
 from shared_foundation.models import (
-    SharedFranchise,
-    SharedFranchiseDomain,
+    SharedOrganization,
+    SharedOrganizationDomain,
     SharedUser
 )
 
@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """
         Run manually in console:
-        python manage.py create_franchise "london" "Over55" "Over55 (London) Inc." "Located at the Forks of the Thames in downtown London Ontario, Over 55 is a non profit charitable organization that applies business strategies to achieve philanthropic goals. The net profits realized from the services we provide will help fund our client and community programs. When you use our services and recommended products, you are helping to improve the quality of life of older adults and the elderly in our community." "CA" "London" "Ontario" "" "N6H 1B4" "78 Riverside Drive" ""
+        python manage.py create_organization "london" "Over55" "Over55 (London) Inc." "" "CA" "London" "Ontario" "" "N6H 1B4" "78 Riverside Drive" "" "America/Toronto"
         """
         parser.add_argument('schema_name', nargs='+', type=str)
         parser.add_argument('name', nargs='+', type=str)
@@ -59,8 +59,8 @@ class Command(BaseCommand):
 
         # Check to confirm that we already do not have a `Franchise` with this
         # name in our database.
-        franchise_does_exist = SharedFranchise.objects.filter(schema_name=schema_name).exists()
-        if franchise_does_exist:
+        organization_does_exist = SharedOrganization.objects.filter(schema_name=schema_name).exists()
+        if organization_does_exist:
             raise CommandError(_('Franchise already exists!'))
 
         # Create our tenant.
@@ -71,7 +71,7 @@ class Command(BaseCommand):
 
         # Used for debugging purposes.
         self.stdout.write(
-            self.style.SUCCESS(_('Successfully setup franchise.'))
+            self.style.SUCCESS(_('Successfully setup organization.'))
         )
 
     def begin_processing(self, schema_name, name, alternate_name, description,
@@ -83,7 +83,7 @@ class Command(BaseCommand):
         """
 
         # Create your tenant
-        tenant = SharedFranchise(
+        tenant = SharedOrganization(
             schema_name=schema_name,
             name=name,
             alternate_name=alternate_name,
@@ -102,7 +102,7 @@ class Command(BaseCommand):
         get_worker().work(burst=True) # Processes all BACKGROUND jobs in FOREGROUND then stop. (Note: https://stackoverflow.com/a/12273705
 
         # Add one or more domains for the tenant
-        domain = SharedFranchiseDomain()
+        domain = SharedOrganizationDomain()
         domain.domain = settings.WORKERY_APP_HTTP_DOMAIN
         domain.domain = tenant.schema_name + '.' + settings.WORKERY_APP_HTTP_DOMAIN
         domain.tenant = tenant

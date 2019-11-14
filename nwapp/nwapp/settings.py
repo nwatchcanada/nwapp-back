@@ -73,9 +73,9 @@ SHARED_APPS = ( # (Django-Tenants)
     # 'rest_framework',
     # 'rest_framework.authtoken',
     # 'django_filters',
-    # 'django_rq',
+    'django_rq',
+    'corsheaders',
     # 'djmoney',
-    # 'corsheaders',
     # 'anymail',
     # 'phonenumber_field',
     # 'debug_toolbar',
@@ -408,45 +408,47 @@ REST_FRAMEWORK = {
 }
 
 
-# """
-# django-rq
-# https://github.com/rq/django-rq
-# """
-#
-# RQ_QUEUES = {
-#     'default': {
-#         'USE_REDIS_CACHE': 'default',
-#     }
-# }
+"""
+django-rq
+https://github.com/rq/django-rq
+"""
+
+RQ_QUEUES = {
+    'default': {
+        'USE_REDIS_CACHE': 'default',
+    }
+}
 
 
-# """
-# django-redis-cache
-# https://github.com/sebleier/django-redis-cache
-# """
-#
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'redis_cache.RedisCache',
-#         'LOCATION': 'localhost:6379',
-#     },
-# }
-#
+"""
+django-redis-cache
+https://github.com/sebleier/django-redis-cache
+"""
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+        'KEY_FUNCTION': 'django_tenants.cache.make_key', # (Django-Tenants)
+        'REVERSE_KEY_FUNCTION': 'django_tenants.cache.reverse_key', # (Django-Tenants)
+    },
+}
+
 # SESSION_ENGINE = 'redis_sessions.session'
 
 
-# """
-# django-redis-sessions
-# https://github.com/martinrusev/django-redis-sessions
-# """
-#
-# SESSION_REDIS = {
-#     'host': 'localhost',
-#     'port': 6379,
-#     'db': 0,
-#     'prefix': 'session',
-#     'socket_timeout': 1
-# }
+"""
+django-redis-sessions
+https://github.com/martinrusev/django-redis-sessions
+"""
+
+SESSION_REDIS = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 0,
+    'prefix': 'session',
+    'socket_timeout': 1
+}
 
 
 # # django-phonenumber-field
