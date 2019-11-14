@@ -168,15 +168,10 @@ class SharedOrganization(TenantMixin):
         super(SharedOrganization, self).save(force_insert, force_update, *args, **kwargs)
 
     def __str__(self):
-        return str(self.schema)
+        return str(self.schema_name)
 
     def get_absolute_url(self):
-        return "/shared-organization/"+str(self.schema)
-
-    def get_pretty_type_of(self):
-        return "Production Inspection"
-
-
+        return "/shared-organization/"+str(self.schema_name)
 
 
 class SharedOrganizationDomain(DomainMixin):

@@ -1,2 +1,1 @@
-from shared_foundation.middleware.schema_middleware import SchemaMiddleware
 from shared_foundation.middleware.ip_middleware import IPMiddleware

@@ -123,7 +123,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'shared_foundation.middleware.schema_middleware.SchemaMiddleware', # Custom App
     'shared_foundation.middleware.ip_middleware.IPMiddleware', # Custom App
     'django.middleware.locale.LocaleMiddleware',              # Extra Django App
     # 'oauth2_provider.middleware.OAuth2TokenMiddleware',       # Third Party
