@@ -10,7 +10,7 @@ urlpatterns = ([
 
     # Allow the following apps for being accessed without language string.
     path('', include('shared_foundation.urls')),
-    # path('', include('shared_account.urls')),
+    path('', include('shared_gateway.urls')),
     # path('', include('tenant_dashboard.urls')),
     # path('', include('tenant_district.urls')),
     # path('', include('tenant_staff.urls')),
@@ -21,7 +21,7 @@ urlpatterns = ([
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('shared_foundation.urls')),
-    # path('', include('shared_account.urls')),
+    path('', include('shared_gateway.urls')),
     # path('', include('tenant_dashboard.urls')),
     # path('', include('tenant_district.urls')),
     # path('', include('tenant_staff.urls')),

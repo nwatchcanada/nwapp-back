@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class DisableOptionsPermission(permissions.BasePermission):
     """
     Global permission to disallow all requests for method OPTIONS.

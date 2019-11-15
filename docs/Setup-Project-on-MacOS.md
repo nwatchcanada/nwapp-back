@@ -82,6 +82,7 @@ Run the following commands to populate the database.
   python manage.py makemigrations; \
   python manage.py migrate_schemas; \
   python manage.py init_app; \
+  python manage.py setup_oauth2; \
   python manage.py create_shared_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
   ```
 

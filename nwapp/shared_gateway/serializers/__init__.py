@@ -1,0 +1,7 @@
+# from shared_gateway.serializers.activate_serializers import ActivateSerializer
+from shared_gateway.serializers.logout_serializers import SharedLogoutSerializer
+from shared_gateway.serializers.login_serializers import SharedLoginSerializer
+# from shared_gateway.serializers.register_serializers import RegisterSerializer
+# from shared_gateway.serializers.send_password_reset_serializer import SendPasswordResetSerializer
+# from shared_gateway.serializers.reset_password_serializer import ResetPasswordSerializer
+from shared_gateway.serializers.profile_serializers import SharedProfileInfoRetrieveUpdateSerializer

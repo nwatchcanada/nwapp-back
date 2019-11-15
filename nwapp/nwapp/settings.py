@@ -70,16 +70,16 @@ LOGIN_URL="/login/"
 SHARED_APPS = ( # (Django-Tenants)
     # Third Party Apps
     'django_tenants',
-    # 'rest_framework',
-    # 'rest_framework.authtoken',
+    'rest_framework',
     # 'django_filters',
     'django_rq',
+    'redis_cache',
     'corsheaders',
+    'oauth2_provider',
     # 'djmoney',
     # 'anymail',
     # 'phonenumber_field',
     # 'debug_toolbar',
-    # 'raven.contrib.django.raven_compat',
     # 'storages',
     # 'sorl.thumbnail',
     # 'django_fsm',
@@ -114,18 +114,18 @@ TENANT_APPS = ( # (Django-Tenants)
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS] # (Django-Tenants)
 
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',                  # Third Party
+    'corsheaders.middleware.CorsMiddleware',                    # Third Party
     'django_tenants.middleware.main.TenantMainMiddleware',      # Third Party
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.BrokenLinkEmailsMiddleware',    # Extra Django App
+    'django.middleware.common.BrokenLinkEmailsMiddleware',      # Extra Django App
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'shared_foundation.middleware.ip_middleware.IPMiddleware', # Custom App
-    'django.middleware.locale.LocaleMiddleware',              # Extra Django App
-    # 'oauth2_provider.middleware.OAuth2TokenMiddleware',       # Third Party
+    'shared_foundation.middleware.ip_middleware.IPMiddleware',  # Custom App
+    'django.middleware.locale.LocaleMiddleware',                # Extra Django App
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',         # Third Party
 ]
 
 ROOT_URLCONF = 'nwapp.urls'
@@ -220,6 +220,15 @@ https://docs.djangoproject.com/en/dev/topics/auth/customizing/
 
 AUTH_USER_MODEL = 'shared_foundation.SharedUser'
 
+AUTHENTICATION_BACKENDS = [
+    # Custom authentication.
+    'shared_foundation.backends.NWAppEmailPasswordAuthenticationBackend',
+    'shared_foundation.backends.NWAppPasswordlessAuthenticationBackend',
+
+    # oAuth 2.0 authentication.
+    'oauth2_provider.backends.OAuth2Backend',
+]
+
 
 '''
 Internationalization
@@ -283,7 +292,6 @@ TEMPLATE_DIRS = (
 )
 
 
-
 '''
 django-cors-headers
 https://github.com/ottoyiu/django-cors-headers
@@ -310,7 +318,7 @@ https://docs.djangoproject.com/en/dev/topics/logging/
 # Disable Django's logging setup
 LOGGING_CONFIG = None
 
-LOGLEVEL = env("WORKERY_LOGLEVEL")
+LOGLEVEL = env("NWAPP_LOGLEVEL")
 
 LOGGING = {
     'version': 1,
@@ -347,37 +355,20 @@ IGNORABLE_404_URLS = [
 ]
 
 
-#
-# http://getblimp.github.io/django-rest-framework-jwt/
+'''
+django-oauth-toolkit
+https://github.com/jazzband/django-oauth-toolkit
+'''
 
-JWT_AUTH = {
-    # 'JWT_ENCODE_HANDLER':
-    # 'rest_framework_jwt.utils.jwt_encode_handler',
-    #
-    # 'JWT_DECODE_HANDLER':
-    # 'rest_framework_jwt.utils.jwt_decode_handler',
-    #
-    # 'JWT_PAYLOAD_HANDLER':
-    # 'rest_framework_jwt.utils.jwt_payload_handler',
-    #
-    # 'JWT_PAYLOAD_GET_USER_ID_HANDLER':
-    # 'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
-    #
-    # 'JWT_RESPONSE_PAYLOAD_HANDLER':
-    # 'rest_framework_jwt.utils.jwt_response_payload_handler',
-    #
-    # 'JWT_SECRET_KEY': settings.SECRET_KEY,
-    # 'JWT_GET_USER_SECRET_KEY': None,
-    # 'JWT_PUBLIC_KEY': None,
-    # 'JWT_PRIVATE_KEY': None,
-    'JWT_ALGORITHM': 'HS256',
-    'JWT_VERIFY': True,
-    'JWT_VERIFY_EXPIRATION': False, # Disable checking if token expired.
-    'JWT_LEEWAY': datetime.timedelta(days=1),
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'introspection': 'Access to introspect resource'
+    }
 }
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
 
 
 '''
@@ -387,19 +378,22 @@ https://github.com/encode/django-rest-framework
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
+        # 'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'shared_foundation.drf.permissions.DisableOptionsPermission',
     ),
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework_msgpack.renderers.MessagePackRenderer',  # Third-party library.
+        # 'rest_framework_msgpack.renderers.MessagePackRenderer',  # Third-party library.
         # 'rest_framework.renderers.BrowsableAPIRenderer'  # Not to be used in prod.
     ],
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
-        'rest_framework_msgpack.parsers.MessagePackParser',  # Third-party library.
+        # 'rest_framework_msgpack.parsers.MessagePackParser',  # Third-party library.
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
     ),
@@ -477,7 +471,7 @@ SESSION_REDIS = {
 NWAPP_BACKEND_HTTP_PROTOCOL = env("NWAPP_BACKEND_HTTP_PROTOCOL")
 NWAPP_BACKEND_HTTP_DOMAIN = env("NWAPP_BACKEND_HTTP_DOMAIN")
 # NWAPP_BACKEND_DEFAULT_MONEY_CURRENCY = env("NWAPP_BACKEND_DEFAULT_MONEY_CURRENCY")
-# NWAPP_RESOURCE_SERVER_NAME = env("NWAPP_RESOURCE_SERVER_NAME")
+NWAPP_RESOURCE_SERVER_NAME = env("NWAPP_RESOURCE_SERVER_NAME")
 # NWAPP_RESOURCE_SERVER_INTROSPECTION_URL = env("NWAPP_RESOURCE_SERVER_INTROSPECTION_URL")
 # NWAPP_RESOURCE_SERVER_INTROSPECTION_TOKEN = env("NWAPP_RESOURCE_SERVER_INTROSPECTION_TOKEN")
 # NWAPP_FRONTEND_HTTP_PROTOCOL = env("NWAPP_FRONTEND_HTTP_PROTOCOL")

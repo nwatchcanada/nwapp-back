@@ -133,7 +133,7 @@ It's important to note that emails must be unique and passwords strong or else v
   ```
 
 
-## Login (TODO: PENDING IMPLEMENTATION)
+## Login
 Returns the *user profile* and authentication *token* upon successful login in.
 
 * **URL**
@@ -164,11 +164,21 @@ Returns the *user profile* and authentication *token* upon successful login in.
 
     ```json
     {
+        "access_token": {
+            "expires": 1573875899,
+            "scope": "read,write,introspection",
+            "token": "pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz"
+        },
         "email": "bart@mikasoftware.com",
         "first_name": "Bart",
+        "group_membership_id": 1,
         "last_name": "Mika",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDkyOTg1MDYsInVzZXJfaWQiOjF9.HrwHvfL4-1pMe7EcXEzlsxciFgK0xf2uC8BV1kfLT_c",
-        "user_id": 1
+        "middle_name": null,
+        "refresh_token": {
+            "revoked": null,
+            "token": "xWGpIbdDJRcLiy4R2wEfUOuDD252cB"
+        },
+        "schema_name": "public"
     }
     ```
 
@@ -189,28 +199,32 @@ Returns the *user profile* and authentication *token* upon successful login in.
 * **Sample Call**
 
   ```bash
-  $ http post localhost:80/api/v1/public/login \
+  $ http post localhost:80/api/v1/login \
     email=bart@mikasoftware.com \
     password=YOUR_PASSWORD
   ```
 
+* **Notes**
 
-## List Public Organizations (TODO: PENDING IMPLEMENTATION)
-Returns paginated list of all the *organizations* which have been approved by the staff of [**Lucha Comics** ](https://luchacomics.com/) for public viewing. Anonymous users are granted permission to make calls to this endpoint.
+  * If the server returned the access token value of ``pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz`` then please make sure you write in your console ``NWAPP_BACK_API_TOKEN='pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz'``.
+
+
+## Logout
+Performs logout operation for authenticated user thus invalidating the user's ``token``.
 
 * **URL**
 
-  ``/api/v1/public/organizations``
+  ``/api/v1/logout``
 
 
 * **Method**
 
-  ``GET``
+  ``POST``
 
 
 * **URL Params**
 
-   * page
+  None
 
 
 * **Data Params**
@@ -223,32 +237,31 @@ Returns paginated list of all the *organizations* which have been approved by th
   * **Code:** 200
   * **Content:**
 
-  ```json
-  [
-      {
-          "description": "The company",
-          "id": 1,
-          "name": "Mika Software Corporation"
-      }
-  ]
-  ```
+    ```json
+    {
+        "detail": "You are now logged off."
+    }
+    ```
 
 
 * **Error Response**
 
-  * None
+  None
 
 
 * **Sample Call**
 
   ```bash
-  $ http get localhost:80/api/v1/public/organizations page==1 Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
+  $ http post localhost:80/api/v1/logout token=$NWAPP_BACK_API_TOKEN Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
   ```
 
+* **Notes**
 
-## Get Profile (TODO: PENDING IMPLEMENTATION)
-The API endpoint used to get the *user profile details*. Only the *profile* of the
-  *authenticated user* is returned.
+  * If the server returned the access token value of ``pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz`` then please make sure you write in your console ``NWAPP_BACK_API_TOKEN='pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz'``.
+
+
+## Get Profile
+The API endpoint used to get the *user profile details*. Only the *profile* of the *authenticated user* is returned.
 
 * **URL**
 
@@ -294,6 +307,57 @@ The API endpoint used to get the *user profile details*. Only the *profile* of t
 
   ```bash
   $ http get localhost:80/api/v1/profile Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
+  ```
+
+
+## List Public Organizations (TODO: PENDING IMPLEMENTATION)
+Returns paginated list of all the *organizations* which have been approved by the staff of [**Lucha Comics** ](https://luchacomics.com/) for public viewing. Anonymous users are granted permission to make calls to this endpoint.
+
+* **URL**
+
+  ``/api/v1/organizations``
+
+
+* **Method**
+
+  ``GET``
+
+
+* **URL Params**
+
+   * page
+
+
+* **Data Params**
+
+  None
+
+
+* **Success Response**
+
+  * **Code:** 200
+  * **Content:**
+
+  ```json
+  [
+      {
+          "description": "The company",
+          "id": 1,
+          "name": "Mika Software Corporation"
+      }
+  ]
+  ```
+
+
+* **Error Response**
+
+  * None
+
+
+* **Sample Call**
+
+  ```bash
+  $ http get localhost:80/api/v1/public/organizations page==1 Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
   ```
 
 
