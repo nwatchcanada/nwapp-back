@@ -4,14 +4,6 @@
 ## Overview
 The web app engine which powers the web-application via ...
 
-## System Requirements
-* Python 3.7.x+
-* Postgres 9.6+
-* Redis 3.2.6
-
-## Dependencies
-See [requirements.txt](https://github.com/over55/workery-django/blob/master/DEVELOPER_NOTES.md) for more information.
-
 ## Documentation
 The documentation can be found [here](https://nwapp-back.readthedocs.io/en/latest/).
 
