@@ -98,10 +98,9 @@ This project is uses ``django-tenants`` library and is setup to work with multip
 2. Append to the file...
 
   ```
-  127.0.0.1       nwapp.ca
-  127.0.0.1       nwapp.ca
-  127.0.0.1       london.nwapp.ca
-  127.0.0.1       london.nwapp.ca
+  127.0.0.1       localhost
+  127.0.0.1       london.localhost
+  127.0.0.1       tenant.localhost
   ```
 
 
