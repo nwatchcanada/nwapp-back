@@ -8,13 +8,17 @@ from rest_framework import authentication, viewsets, permissions, status
 from rest_framework.response import Response
 
 from shared_foundation.models import SharedOrganization
+from shared_foundation.drf.permissions import SharedUserIsActivePermission
 from shared_organization.serializers import SharedOrganizationListCreateSerializer
+from shared_organization.permissions import SharedOrganizationPermission
 
 
 class SharedOrganizationListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = SharedOrganizationListCreateSerializer
     permission_classes = (
         permissions.IsAuthenticated,
+        SharedUserIsActivePermission,
+        SharedOrganizationPermission
     )
 
     def get_queryset(self):
@@ -40,6 +44,4 @@ class SharedOrganizationListCreateAPIView(generics.ListCreateAPIView):
         })
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        # return Response([], status=status.HTTP_201_CREATED)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)

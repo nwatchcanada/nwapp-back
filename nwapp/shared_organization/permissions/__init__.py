@@ -1,0 +1,1 @@
+from shared_organization.permissions.organization_permissions import SharedOrganizationPermission
