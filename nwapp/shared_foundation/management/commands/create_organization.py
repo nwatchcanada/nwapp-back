@@ -27,13 +27,9 @@ class Command(BaseCommand):
         parser.add_argument('name', nargs='+', type=str)
         parser.add_argument('alternate_name', nargs='+', type=str)
         parser.add_argument('description', nargs='+', type=str)
-        parser.add_argument('address_country', nargs='+', type=str)
-        parser.add_argument('address_locality', nargs='+', type=str)
-        parser.add_argument('address_region', nargs='+', type=str)
-        parser.add_argument('post_office_box_number', nargs='+', type=str)
-        parser.add_argument('postal_code', nargs='+', type=str)
-        parser.add_argument('street_address', nargs='+', type=str)
-        parser.add_argument('street_address_extra', nargs='+', type=str)
+        parser.add_argument('country', nargs='+', type=str)
+        parser.add_argument('locality', nargs='+', type=str)
+        parser.add_argument('region', nargs='+', type=str)
         parser.add_argument('timezone_name', nargs='+', type=str)
 
     def handle(self, *args, **options):
@@ -42,13 +38,9 @@ class Command(BaseCommand):
         name = options['name'][0]
         alternate_name = options['alternate_name'][0]
         description = options['description'][0]
-        address_country = options['address_country'][0]
-        address_locality = options['address_locality'][0]
-        address_region = options['address_region'][0]
-        post_office_box_number = options['post_office_box_number'][0]
-        postal_code = options['postal_code'][0]
-        street_address = options['street_address'][0]
-        street_address_extra = options['street_address_extra'][0]
+        country = options['country'][0]
+        locality = options['locality'][0]
+        region = options['region'][0]
         timezone_name = options['timezone_name'][0]
 
         # Connection needs first to be at the public schema, as this is where
@@ -65,9 +57,7 @@ class Command(BaseCommand):
 
         # Create our tenant.
         self.begin_processing(schema_name, name, alternate_name, description,
-                             address_country, address_locality, address_region,
-                             post_office_box_number, postal_code, street_address,
-                             street_address_extra, timezone_name)
+                             country, locality, region, timezone_name)
 
         # Used for debugging purposes.
         self.stdout.write(
@@ -75,9 +65,7 @@ class Command(BaseCommand):
         )
 
     def begin_processing(self, schema_name, name, alternate_name, description,
-                         address_country, address_locality, address_region,
-                         post_office_box_number, postal_code, street_address,
-                         street_address_extra, timezone_name):
+                         country, locality, region, timezone_name):
         """
         Functin will create a new tenant based on the parameters.
         """
@@ -88,13 +76,9 @@ class Command(BaseCommand):
             name=name,
             alternate_name=alternate_name,
             description=description,
-            address_country=address_country,
-            address_locality=address_locality,
-            address_region=address_region,
-            post_office_box_number=post_office_box_number,
-            postal_code=postal_code,
-            street_address=street_address,
-            street_address_extra=street_address_extra,
+            country=country,
+            locality=locality,
+            region=region,
             timezone_name=timezone_name
         )
         tenant.save()
@@ -103,8 +87,8 @@ class Command(BaseCommand):
 
         # Add one or more domains for the tenant
         domain = SharedOrganizationDomain()
-        domain.domain = settings.WORKERY_APP_HTTP_DOMAIN
-        domain.domain = tenant.schema_name + '.' + settings.WORKERY_APP_HTTP_DOMAIN
+        domain.domain = settings.NWAPP_BACKEND_HTTP_DOMAIN
+        domain.domain = tenant.schema_name + '.' + settings.NWAPP_BACKEND_HTTP_DOMAIN
         domain.tenant = tenant
         domain.is_primary = False
         domain.save()

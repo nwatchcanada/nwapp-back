@@ -122,7 +122,13 @@ sudo python manage.py runserver localhost:80
 python manage.py rqworker
 ```
 
-(3) Finally, in your web-browser, load up the following url:
+(3) And inside another seperate ``Terminal`` console, please run:
+
+```bash
+python manage.py rqscheduler
+```
+
+(4) Finally, in your web-browser, load up the following url:
 
 ```
 http://localhost:80

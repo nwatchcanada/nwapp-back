@@ -88,6 +88,7 @@ SHARED_APPS = ( # (Django-Tenants)
     # Our Apps
     'shared_foundation.apps.SharedFoundationConfig',
     'shared_gateway.apps.SharedGatewayConfig',
+    'shared_organization.apps.SharedOrganizationConfig',
 
     # Django Apps
     'django.contrib.contenttypes',
@@ -109,6 +110,8 @@ TENANT_APPS = ( # (Django-Tenants)
     'django.contrib.contenttypes',
 
     # Our Apps
+    'tenant_foundation.apps.TenantFoundationConfig',
+    'tenant_dashboard.apps.TenantDashboardConfig',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS] # (Django-Tenants)

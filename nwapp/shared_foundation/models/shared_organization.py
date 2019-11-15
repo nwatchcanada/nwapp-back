@@ -15,6 +15,9 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django_tenants.models import TenantMixin, DomainMixin
 
+from shared_foundation.constants import TIMEZONE_CHOICES
+from shared_foundation.models.big_pk_abstract import BigPkAbastract
+
 
 class SharedOrganizationManager(models.Manager):
     def full_text_search(self, keyword):
@@ -40,7 +43,7 @@ def validate_schema(value):
         )
 
 
-class SharedOrganization(TenantMixin):
+class SharedOrganization(TenantMixin, BigPkAbastract):
     """
     Class model to represent our tenant that all other data will be attached to.
     """
@@ -80,15 +83,16 @@ class SharedOrganization(TenantMixin):
     #
     #  FIELDS
     #
-
-    id = models.BigAutoField(
-        _("ID"),
-        primary_key=True,
-    )
+    
     name = models.CharField(
         _("Name"),
         max_length=63,
         help_text=_('The name this organization.'),
+    )
+    alternate_name = models.CharField(
+        _("Alternate Name"),
+        max_length=63,
+        help_text=_('The alternate name this organization.'),
     )
     description = models.TextField(
         _("Description"),
@@ -108,6 +112,13 @@ class SharedOrganization(TenantMixin):
         _("Locality"),
         max_length=127,
         help_text=_('The locality. For example, Mountain View.'),
+    )
+    timezone_name = models.CharField(
+        _("Timezone Name"),
+        help_text=_('The timezone that this organization belongs to.'),
+        max_length=32,
+        choices=TIMEZONE_CHOICES,
+        default="UTC"
     )
 
     #
