@@ -1,0 +1,11 @@
+site_name: NWApp Backend
+nav:
+    - Overview: index.md
+    - Installation:
+        - MacOS: installation/MacOS.md
+    - API:
+        - Introduction: api/notes.md
+        - Basic: api/basic.md
+        - Gateway: api/gateway.md
+        - Dashboard: api/dashboard.md
+theme: readthedocs

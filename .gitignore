@@ -159,9 +159,13 @@ ENV/
 #—————————————————————————————
 # Important Note: Make sure this is the name of the virtualenv directory
 # that you set when you where setting up the project.
+env_docs/
 env/
+env_docs/*
 env/*
+env_docs
 env
+.env_docs
 .env
 *.cfg
 env/pip-selfcheck.json
