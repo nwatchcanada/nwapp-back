@@ -8,4 +8,6 @@ nav:
         - Basic: api/basic.md
         - Gateway: api/gateway.md
         - Dashboard: api/dashboard.md
+    - Reference:
+        - Dependencies: reference/dependencies.md
 theme: readthedocs

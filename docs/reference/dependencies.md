@@ -1,16 +1,20 @@
-# Library
+This article explains the libraries that our project uses. Before you begin, be sure to setup the virtual envrionment:
 
 ```
 virtualenv -p python3.6 env
 source env/bin/activate
 ```
 
-When trying to install ``psycopg2``, the [following link](https://stackoverflow.com/a/57617813) worked.
+
+When trying to install ``psycopg2`` on ``MacOS``, please make sure to run the following. Special thanks to the [this link](https://stackoverflow.com/a/57617813).
+
 ```
 export PATH="/usr/local/opt/openssl/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/curl/lib -L/usr/local/opt/openssl/lib"
 export CPPFLAGS="-I/usr/local/opt/curl/include -I/user/local/opt/openssl/include"
 ```
+
+The following are a complete list of all the third-party library and frameworks our project is using.
 
 ```
 pip install django                        # Our MVC Framework
