@@ -15,7 +15,7 @@ from django.utils import timezone
 # from oauthlib.common import generate_token
 
 from shared_foundation.constants import *
-from shared_foundation.models import SharedOrganization, SharedGroup
+from shared_foundation.models import SharedOrganization, SharedOrganizationDomain, SharedGroup
 
 
 class Command(BaseCommand):
@@ -30,57 +30,65 @@ class Command(BaseCommand):
         """
         Site
         """
+         # https://docs.djangoproject.com/en/dev/ref/contrib/sites/#caching-the-current-site-object
         current_site = Site.objects.get_current()
         current_site.domain = settings.NWAPP_BACKEND_HTTP_DOMAIN
         current_site.name = "NWApp"
         current_site.save()
+        self.stdout.write(
+            self.style.SUCCESS(_('Update site domain and name.'))
+        )
 
-    def handle(self, *args, **options):
-        '''
-        Create the default store of our application.
-        '''
-        self.process_site()
-
-        # organization = SharedOrganization.objects.update_or_create(
-        #     id=1,
-        #     defaults={
-        #         'id': 1,
-        #         'schema_name': 'public',
-        #         'name': 'Public Domain',
-        #         'description': 'Used as shared domain.',
-        #         'country': "Canada",
-        #         "region": "Ontario",
-        #         "locality": "London",
-        #     }
-        # )
-        # organization = SharedOrganization.objects.update_or_create(
-        #     id=1,
-        #     defaults={
-        #         'id': 2,
-        #         'schema_name': 'london',
-        #         'name': 'Neighbourhood Watch London',
-        #         'description': 'We build safe & vibrant communities through crime education and prevention programs.',
-        #         'country': "Canada",
-        #         "region": "Ontario",
-        #         "locality": "London",
-        #         # "address": "652 Elizabeth St",
-        #         # "postal": "N5Y 0A2",
-        #         # "phone": "(519) 661-4533",
-        #     }
-        # )
-
+    def process_group(self):
         SharedGroup.objects.update_or_create(id=1, defaults={'id': 1, 'name': 'Executive'})
         SharedGroup.objects.update_or_create(id=2, defaults={'id': 2, 'name': 'Manager'})
         SharedGroup.objects.update_or_create(id=3, defaults={'id': 3, 'name': 'Frontline Staff'})
         SharedGroup.objects.update_or_create(id=4, defaults={'id': 4, 'name': 'Associate'})
         SharedGroup.objects.update_or_create(id=5, defaults={'id': 5, 'name': 'Area Coordinator'})
         SharedGroup.objects.update_or_create(id=6, defaults={'id': 6, 'name': 'Member'})
+        self.stdout.write(
+            self.style.SUCCESS(_('Updated shared groups.'))
+        )
 
-        # from django.contrib.sites.models import Site # https://docs.djangoproject.com/en/dev/ref/contrib/sites/#caching-the-current-site-object
-        # current_site = Site.objects.get_current()
-        # current_site.domain = settings.NWAPP_BACKEND_HTTP_DOMAIN
-        # current_site.save()
-        #
-        # self.stdout.write(
-        #     self.style.SUCCESS(_('Successfully updated site object.'))
-        # )
+    def process_public_tenant(self):
+        public_tenant, created = SharedOrganization.objects.update_or_create(
+            id=1,
+            defaults={
+                'id': 1,
+                'schema_name': 'public',
+                'name': 'Public Domain',
+                'description': 'Used as shared domain.',
+                'country': "Canada",
+                "region": "Ontario",
+                "locality": "London",
+            }
+        )
+
+        # Add one or more domains for the tenant
+        domain = SharedOrganizationDomain()
+        domain.domain = settings.NWAPP_BACKEND_HTTP_DOMAIN # don't add your port or www here! on a local server you'll want to use localhost here
+        domain.tenant = public_tenant
+        domain.is_primary = True
+        try:
+            domain.save()
+        except Exception as e:
+            self.stdout.write(
+                self.style.WARNING(_('Minor issue when saving `SharedOrganizationDomain`, the error is:\n%(e)s.') % {
+                    'e': str(e)
+                })
+            )
+
+        self.stdout.write(
+            self.style.SUCCESS(_('Updated or created public tenant.'))
+        )
+
+    def handle(self, *args, **options):
+        '''
+        Create the default store of our application.
+        '''
+        self.process_public_tenant()
+        self.process_site()
+        self.process_group()
+        self.stdout.write(
+            self.style.SUCCESS(_('Successfully updated site object.'))
+        )

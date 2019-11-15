@@ -82,10 +82,7 @@ Run the following commands to populate the database.
   python manage.py makemigrations; \
   python manage.py migrate_schemas; \
   python manage.py init_app; \
-  python manage.py populate_site; \
-  python manage.py populate_public; \
-  python manage.py create_shared_account "bart@email.com" "123password" "Bart" "Mika" "123 123-1234" "" "123 123-1234" "CA" "London" "Ontario" "" "N6H 1B4" "78 Riverside Drive" ""; \
-  python manage.py create_franchise "london" "Over55" "Over55 (London) Inc." "Located at the Forks of the Thames in downtown London Ontario, Over 55 is a non profit charitable organization that applies business strategies to achieve philanthropic goals. The net profits realized from the services we provide will help fund our client and community programs. When you use our services and recommended products, you are helping to improve the quality of life of older adults and the elderly in our community." "CA" "London" "Ontario" "" "N6H 1B4" "78 Riverside Drive" "";
+  python manage.py create_shared_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
   ```
 
 #### Host File Setup

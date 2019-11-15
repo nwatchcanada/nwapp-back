@@ -27,14 +27,6 @@ class SharedUserAdmin(BaseUserAdmin):
             {'fields': ('is_staff', 'groups',)}
         ),
 
-        ('Billing Information',
-            {'fields': ('billing_given_name', 'billing_last_name', 'billing_email')}
-        ),
-
-        ('Shipping Information',
-            {'fields': ('shipping_given_name', 'shipping_last_name', 'shipping_email')}
-        ),
-
         ('Email Activation / Password Reset',
             {'fields': ('was_email_activated', 'pr_access_code', 'pr_expiry_date')}
         ),

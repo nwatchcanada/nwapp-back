@@ -82,6 +82,7 @@ This project uses the ``PostGres`` database and as a result requires setup befor
   redis-cli FLUSHDB;
   python manage.py makemigrations
   python manage.py migrate
+  python manage.py migrate_schemas --executor=multiprocessing
   python manage.py init_app
   python manage.py create_admin_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
   python manage.py setup_resource_server_authorization
