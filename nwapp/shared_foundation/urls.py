@@ -4,8 +4,8 @@ from shared_foundation import views
 
 
 urlpatterns = (
-    path('',
-        views.index_view,
-        name='nwapp_index_view'
-    ),
+    path('', views.get_version_api),
+    path('api', views.get_version_api),
+    path('api/v1', views.get_version_api),
+    path('api/v1/version', views.get_version_api),
 )

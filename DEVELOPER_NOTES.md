@@ -23,11 +23,12 @@ pip install django-rq                     # Redis Queue Library
 pip install django-redis-cache            # Django cache backend powered by Redis
 pip install rq-scheduler                  # Redis Queue Scheduler Library
 pip install django-cors-headers           # Enable CORS in Headers
+pip install gunicorn                      # Web-Server Helper
 
 pip install django-oauth-toolkit          # oAuth 2.0 Client and Provider Framework
 pip install djangorestframework           # RESTful API Endpoint Generator
+pip install djangorestframework-jwt       # JSON Web Token Authentication support for Django REST Framework
 pip install django-extra-fields           # Django REST Framework extensions
-pip install gunicorn                      # Web-Server Helper
 pip install django-filter                 # Generic system for filtering Django QuerySets based on user selections
 pip install python-dateutil               # Useful extensions to the standard Python datetime features
 pip install django-anymail[mailgun]       # Third-Party Email

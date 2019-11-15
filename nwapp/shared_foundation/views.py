@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 
-def index_view(request):
+def get_version_api(request):
     """
     Function returns basic information about our project.
     """
