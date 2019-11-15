@@ -74,11 +74,13 @@ vi ./nwapp/nwapp/.env
 Run the following commands to finalize our project.
 
 ```bash
+redis-cli FLUSHDB;
 python manage.py makemigrations; \
 python manage.py migrate_schemas --executor=multiprocessing; \
 python manage.py init_app; \
 python manage.py setup_oauth2; \
 python manage.py create_shared_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
+python manage.py collectstatic
 ```
 
 # 6. Host File Setup
