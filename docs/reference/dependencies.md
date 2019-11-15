@@ -29,6 +29,7 @@ pip install rq-scheduler                  # Redis Queue Scheduler Library
 pip install django-cors-headers           # Enable CORS in Headers
 pip install gunicorn                      # Web-Server Helper
 pip install djangorestframework           # RESTful API Endpoint Generator
+pip install djangorestframework-msgpack   # MessagePack support for Django REST framework
 pip install django-extra-fields           # Django REST Framework extensions
 pip install django-filter                 # Filtering Django QuerySets based on user selections
 pip install python-dateutil               # Useful extensions to the standard Python datetime features
