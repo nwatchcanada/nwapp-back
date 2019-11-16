@@ -19,6 +19,7 @@ from rest_framework import authentication, viewsets, permissions, status, parser
 from rest_framework.response import Response
 
 from shared_gateway.serializers import SharedLogoutSerializer
+from shared_foundation.drf.permissions import DisableOptionsPermission, PublicPermission
 
 
 class SharedLogoutAPIView(APIView):
@@ -27,7 +28,10 @@ class SharedLogoutAPIView(APIView):
     """
     authentication_classes= (OAuth2Authentication,)
     throttle_classes = ()
-    permission_classes = ()
+    permission_classes = (
+        DisableOptionsPermission,
+        PublicPermission,
+    )
 
     def post(self, request):
         authenticated_user = None

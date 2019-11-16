@@ -22,7 +22,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     access_token = serializers.SerializerMethodField()
     refresh_token = serializers.SerializerMethodField()
     schema_name = serializers.SerializerMethodField()
-    group_membership_id = serializers.SerializerMethodField()
+    role_id = serializers.SerializerMethodField()
 
     # --- User Details ---
     email = serializers.CharField(required=True,allow_blank=False,)
@@ -42,7 +42,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             'access_token',
             'refresh_token',
             'schema_name',
-            'group_membership_id',
+            'role_id',
 
             # --- User Details ---
             'email',
@@ -54,7 +54,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     def get_schema_name(self, obj):
         return obj.tenant.schema_name
 
-    def get_group_membership_id(self, obj):
+    def get_role_id(self, obj):
         group = obj.groups.first()
         group_id = None
         if group:

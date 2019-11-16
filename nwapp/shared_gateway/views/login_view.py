@@ -18,6 +18,7 @@ from rest_framework import authentication, viewsets, permissions, status, parser
 from rest_framework.response import Response
 
 from shared_gateway.serializers import SharedLoginSerializer, SharedProfileInfoRetrieveUpdateSerializer
+from shared_foundation.drf.permissions import DisableOptionsPermission, PublicPermission
 
 
 class SharedLoginAPIView(APIView):
@@ -26,7 +27,10 @@ class SharedLoginAPIView(APIView):
     oAuth 2.0 token which can be used in remote resource servers.
     """
     throttle_classes = ()
-    permission_classes = ()
+    permission_classes = (
+        DisableOptionsPermission,
+        PublicPermission,
+    )
 
     def post(self, request):
         # Serializer to get our login details.

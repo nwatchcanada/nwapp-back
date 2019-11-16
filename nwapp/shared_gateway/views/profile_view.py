@@ -11,7 +11,7 @@ from rest_framework import authentication, viewsets, permissions, status,  parse
 from rest_framework.response import Response
 
 from shared_gateway.serializers import SharedProfileInfoRetrieveUpdateSerializer
-from shared_foundation.drf.permissions import DisableOptionsPermission
+from shared_foundation.drf.permissions import DisableOptionsPermission, PublicPermission
 
 
 class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -20,6 +20,7 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
+        PublicPermission,
         permissions.IsAuthenticated,
         # IsAuthenticatedAndIsActivePermission,
         # CanRetrieveUpdateDestroyInvoicePermission

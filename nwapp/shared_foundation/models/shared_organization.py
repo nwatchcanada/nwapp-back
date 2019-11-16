@@ -13,6 +13,7 @@ from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
 from django_tenants.models import TenantMixin, DomainMixin
 
 from shared_foundation.constants import TIMEZONE_CHOICES
@@ -83,7 +84,7 @@ class SharedOrganization(TenantMixin, BigPkAbastract):
     #
     #  FIELDS
     #
-    
+
     name = models.CharField(
         _("Name"),
         max_length=63,
@@ -183,6 +184,10 @@ class SharedOrganization(TenantMixin, BigPkAbastract):
 
     def get_absolute_url(self):
         return "/shared-organization/"+str(self.schema_name)
+
+    @cached_property
+    def is_public(self):
+        return self.schema_name == "public"
 
 
 class SharedOrganizationDomain(DomainMixin):

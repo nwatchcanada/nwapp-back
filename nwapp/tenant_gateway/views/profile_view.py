@@ -10,7 +10,7 @@ from rest_framework import generics
 from rest_framework import authentication, viewsets, permissions, status,  parsers, renderers
 from rest_framework.response import Response
 
-from shared_foundation.drf.permissions import DisableOptionsPermission
+from shared_foundation.drf.permissions import DisableOptionsPermission, TenantPermission
 from tenant_gateway.serializers import TenantProfileInfoRetrieveUpdateSerializer
 
 
@@ -20,6 +20,7 @@ class TenantProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     # pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
+        TenantPermission,
         permissions.IsAuthenticated,
         # IsAuthenticatedAndIsActivePermission,
         # CanRetrieveUpdateDestroyInvoicePermission
@@ -35,7 +36,7 @@ class TenantProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         """
         self.check_object_permissions(request, request.user)  # Validate permissions.
 
-        print("-----------")
+        print(">>>>-----------")
 
         # Fetch our application and token for the user.
         application = Application.objects.filter(name=settings.NWAPP_RESOURCE_SERVER_NAME).first()

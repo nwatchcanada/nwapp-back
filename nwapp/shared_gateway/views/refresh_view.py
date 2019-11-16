@@ -12,13 +12,14 @@ from rest_framework import authentication, viewsets, permissions, status,  parse
 from rest_framework.response import Response
 
 from shared_gateway.serializers import SharedProfileInfoRetrieveUpdateSerializer
-from shared_foundation.drf.permissions import DisableOptionsPermission
+from shared_foundation.drf.permissions import DisableOptionsPermission, PublicPermission
 
 
 class SharedRefreshTokenAPIView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes= (OAuth2Authentication,)
     permission_classes = (
         DisableOptionsPermission,
+        PublicPermission
     )
     parser_classes = (
         parsers.FormParser,

@@ -1,4 +1,6 @@
 from rest_framework import permissions
+from django.contrib.auth.models import User, Group, Permission
+from django.utils.translation import ugettext_lazy as _
 
 
 class DisableOptionsPermission(permissions.BasePermission):
@@ -10,11 +12,6 @@ class DisableOptionsPermission(permissions.BasePermission):
         if request.method == 'OPTIONS':
             return False
         return True
-
-
-from django.contrib.auth.models import User, Group, Permission
-from django.utils.translation import ugettext_lazy as _
-from rest_framework import permissions
 
 
 class SharedUserIsActivePermission(permissions.BasePermission):
@@ -31,3 +28,23 @@ class SharedUserIsActivePermission(permissions.BasePermission):
             return request.user.is_active
 
         return False
+
+
+class PublicPermission(permissions.BasePermission):
+    """
+    Global permission to visiting if from tenant subdomain.
+    """
+    message = _('You cannot access public API endpoint with a sub-domain your URL.')
+
+    def has_permission(self, request, view):
+        return request.tenant.is_public
+
+
+class TenantPermission(permissions.BasePermission):
+    """
+    Global permission to verify tenant membership with the authenticated user.
+    """
+    message = _('You cannot access tenant API endpoint without a sub-domain in your URL.')
+
+    def has_permission(self, request, view):
+        return not request.tenant.is_public
