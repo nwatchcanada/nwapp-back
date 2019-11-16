@@ -6,7 +6,7 @@
 
 # Step 1: Clear the file.
 clear;
-cat > nwapp/nwapp/.env << EOL
+cat > ../nwapp/nwapp/.env << EOL
 #--------#
 # Django #
 #--------#
