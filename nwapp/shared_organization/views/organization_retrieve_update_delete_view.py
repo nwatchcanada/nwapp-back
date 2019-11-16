@@ -20,11 +20,11 @@ class SharedOrganizationRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestr
     )
 
     @transaction.atomic
-    def get(self, request, pk=None):
+    def get(self, request, schema_name=None):
         """
         Retrieve
         """
-        order = get_object_or_404(SharedOrganization, pk=pk)
+        order = get_object_or_404(SharedOrganization, schema_name=schema_name)
         self.check_object_permissions(request, order)  # Validate permissions.
         serializer = SharedOrganizationRetrieveSerializer(order, many=False)
         # queryset = serializer.setup_eager_loading(self, queryset)
@@ -34,12 +34,12 @@ class SharedOrganizationRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestr
         )
 
     @transaction.atomic
-    def put(self, request, pk=None):
+    def put(self, request, schema_name=None):
         """
         Update
         """
         client_ip, is_routable = get_client_ip(self.request)
-        associate = get_object_or_404(SharedOrganization, pk=pk)
+        associate = get_object_or_404(SharedOrganization, schema_name=schema_name)
         self.check_object_permissions(request, associate)  # Validate permissions.
         write_serializer = SharedOrganizationUpdateSerializer(associate, data=request.data, context={
             'last_modified_by': request.user,
