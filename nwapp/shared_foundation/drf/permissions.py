@@ -42,9 +42,13 @@ class PublicPermission(permissions.BasePermission):
 
 class TenantPermission(permissions.BasePermission):
     """
-    Global permission to verify tenant membership with the authenticated user.
+    Global permission to verify tenant membership for the authenticated user
+    and ensuring proper sub-domain is used. Note: Executive users get automatic
+    access if the sub-domain is valid.
     """
-    message = _('You cannot access tenant API endpoint without a sub-domain in your URL.')
+    message = _('You cannot access tenant API endpoint without a sub-domain in your URL or without membership in the tenant.')
 
     def has_permission(self, request, view):
-        return not request.tenant.is_public
+        is_tenant = not request.tenant.is_public
+        can_view_tenant = request.user.tenant == request.tenant or request.user.is_executive
+        return is_tenant and can_view_tenant

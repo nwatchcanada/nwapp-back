@@ -1,4 +1,0 @@
-from tenant_gateway.views.login_view import TenantLoginAPIView
-from tenant_gateway.views.logout_view import TenantLogoutAPIView
-from tenant_gateway.views.profile_view import TenantProfileRetrieveUpdateAPIView
-from tenant_gateway.views.refresh_view import TenantRefreshTokenAPIView

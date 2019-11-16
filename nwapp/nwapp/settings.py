@@ -112,7 +112,6 @@ TENANT_APPS = ( # (Django-Tenants)
     # Our Apps
     'tenant_foundation.apps.TenantFoundationConfig',
     'tenant_dashboard.apps.TenantDashboardConfig',
-    'tenant_gateway.apps.TenantGatewayConfig',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS] # (Django-Tenants)
