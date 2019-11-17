@@ -141,13 +141,19 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.alternate_name = validated_data.get('alternate_name', instance.alternate_name)
         instance.description = validated_data.get('description', instance.description)
         instance.name = validated_data.get('name', instance.name)
-        instance.url = validated_data.get('url', instance.url)
+        # instance.url = validated_data.get('url', instance.url)
         instance.timezone_name = validated_data.get('timezone_name', instance.timezone_name)
 
         instance.country = validated_data.get('country', instance.country)
         instance.locality = validated_data.get('locality', instance.locality)
         instance.region = validated_data.get('region', instance.region)
-        #TODO: IMPLEMENT.
+        instance.street_number = validated_data.get('street_number', instance.street_number)
+        instance.street_name = validated_data.get('street_name', instance.street_name)
+        instance.apartment_unit = validated_data.get('apartment_unit', instance.apartment_unit)
+        instance.street_type = validated_data.get('street_type', instance.street_type)
+        instance.street_type_other = validated_data.get('street_type_other', instance.street_type_other)
+        instance.street_direction = validated_data.get('street_direction', instance.street_direction)
+        instance.postal_code = validated_data.get('postal_code', instance.postal_code)
 
         instance.last_modified_by = self.context['last_modified_by']
         instance.last_modified_from = self.context['last_modified_from']
