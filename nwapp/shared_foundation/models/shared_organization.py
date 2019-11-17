@@ -17,7 +17,6 @@ from django.utils.functional import cached_property
 from django_tenants.models import TenantMixin, DomainMixin
 
 from shared_foundation.constants import TIMEZONE_CHOICES
-from shared_foundation.models.big_pk_abstract import BigPkAbastract
 
 
 class SharedOrganizationManager(models.Manager):
@@ -44,7 +43,7 @@ def validate_schema(value):
         )
 
 
-class SharedOrganization(TenantMixin, BigPkAbastract):
+class SharedOrganization(TenantMixin):
     """
     Class model to represent our tenant that all other data will be attached to.
     """
