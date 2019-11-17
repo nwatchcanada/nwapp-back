@@ -46,7 +46,6 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharedOrganization
         fields = (
-            # Thing
             'id',
             'created_at',
             'last_modified_at',
@@ -60,6 +59,13 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
             'country',
             'locality',
             'region',
+            'street_number',
+            'street_name',
+            'apartment_unit',
+            'street_type',
+            'street_type_other',
+            'street_direction',
+            'postal_code',
 
             # Tenancy
             'schema_name'
@@ -98,7 +104,6 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharedOrganization
         fields = (
-            # Thing
             'id',
             'created_at',
             'last_modified_at',
@@ -112,6 +117,13 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
             'country',
             'locality',
             'region',
+            'street_number',
+            'street_name',
+            'apartment_unit',
+            'street_type',
+            'street_type_other',
+            'street_direction',
+            'postal_code',
 
             # Tenancy
             'schema_name'
@@ -135,7 +147,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.country = validated_data.get('country', instance.country)
         instance.locality = validated_data.get('locality', instance.locality)
         instance.region = validated_data.get('region', instance.region)
-        
+        #TODO: IMPLEMENT.
+
         instance.last_modified_by = self.context['last_modified_by']
         instance.last_modified_from = self.context['last_modified_from']
         instance.last_modified_from_is_public = self.context['last_modified_from_is_public']

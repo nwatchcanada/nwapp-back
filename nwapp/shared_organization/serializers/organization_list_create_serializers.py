@@ -48,7 +48,6 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharedOrganization
         fields = (
-            # Thing
             'id',
             'created_at',
             'last_modified_at',

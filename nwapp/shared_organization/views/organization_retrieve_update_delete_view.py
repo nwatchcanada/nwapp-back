@@ -39,16 +39,16 @@ class SharedOrganizationRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestr
         Update
         """
         client_ip, is_routable = get_client_ip(self.request)
-        associate = get_object_or_404(SharedOrganization, schema_name=schema_name)
-        self.check_object_permissions(request, associate)  # Validate permissions.
-        write_serializer = SharedOrganizationUpdateSerializer(associate, data=request.data, context={
+        object = get_object_or_404(SharedOrganization, schema_name=schema_name)
+        self.check_object_permissions(request, object)  # Validate permissions.
+        write_serializer = SharedOrganizationUpdateSerializer(object, data=request.data, context={
             'last_modified_by': request.user,
             'last_modified_from': client_ip,
             'last_modified_from_is_public': is_routable
         })
         write_serializer.is_valid(raise_exception=True)
-        associate = write_serializer.save()
-        read_serializer = SharedOrganizationRetrieveSerializer(associate, many=False, context={
+        object = write_serializer.save()
+        read_serializer = SharedOrganizationRetrieveSerializer(object, many=False, context={
             'last_modified_by': request.user,
             'last_modified_from': client_ip,
             'last_modified_from_is_public': is_routable
