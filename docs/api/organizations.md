@@ -3,7 +3,7 @@ Returns the organization data for your account.
 
 * **URL**
 
-        /api/v1/organizations
+        /api/v1/public/organizations
 
 
 * **Method**
@@ -41,7 +41,7 @@ Returns the organization data for your account.
 
 * **Sample Call**
 
-        $ http get localhost:80/api/v1/organizations Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
+        $ http get localhost:80/api/v1/public/organizations Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
 
 
 ## Create Organization
@@ -54,7 +54,7 @@ Once an *organization* has been created, the staff of [**Neighbourhood Watch Can
 
 * **URL**
 
-  ``/api/v1/organizations``
+  ``/api/v1/public/organizations``
 
 
 * **Method**
@@ -140,7 +140,7 @@ Once an *organization* has been created, the staff of [**Neighbourhood Watch Can
 * **Sample Call**
 
   ```bash
-  $ http post localhost:80/api/v1/organizations \
+  $ http post localhost:80/api/v1/public/organizations \
     Authorization:"Bearer $NWAPP_BACK_API_TOKEN" \
     name="Mika Software Corporation" \
     alternate_name="Mika Software" \

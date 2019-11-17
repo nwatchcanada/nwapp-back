@@ -3,7 +3,7 @@ Returns the *user profile* and authentication *token* upon successful login in.
 
 * **URL**
 
-        /api/v1/login
+        /api/v1/public/login
 
 
 * **Method**
@@ -54,7 +54,7 @@ Returns the *user profile* and authentication *token* upon successful login in.
 
 * **Sample Call**
 
-        http post localhost:80/api/v1/login email=bart@mikasoftware.com password=YOUR_PASSWORD
+        http post localhost:80/api/v1/public/login email=bart@mikasoftware.com password=123password
 
 * **Notes**
 
@@ -66,7 +66,7 @@ Performs logout operation for authenticated user thus invalidating the user's ``
 
 * **URL**
 
-        /api/v1/logout
+        /api/v1/public/logout
 
 
 * **Method**
@@ -99,7 +99,7 @@ Performs logout operation for authenticated user thus invalidating the user's ``
 
 * **Sample Call**
 
-        $ http post localhost:80/api/v1/logout token=$NWAPP_BACK_API_TOKEN Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
+        $ http post localhost:80/api/v1/public/logout token=$NWAPP_BACK_API_TOKEN Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
 
 
 * **Notes**
@@ -112,7 +112,7 @@ The API endpoint used to get the *user profile details*. Only the *profile* of t
 
 * **URL**
 
-        /api/v1/profile
+        /api/v1/public/profile
 
 
 * **Method**
@@ -148,7 +148,7 @@ The API endpoint used to get the *user profile details*. Only the *profile* of t
 
 * **Sample Call**
 
-        $ http get localhost:80/api/v1/profile Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
+        $ http get localhost:80/api/v1/public/profile Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
 
 
 ## Refresh Access Token
@@ -156,7 +156,7 @@ Function will take a non-expired ``refresh token`` and generate  new ``access to
 
 * **URL**
 
-        /api/v1/refresh-token
+        /api/v1/public/refresh-token
 
 
 * **Method**
@@ -197,7 +197,7 @@ Function will take a non-expired ``refresh token`` and generate  new ``access to
 
 * **Sample Call**
 
-        http post localhost:80/api/v1/refresh-token refresh_token="xWGpIbdDJRcLiy4R2wEfUOuDD252cB" Authorization:"Bearer pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz"
+        http post localhost:80/api/v1/public/refresh-token refresh_token="xWGpIbdDJRcLiy4R2wEfUOuDD252cB" Authorization:"Bearer pwtYmgPCEwNXFUhPVjVNKcEBxYgvUz"
 
 
 * **Notes**
@@ -214,7 +214,7 @@ It's important to note that emails must be unique and passwords strong or else v
 
 * **URL**
 
-        /api/v1/register
+        /api/v1/public/register
 
 
 * **Method**

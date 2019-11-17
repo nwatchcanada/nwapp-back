@@ -172,10 +172,14 @@ class SharedOrganization(TenantMixin):
     Methods
     '''
 
+    @transaction.atomic
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         """
         Override the save function so we can add extra functionality.
         """
+        # If no `id` was set then we'll set it ourselves.
+        if self.id is None:
+            self.id = SharedOrganization.objects.count() + 1
         super(SharedOrganization, self).save(force_insert, force_update, *args, **kwargs)
 
     def __str__(self):

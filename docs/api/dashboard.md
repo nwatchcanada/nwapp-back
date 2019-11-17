@@ -41,4 +41,4 @@ Returns the dashboard data for your account.
 
 * **Sample Call**
 
-        $ http get localhost:80/api/v1/dashboard Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
+        $ http get tenant.localhost:80/api/v1/dashboard Authorization:"Bearer $NWAPP_BACK_API_TOKEN"
