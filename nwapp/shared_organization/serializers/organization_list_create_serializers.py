@@ -13,7 +13,9 @@ from django.utils.http import urlquote
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
+
 from shared_foundation.models import SharedOrganization
+from shared_organization.tasks import create_organization_func
 
 
 logger = logging.getLogger(__name__)
@@ -60,6 +62,13 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
             'country',
             'locality',
             'region',
+            'street_number',
+            'street_name',
+            'apartment_unit',
+            'street_type',
+            'street_type_other',
+            'street_direction',
+            'postal_code',
 
             # Tenancy
             'schema_name'
@@ -77,7 +86,6 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
         #-----------------------------
         # Create our `Tenant` object.
         #-----------------------------
-        from shared_organization.tasks import create_organization_func
         django_rq.enqueue(create_organization_func, validated_data)
 
         # Return our output

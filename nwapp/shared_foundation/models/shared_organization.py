@@ -113,6 +113,55 @@ class SharedOrganization(TenantMixin):
         max_length=127,
         help_text=_('The locality. For example, Mountain View.'),
     )
+    street_number = models.CharField(
+        _("Street Number"),
+        max_length=127,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
+    street_name = models.CharField(
+        _("Street Name"),
+        max_length=127,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
+    apartment_unit = models.CharField(
+        _("Apartment Unit"),
+        max_length=127,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
+    street_type = models.CharField(
+        _("Region"),
+        max_length=127,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
+    street_type_other = models.CharField(
+        _("Street Type Other"),
+        max_length=127,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
+    street_direction = models.CharField(
+        _("Street Direction"),
+        max_length=127,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
+    postal_code = models.CharField(
+        _("Postal Code"),
+        max_length=32,
+        help_text=_('-'),
+        null=True,
+        blank=True,
+    )
     timezone_name = models.CharField(
         _("Timezone Name"),
         help_text=_('The timezone that this organization belongs to.'),

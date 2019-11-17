@@ -19,10 +19,6 @@ class Command(BaseCommand):
     help = _('Command will create an executive account in our application.')
 
     def add_arguments(self, parser):
-        """
-        Run manually in console:
-        python manage.py create_organization "london" "Over55" "Over55 (London) Inc." "" "CA" "London" "Ontario" "" "N6H 1B4" "78 Riverside Drive" "" "America/Toronto"
-        """
         parser.add_argument('schema_name', nargs='+', type=str)
         parser.add_argument('name', nargs='+', type=str)
         parser.add_argument('alternate_name', nargs='+', type=str)
@@ -30,7 +26,23 @@ class Command(BaseCommand):
         parser.add_argument('country', nargs='+', type=str)
         parser.add_argument('locality', nargs='+', type=str)
         parser.add_argument('region', nargs='+', type=str)
+        parser.add_argument('country', nargs='+', type=str)
+        parser.add_argument('locality', nargs='+', type=str)
+        parser.add_argument('region', nargs='+', type=str)
+        parser.add_argument('street_number', nargs='+', type=str)
+        parser.add_argument('street_name', nargs='+', type=str)
+        parser.add_argument('apartment_unit', nargs='+', type=str)
+        parser.add_argument('street_type', nargs='+', type=str)
+        parser.add_argument('street_type_other', nargs='+', type=str)
+        parser.add_argument('street_direction', nargs='+', type=str)
+        parser.add_argument('postal_code', nargs='+', type=str)
         parser.add_argument('timezone_name', nargs='+', type=str)
+
+    def get(self, options, key):
+        try:
+            return options[key][0]
+        except Exception as e:
+            return None
 
     def handle(self, *args, **options):
         # Get the user inputs.
@@ -41,7 +53,14 @@ class Command(BaseCommand):
         country = options['country'][0]
         locality = options['locality'][0]
         region = options['region'][0]
-        timezone_name = options['timezone_name'][0]
+        street_number = self.get(options, 'street_number')
+        street_name = self.get(options, 'street_name')
+        apartment_unit = self.get(options, 'apartment_unit')
+        street_type = self.get(options, 'street_type')
+        street_type_other = self.get(options, 'street_type_other')
+        street_direction = self.get(options, 'street_direction')
+        postal_code = self.get(options, 'postal_code')
+        timezone_name = self.get(options, 'timezone_name')
 
         # Connection needs first to be at the public schema, as this is where
         # the database needs to be set before creating a new tenant. If this is
@@ -57,7 +76,9 @@ class Command(BaseCommand):
 
         # Create our tenant.
         self.begin_processing(schema_name, name, alternate_name, description,
-                             country, locality, region, timezone_name)
+                             country, locality, region, street_number, street_name,
+                             apartment_unit, street_type, street_type_other,
+                             street_direction, postal_code, timezone_name)
 
         # Used for debugging purposes.
         self.stdout.write(
@@ -65,7 +86,9 @@ class Command(BaseCommand):
         )
 
     def begin_processing(self, schema_name, name, alternate_name, description,
-                         country, locality, region, timezone_name):
+                         country, locality, region, street_number, street_name,
+                         apartment_unit, street_type, street_type_other,
+                         street_direction, postal_code, timezone_name):
         """
         Functin will create a new tenant based on the parameters.
         """
@@ -79,6 +102,13 @@ class Command(BaseCommand):
             country=country,
             locality=locality,
             region=region,
+            street_number=street_number,
+            street_name=street_name,
+            apartment_unit=apartment_unit,
+            street_type=street_type,
+            street_type_other=street_type_other,
+            street_direction=street_direction,
+            postal_code=postal_code,
             timezone_name=timezone_name
         )
         tenant.save()
