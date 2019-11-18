@@ -21,6 +21,7 @@ pip install django                        # Our MVC Framework
 pip install django-environ                # Environment Variables with 12factorization
 pip install django-tenants                # Django tenants using PostgreSQL Schemas
 pip install Pillow                        # Req: ImageField
+pip install argon2-cffi                   # Argon2 Hashing Algorithm
 pip install django-ipware                 # Best attempt to get IP address while keeping it DRY.
 pip install Faker                         # Library that generates fake data for you.
 pip install django-rq                     # Redis Queue Library
