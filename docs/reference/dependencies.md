@@ -36,9 +36,10 @@ pip install django-filter                 # Filtering Django QuerySets based on 
 pip install python-dateutil               # Useful extensions to the standard Python datetime features
 pip install django-anymail[mailgun]       # Third-Party Email
 pip install django-oauth-toolkit          # oAuth 2.0 Client and Provider Framework
+pip install django-money                  # Money fields for django forms and models
+pip install django-phonenumber-field      # Telephone field using Google's libphonenumber
+pip install phonenumbers                  # Google's libphonenumber written in Python
 
-
-pip install django-money                  # Money fields for django forms and models.
 pip install freezegun                     # Python datetime override library
 pip install django-storages               # Collection of custom storage backends for Django.
 pip install boto3                         # AWS S3 Bindings

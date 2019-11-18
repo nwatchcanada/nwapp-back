@@ -71,18 +71,16 @@ SHARED_APPS = ( # (Django-Tenants)
     # Third Party Apps
     'django_tenants',
     'rest_framework',
-    # 'django_filters',
+    'django_filters',
     'django_rq',
     'redis_cache',
     'corsheaders',
     'oauth2_provider',
-    # 'djmoney',
+    'djmoney',
     # 'anymail',
-    # 'phonenumber_field',
-    # 'debug_toolbar',
+    'phonenumber_field',
     # 'storages',
     # 'sorl.thumbnail',
-    # 'django_fsm',
     # # . . .
 
     # Our Apps
