@@ -22,27 +22,27 @@ class MemberManager(models.Manager):
         for item in items.all():
             item.delete()
 
-    def search(self, keyword):
-        """Default search algorithm used for this model."""
-        self.partial_text_search(keyword)
-
-    def partial_text_search(self, keyword):
-        """Function performs partial text search of various textfields."""
-        return Member.objects.filter(
-            Q(indexed_text__icontains=keyword) |
-            Q(indexed_text__istartswith=keyword) |
-            Q(indexed_text__iendswith=keyword) |
-            Q(indexed_text__exact=keyword) |
-            Q(indexed_text__icontains=keyword)
-        )
-
-    def full_text_search(self, keyword):
-        """Function performs full text search of various textfields."""
-        # The following code will use the native 'PostgreSQL' library
-        # which comes with Django to utilize the 'full text search' feature.
-        # For more details please read:
-        # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
-        return Member.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
+    # def search(self, keyword):
+    #     """Default search algorithm used for this model."""
+    #     self.partial_text_search(keyword)
+    #
+    # def partial_text_search(self, keyword):
+    #     """Function performs partial text search of various textfields."""
+    #     return Member.objects.filter(
+    #         Q(indexed_text__icontains=keyword) |
+    #         Q(indexed_text__istartswith=keyword) |
+    #         Q(indexed_text__iendswith=keyword) |
+    #         Q(indexed_text__exact=keyword) |
+    #         Q(indexed_text__icontains=keyword)
+    #     )
+    #
+    # def full_text_search(self, keyword):
+    #     """Function performs full text search of various textfields."""
+    #     # The following code will use the native 'PostgreSQL' library
+    #     # which comes with Django to utilize the 'full text search' feature.
+    #     # For more details please read:
+    #     # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
+    #     return Member.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
 
 
 class Member(models.Model):
@@ -133,13 +133,12 @@ class Member(models.Model):
 
     # SYSTEM FIELDS
 
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         SharedUser,
-        help_text=_('The user whom owns this thing.'),
-        blank=True,
-        null=True,
-        related_name="%(app_label)s_%(class)s_abstract_thing_owner_related",
-        on_delete=models.CASCADE
+        help_text=_('The user whom is a member.'),
+        related_name="member",
+        on_delete=models.CASCADE,
+        primary_key=True,
     )
     indexed_text = models.CharField(
         _("Indexed Text"),
@@ -314,8 +313,6 @@ class Member(models.Model):
 
     def get_pretty_organization_type_of(self):
         return dict(MEMBER_ORGANIZATION_TYPE_OF_CHOICES).get(self.organization_type_of)
-
-
 
     def invalidate(self, method_name):
         """
