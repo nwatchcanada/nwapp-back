@@ -436,10 +436,14 @@ class Member(models.Model):
         return self.first_name + " " + self.last_name
 
     @cached_property
+    def street_address(self):
+        address = ""
+        return None
+
+    @cached_property
     def postal_address_without_postal_code(self):
         address = ""
         address += self.street_address
-
         address += ', ' + self.address_locality
         address += ', ' + self.address_region
         address += ', ' + self.address_country
@@ -471,6 +475,7 @@ class Member(models.Model):
 
     def invalidate_all(self):
         self.invalidate("fullname")
+        self.invalidate("street_address")
         self.invalidate("postal_address_without_postal_code")
         self.invalidate("postal_address")
         self.invalidate("google_maps_url")
