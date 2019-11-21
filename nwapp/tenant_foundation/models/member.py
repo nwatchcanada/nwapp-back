@@ -90,11 +90,6 @@ class Member(models.Model):
         NON_PROFIT = 'non_profit'
         UNSPECIFIED = 'unspecified'
 
-    class MEMBER_VOLUNTEER:
-        YES = 1
-        NO = 0
-        MAYBE = 2
-
     '''
     CHOICES
     '''
@@ -124,12 +119,6 @@ class Member(models.Model):
         (MEMBER_ORGANIZATION_TYPE_OF.GOVERNMENT, _('Government')),
         (MEMBER_ORGANIZATION_TYPE_OF.NON_PROFIT, _('Non-Profit')),
         (MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED, _('Unspecified')),
-    )
-
-    MEMBER_VOLUNTEER_CHOICES = (
-        (MEMBER_VOLUNTEER.YES, _('Yes')),
-        (MEMBER_VOLUNTEER.NO, _('No')),
-        (MEMBER_VOLUNTEER.MAYBE, _('Maybe')),
     )
 
     '''
@@ -179,64 +168,6 @@ class Member(models.Model):
         default=True,
         blank=True
     )
-    tags = models.ManyToManyField(
-        "Tag",
-        help_text=_('The tags associated with this member.'),
-        blank=True,
-        related_name="member_tags"
-    )
-    how_hear = models.ForeignKey(
-        'HowHearAboutUsItem',
-        help_text=_('How the member heard about the NWApp.'),
-        blank=True,
-        null=True,
-        related_name="member_how_hear_items",
-        on_delete=models.SET_NULL
-    )
-    how_hear_other = models.CharField(
-        _("Learned about us (other)"),
-        max_length=2055,
-        help_text=_('How member heared/learned about this NWApp.'),
-        blank=True,
-        default="Did not answer"
-    )
-    expectation = models.ForeignKey(
-        'ExpectationItem',
-        help_text=_('What do you expect from NW?'),
-        blank=True,
-        null=True,
-        related_name="member_expectations",
-        on_delete=models.CASCADE
-    )
-    expectation_other = models.CharField(
-        _("What do you expect from NW? (other)"),
-        max_length=2055,
-        help_text=_('-'),
-        blank=True,
-        default="Did not answer"
-    )
-    meaning = models.ForeignKey(
-        'MeaningItem',
-        help_text=_('What does NW mean to you?'),
-        blank=True,
-        null=True,
-        related_name="member_meanings",
-        on_delete=models.SET_NULL
-    )
-    meaning_other = models.CharField(
-        _("What does NW mean to you? (other)"),
-        max_length=2055,
-        help_text=_('-'),
-        blank=True,
-        default="Did not answer"
-    )
-    volunteer = models.PositiveSmallIntegerField(
-        _("Willing to volunteer?"),
-        help_text=_('Are you willing to volunteer as a area coordinator / associate'),
-        blank=True,
-        default=MEMBER_VOLUNTEER.MAYBE,
-        choices=MEMBER_VOLUNTEER_CHOICES,
-    )
 
     # PERSONAL & CONTACT FIELDS
 
@@ -276,19 +207,6 @@ class Member(models.Model):
         blank=True,
         null=True,
     )
-    gender = models.CharField(
-        _("Gender"),
-        max_length=31,
-        help_text=_('Gender of the person. While `Male` and `Female` may be used, text strings are also acceptable for people who do not identify as a binary gender.'),
-        blank=True,
-        null=True,
-    )
-    year_of_birth = models.PositiveSmallIntegerField(
-        _("Year of Birth"),
-        help_text=_('The year that this member was born in.'),
-        blank=True,
-        default=0,
-    )
 
     # ORGANIZATION FIELDS
 
@@ -305,73 +223,6 @@ class Member(models.Model):
         default=MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED,
         blank=True,
         choices=MEMBER_ORGANIZATION_TYPE_OF_CHOICES,
-    )
-
-    # ADDRESS FIELDS
-
-    country = models.CharField(
-        _("Country"),
-        max_length=127,
-        help_text=_('The country. For example, USA. You can also provide the two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements">ISO 3166-1 alpha-2</a> country code.'),
-    )
-    region = models.CharField(
-        _("Region"),
-        max_length=127,
-        help_text=_('The region. For example, CA.'),
-    )
-    locality = models.CharField(
-        _("Locality"),
-        max_length=127,
-        help_text=_('The locality. For example, Mountain View.'),
-    )
-    street_number = models.CharField(
-        _("Street Number"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
-    )
-    street_name = models.CharField(
-        _("Street Name"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
-    )
-    apartment_unit = models.CharField(
-        _("Apartment Unit"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
-    )
-    street_type = models.CharField(
-        _("Region"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
-    )
-    street_type_other = models.CharField(
-        _("Street Type Other"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
-    )
-    street_direction = models.CharField(
-        _("Street Direction"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
-    )
-    postal_code = models.CharField(
-        _("Postal Code"),
-        max_length=32,
-        help_text=_('-'),
-        null=True,
-        blank=True,
     )
 
     # WATCH
@@ -464,32 +315,32 @@ class Member(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
-        '''
-        The following code will populate our indexed_custom search text with
-        the latest model data before we save.
-        '''
-        search_text = str(self.id)
-        search_text += " " + intcomma(self.id)
-        if self.last_name:
-            search_text += " " + self.last_name
-        if self.first_name:
-            search_text += " " + self.first_name
-        if self.organization_name:
-            search_text += " " + self.organization_name
-        search_text += " " + str(self.id)
-        if self.email:
-            search_text += " " + self.email
-        if self.primary_phone:
-            search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-            search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-            search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.E164)
-        if self.secondary_phone:
-            search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-            search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-            search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
-        # if self.description:
-        #     search_text += " " + self.description
-        self.indexed_text = Truncator(search_text).chars(511)
+        # '''
+        # The following code will populate our indexed_custom search text with
+        # the latest model data before we save.
+        # '''
+        # search_text = str(self.id)
+        # search_text += " " + intcomma(self.id)
+        # if self.last_name:
+        #     search_text += " " + self.last_name
+        # if self.first_name:
+        #     search_text += " " + self.first_name
+        # if self.organization_name:
+        #     search_text += " " + self.organization_name
+        # search_text += " " + str(self.id)
+        # if self.email:
+        #     search_text += " " + self.email
+        # if self.primary_phone:
+        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
+        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.E164)
+        # if self.secondary_phone:
+        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
+        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
+        # # if self.description:
+        # #     search_text += " " + self.description
+        # self.indexed_text = Truncator(search_text).chars(511)
 
         '''
         If we are creating a new model, then we will automatically increment the `id`.
@@ -519,31 +370,6 @@ class Member(models.Model):
     def fullname(self):
         return self.first_name + " " + self.last_name
 
-    @cached_property
-    def street_address(self):
-        address = ""
-        return None
-
-    @cached_property
-    def postal_address_without_postal_code(self):
-        address = ""
-        address += self.street_address
-        address += ', ' + self.address_locality
-        address += ', ' + self.address_region
-        address += ', ' + self.address_country
-        return address
-
-    @cached_property
-    def postal_address(self):
-        address = self.postal_address_without_postal_code()
-        address += ', ' + self.postal_code.upper()
-        return address
-
-    @cached_property
-    def google_maps_url(self):
-        return "https://www.google.com/maps/place/%(postal_address)s" % {
-            'postal_address': self.postal_address
-        }
 
     def invalidate(self, method_name):
         """
@@ -559,7 +385,3 @@ class Member(models.Model):
 
     def invalidate_all(self):
         self.invalidate("fullname")
-        self.invalidate("street_address")
-        self.invalidate("postal_address_without_postal_code")
-        self.invalidate("postal_address")
-        self.invalidate("google_maps_url")
