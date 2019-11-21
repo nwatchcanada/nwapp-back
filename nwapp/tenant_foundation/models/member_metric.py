@@ -45,9 +45,9 @@ class MemberManager(models.Manager):
         return Member.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
 
 
-class Member(models.Model):
+class MemberMetric(models.Model):
     """
-    Class model represents the Neighbourhood Watch registered member for the
+    Class model represents the metrics details for the member of a
     particular tenant.
     """
 
@@ -57,9 +57,9 @@ class Member(models.Model):
 
     class Meta:
         app_label = 'tenant_foundation'
-        db_table = 'nwapp_members'
-        verbose_name = _('Member')
-        verbose_name_plural = _('Members')
+        db_table = 'nwapp_member_metrics'
+        verbose_name = _('Member Metric')
+        verbose_name_plural = _('Members Metrics')
         default_permissions = ()
         permissions = ()
 
