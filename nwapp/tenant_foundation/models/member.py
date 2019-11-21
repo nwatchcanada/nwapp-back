@@ -5,6 +5,7 @@ from django.core.validators import EmailValidator
 from django.db import models
 from django.db.models import Q
 from django.db import transaction
+from django.template.defaultfilters import slugify
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -140,6 +141,13 @@ class Member(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+    slug = models.SlugField(
+        _("Slug"),
+        help_text=_('The unique identifier used externally.'),
+        null=False,
+        unique=True,
+        db_index=True,
+    )
     indexed_text = models.CharField(
         _("Indexed Text"),
         max_length=511,
@@ -256,7 +264,6 @@ class Member(models.Model):
         '''
         return str(self.first_name)+" "+str(self.last_name)
 
-
     @transaction.atomic
     def save(self, *args, **kwargs):
         '''
@@ -295,6 +302,8 @@ class Member(models.Model):
         '''
         if self.id == 0 or self.id == None:
             self.id = Member.objects.count() + 1
+        if self.slug == None or self.slug == "":
+            self.slug = slugify(self.user.get_full_name())+"-"+str(self.user.id)
 
         '''
         Finally call the parent function which handles saving so we can carry
