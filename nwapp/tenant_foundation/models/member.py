@@ -167,6 +167,12 @@ class Member(models.Model):
         default=True,
         blank=True
     )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this member.'),
+        blank=True,
+        related_name="member_tags"
+    )
 
     # PERSONAL & CONTACT FIELDS
 
