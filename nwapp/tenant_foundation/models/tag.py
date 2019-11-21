@@ -22,10 +22,6 @@ class TagManager(models.Manager):
             item.delete()
 
 
-@transaction.atomic
-
-
-
 class Tag(models.Model):
 
     '''
@@ -78,3 +74,21 @@ class Tag(models.Model):
 
     def __str__(self):
         return str(self.text)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        '''
+        Override the `save` function to support extra functionality of our model.
+        '''
+
+        '''
+        If we are creating a new model, then we will automatically increment the `id`.
+        '''
+        if self.id == 0 or self.id == None:
+            self.id = Tag.objects.count() + 1
+
+        '''
+        Finally call the parent function which handles saving so we can carry
+        out the saving operation by Django in our ORM.
+        '''
+        super(Tag, self).save(*args, **kwargs)

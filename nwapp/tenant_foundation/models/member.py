@@ -4,6 +4,7 @@ from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.core.validators import EmailValidator
 from django.db import models
 from django.db.models import Q
+from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -172,6 +173,30 @@ class Member(models.Model):
         help_text=_('The tags associated with this member.'),
         blank=True,
         related_name="member_tags"
+    )
+    how_hear = models.ForeignKey(
+        'HowHearAboutUsItem',
+        help_text=_('How the member heard about the NWApp.'),
+        blank=True,
+        null=True,
+        related_name="member_how_hear_items",
+        on_delete=models.SET_NULL
+    )
+    expectation = models.ForeignKey(
+        'ExpectationItem',
+        help_text=_('What do you expect from NW?'),
+        blank=True,
+        null=True,
+        related_name="member_expectations",
+        on_delete=models.CASCADE
+    )
+    meaning = models.ForeignKey(
+        'MeaningItem',
+        help_text=_('What does NW mean to you?'),
+        blank=True,
+        null=True,
+        related_name="member_meanings",
+        on_delete=models.SET_NULL
     )
 
     # PERSONAL & CONTACT FIELDS
@@ -394,6 +419,7 @@ class Member(models.Model):
         return str(self.first_name)+" "+str(self.last_name)
 
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
         '''
         Override the `save` function to support extra functionality of our model.
@@ -429,7 +455,7 @@ class Member(models.Model):
         '''
         If we are creating a new model, then we will automatically increment the `id`.
         '''
-        if self.id == 0:
+        if self.id == 0 or self.id == None:
             self.id = Member.objects.count() + 1
 
         '''
