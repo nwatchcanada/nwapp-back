@@ -212,6 +212,19 @@ class Member(models.Model):
         blank=True,
         null=True,
     )
+    gender = models.CharField(
+        _("Gender"),
+        max_length=31,
+        help_text=_('Gender of the person. While `Male` and `Female` may be used, text strings are also acceptable for people who do not identify as a binary gender.'),
+        blank=True,
+        null=True,
+    )
+    year_of_birth = models.PositiveSmallIntegerField(
+        _("Year of Birth"),
+        help_text=_('The year that this member was born in.'),
+        blank=True,
+        default=0,
+    )
 
     # ORGANIZATION FIELDS
 
