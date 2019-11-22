@@ -39,9 +39,9 @@ class TagListCreateAPIView(generics.ListCreateAPIView):
         # Fetch all the queries.
         queryset = Tag.objects.all().order_by('text')
 
-        # The following code will use the 'django-filter'
-        filter = TagFilter(self.request.GET, queryset=queryset)
-        queryset = filter.qs
+        # # The following code will use the 'django-filter'
+        # filter = TagFilter(self.request.GET, queryset=queryset)
+        # queryset = filter.qs
 
         # Return our filtered list.
         return queryset
