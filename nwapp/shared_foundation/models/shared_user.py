@@ -13,6 +13,7 @@ from binascii import hexlify
 from pytz import timezone as pytz_timezone
 from datetime import date, datetime, timedelta
 from django.db import models
+from django.db import transaction
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
@@ -20,6 +21,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.fields import JSONField
+from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
@@ -140,6 +142,13 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         help_text=_('Email address.'),
         db_index=True,
         unique=True
+    )
+    slug = models.SlugField(
+        _("Slug"),
+        help_text=_('The unique identifier used externally.'),
+        null=False,
+        unique=True,
+        db_index=True,
     )
 
     #
@@ -387,6 +396,24 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
     '''
     Functions
     '''
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        '''
+        Override the `save` function to support extra functionality of our model.
+        '''
+
+        if self.slug == None or self.slug == "":
+            #TOOD: IMPLEMENT IN FUTURE:
+            #TODO: HANDLE THE CASE WHEN EDITING IS BEING MADE.
+            #TODO: HANDLE CASE IF FIRST/LAST NAMES ARE NOT UNIQUE.
+            self.slug = slugify(self.user.get_full_name())+"-"+str(self.user.id)
+
+        '''
+        Finally call the parent function which handles saving so we can carry
+        out the saving operation by Django in our ORM.
+        '''
+        super(SharedUser, self).save(*args, **kwargs)
 
     def get_full_name(self):
         '''

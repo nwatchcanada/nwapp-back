@@ -5,7 +5,6 @@ from django.core.validators import EmailValidator
 from django.db import models
 from django.db.models import Q
 from django.db import transaction
-from django.template.defaultfilters import slugify
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -140,13 +139,6 @@ class Member(models.Model):
         related_name="member",
         on_delete=models.CASCADE,
         primary_key=True,
-    )
-    slug = models.SlugField(
-        _("Slug"),
-        help_text=_('The unique identifier used externally.'),
-        null=False,
-        unique=True,
-        db_index=True,
     )
     indexed_text = models.CharField(
         _("Indexed Text"),
