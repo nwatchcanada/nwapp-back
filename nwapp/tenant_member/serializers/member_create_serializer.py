@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from shared_foundation.models import SharedUser
+from shared_foundation.drf.fields import PhoneNumberField
 # from tenant_foundation.constants import *
 from tenant_foundation.models import Member, MemberContact
 
@@ -25,6 +26,14 @@ logger = logging.getLogger(__name__)
 
 
 class MemberCreateSerializer(serializers.Serializer):
+    # ------ MEMBER ------ #
+
+    type_of = serializers.IntegerField()
+
+    # ------ MEMBER CONTACT ------ #
+
+    is_ok_to_email = serializers.IntegerField()
+    is_ok_to_text = serializers.IntegerField()
     organization_name = serializers.CharField(
         required=False,
         allow_blank=True,
@@ -33,20 +42,25 @@ class MemberCreateSerializer(serializers.Serializer):
             UniqueValidator(queryset=MemberContact.objects.all()),
         ],
     )
-    organization_type_of = serializers.IntegerField(
-        required=False,
-        allow_null=True,
-    )
-    first_name = serializers.CharField(
-        required=True,
-        allow_blank=False,
-        validators=[]
-    )
+    organization_type_of = serializers.IntegerField(required=False,allow_null=True,)
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
+    primary_phone = PhoneNumberField(allow_null=True, required=False)
+    secondary_phone = PhoneNumberField(allow_null=True, required=False)
+
+    # ------ MEMBER CONTACT ------ #
+
+    #TODO: IMPLEMENT FIELDS.
 
     def create(self, validated_data):
         """
         Override the `create` function to add extra functinality.
         """
+
+        #TODO: IMPLEMENT FIELDS.
+
+
         # type_of_customer = validated_data.get('type_of', UNASSIGNED_CUSTOMER_TYPE_OF_ID)
         #
         # # Format our telephone(s)
