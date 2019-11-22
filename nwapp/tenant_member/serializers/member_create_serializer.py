@@ -19,7 +19,9 @@ from rest_framework.validators import UniqueValidator
 from shared_foundation.models import SharedUser
 from shared_foundation.drf.fields import PhoneNumberField
 # from tenant_foundation.constants import *
-from tenant_foundation.models import Member, MemberContact
+from tenant_foundation.models import (
+    Member, MemberContact, Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
+)
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +53,16 @@ class MemberCreateSerializer(serializers.Serializer):
 
     # ------ MEMBER ADDRESS ------ #
 
-    #TODO: IMPLEMENT FIELDS.
+    country = serializers.CharField()
+    region = serializers.CharField()
+    locality = serializers.CharField()
+    street_number = serializers.CharField()
+    street_name =serializers.CharField()
+    apartment_unit = serializers.CharField()
+    street_type = serializers.CharField()
+    street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    street_direction = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    postal_code = serializers.CharField()
 
     # ------ MEMBER WATCH ------ #
 
@@ -59,7 +70,41 @@ class MemberCreateSerializer(serializers.Serializer):
 
     # ------ MEMBER METRICS ------ #
 
-    #TODO: IMPLEMENT FIELDS.
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, required=False,)
+    how_hear = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        allow_null=False,
+        queryset=HowHearAboutUsItem.objects.all()
+    )
+    how_hear_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    expectation = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        allow_null=False,
+        queryset=ExpectationItem.objects.all()
+    )
+    expectation_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    meaning = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        allow_null=False,
+        queryset=MeaningItem.objects.all()
+    )
+    meaning_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    gender = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        allow_null=False,
+    )
+    volunteer = serializers.IntegerField()
+    another_household_member_registered = serializers.BooleanField()
+    year_of_birth = serializers.IntegerField()
+    total_household_count = serializers.IntegerField()
+    under_18_years_household_count = serializers.IntegerField()
+    organization_employee_count = serializers.IntegerField()
+    organization_founding_year = serializers.IntegerField()
+    organization_type_of = serializers.IntegerField()
 
     def create(self, validated_data):
         """
