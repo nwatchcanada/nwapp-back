@@ -1,0 +1,1 @@
+from tenant_member.views.member_list_create_view import MemberListCreateAPIView

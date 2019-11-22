@@ -13,7 +13,7 @@ urlpatterns = ([
     path('', include('shared_gateway.urls')),
     path('', include('shared_organization.urls')),
     path('', include('tenant_dashboard.urls')),
-    # path('', include('tenant_district.urls')),
+    path('', include('tenant_member.urls')),
     # path('', include('tenant_staff.urls')),
     # path('', include('api.urls')),
 ])
@@ -25,7 +25,7 @@ urlpatterns += i18n_patterns(
     path('', include('shared_gateway.urls')),
     path('', include('shared_organization.urls')),
     path('', include('tenant_dashboard.urls')),
-    # path('', include('tenant_district.urls')),
+    path('', include('tenant_member.urls')),
     # path('', include('tenant_staff.urls')),
     # path('', include('api.urls')),
     prefix_default_language=True
