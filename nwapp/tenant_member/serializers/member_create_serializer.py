@@ -49,7 +49,15 @@ class MemberCreateSerializer(serializers.Serializer):
     primary_phone = PhoneNumberField(allow_null=True, required=False)
     secondary_phone = PhoneNumberField(allow_null=True, required=False)
 
-    # ------ MEMBER CONTACT ------ #
+    # ------ MEMBER ADDRESS ------ #
+
+    #TODO: IMPLEMENT FIELDS.
+
+    # ------ MEMBER WATCH ------ #
+
+    #TODO: IMPLEMENT FIELDS.
+
+    # ------ MEMBER METRICS ------ #
 
     #TODO: IMPLEMENT FIELDS.
 
