@@ -146,9 +146,9 @@ class MemberMetric(models.Model):
         blank=True,
         null=True,
     )
-    volunteer = models.PositiveSmallIntegerField(
-        _("Willing to volunteer?"),
-        help_text=_('Are you willing to volunteer as a area coordinator / associate'),
+    willing_to_volunteer = models.PositiveSmallIntegerField(
+        _("Willing to willing_to_volunteer?"),
+        help_text=_('Are you willing to willing_to_volunteer as a area coordinator / associate'),
         blank=True,
         default=MEMBER_VOLUNTEER.MAYBE,
         choices=MEMBER_VOLUNTEER_CHOICES,

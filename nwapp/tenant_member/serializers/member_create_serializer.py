@@ -97,7 +97,7 @@ class MemberCreateSerializer(serializers.Serializer):
         allow_blank=False,
         allow_null=False,
     )
-    volunteer = serializers.IntegerField()
+    willing_to_volunteer = serializers.IntegerField()
     another_household_member_registered = serializers.BooleanField()
     year_of_birth = serializers.IntegerField()
     total_household_count = serializers.IntegerField()
