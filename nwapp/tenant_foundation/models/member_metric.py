@@ -94,15 +94,15 @@ class MemberMetric(models.Model):
         blank=True,
         related_name="member_metric_tags"
     )
-    how_hear = models.ForeignKey(
+    how_did_you_hear = models.ForeignKey(
         'HowHearAboutUsItem',
         help_text=_('How the member heard about the NWApp.'),
         blank=True,
         null=True,
-        related_name="member_metric_how_hear_items",
+        related_name="member_metric_how_did_you_hear_items",
         on_delete=models.SET_NULL
     )
-    how_hear_other = models.CharField(
+    how_did_you_hear_other = models.CharField(
         _("Learned about us (other)"),
         max_length=2055,
         help_text=_('How member heared/learned about this NWApp.'),

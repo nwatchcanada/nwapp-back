@@ -25,7 +25,7 @@ class HowHearAboutUsItem(models.Model):
 
     class Meta:
         app_label = 'tenant_foundation'
-        db_table = 'nwapp_how_hear_about_us_items'
+        db_table = 'nwapp_how_did_you_hear_about_us_items'
         verbose_name = _('How Hear About Us Item')
         verbose_name_plural = _('How Hear About Us Items')
         default_permissions = ()

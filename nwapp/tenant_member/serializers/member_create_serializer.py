@@ -71,13 +71,13 @@ class MemberCreateSerializer(serializers.Serializer):
     # ------ MEMBER METRICS ------ #
 
     tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, required=False,)
-    how_hear = serializers.PrimaryKeyRelatedField(
+    how_did_you_hear = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
         allow_null=False,
         queryset=HowHearAboutUsItem.objects.all()
     )
-    how_hear_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    how_did_you_hear_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
     expectation = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
@@ -177,8 +177,8 @@ class MemberCreateSerializer(serializers.Serializer):
         #     is_senior=validated_data.get('is_senior', False),
         #     is_support=validated_data.get('is_support', False),
         #     job_info_read=validated_data.get('job_info_read', False),
-        #     how_hear=validated_data.get('how_hear', 1),
-        #     how_hear_other=validated_data.get('how_hear_other', "Not answered"),
+        #     how_did_you_hear=validated_data.get('how_did_you_hear', 1),
+        #     how_did_you_hear_other=validated_data.get('how_did_you_hear_other', "Not answered"),
         #     type_of=type_of_customer,
         #     created_from = self.context['created_from'],
         #     created_from_is_public = self.context['created_from_is_public'],
