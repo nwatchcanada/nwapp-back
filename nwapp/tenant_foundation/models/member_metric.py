@@ -153,8 +153,8 @@ class MemberMetric(models.Model):
         default=MEMBER_VOLUNTEER.MAYBE,
         choices=MEMBER_VOLUNTEER_CHOICES,
     )
-    already_registered = models.BooleanField(
-        _("Already registered with us?"),
+    another_household_member_registered = models.BooleanField(
+        _("Another Household Member Registered?"),
         help_text=_('Is there another member of your household which is registered with us?'),
         default=False,
         blank=True
