@@ -407,7 +407,7 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
             #TOOD: IMPLEMENT IN FUTURE:
             #TODO: HANDLE THE CASE WHEN EDITING IS BEING MADE.
             #TODO: HANDLE CASE IF FIRST/LAST NAMES ARE NOT UNIQUE.
-            self.slug = slugify(self.user.get_full_name())+"-"+str(self.user.id)
+            self.slug = slugify(self.get_full_name())+"-"+str(self.id)
 
         '''
         Finally call the parent function which handles saving so we can carry

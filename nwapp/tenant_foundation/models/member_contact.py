@@ -100,6 +100,13 @@ class MemberContact(models.Model):
         default=True,
         blank=True
     )
+    organization_name = models.CharField(
+        _("Organization Name"),
+        max_length=255,
+        help_text=_('The name of the organization or business this person represents.'),
+        blank=True,
+        null=True,
+    )
     first_name = models.CharField(
         _("First Name"),
         max_length=63,
