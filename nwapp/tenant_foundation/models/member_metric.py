@@ -139,13 +139,6 @@ class MemberMetric(models.Model):
         blank=True,
         default="Did not answer"
     )
-    volunteer = models.PositiveSmallIntegerField(
-        _("Willing to volunteer?"),
-        help_text=_('Are you willing to volunteer as a area coordinator / associate'),
-        blank=True,
-        default=MEMBER_VOLUNTEER.MAYBE,
-        choices=MEMBER_VOLUNTEER_CHOICES,
-    )
     gender = models.CharField(
         _("Gender"),
         max_length=31,
@@ -153,9 +146,34 @@ class MemberMetric(models.Model):
         blank=True,
         null=True,
     )
+    volunteer = models.PositiveSmallIntegerField(
+        _("Willing to volunteer?"),
+        help_text=_('Are you willing to volunteer as a area coordinator / associate'),
+        blank=True,
+        default=MEMBER_VOLUNTEER.MAYBE,
+        choices=MEMBER_VOLUNTEER_CHOICES,
+    )
+    already_registered = models.BooleanField(
+        _("Already registered with us?"),
+        help_text=_('Is there another member of your household which is registered with us?'),
+        default=False,
+        blank=True
+    )
     year_of_birth = models.PositiveSmallIntegerField(
         _("Year of Birth"),
         help_text=_('The year that this member was born in.'),
+        blank=True,
+        default=0,
+    )
+    people_in_household_count = models.PositiveSmallIntegerField(
+        _("People in Household Count"),
+        help_text=_('How many people are in your household?'),
+        blank=True,
+        default=0,
+    )
+    people_in_household_under_18_count = models.PositiveSmallIntegerField(
+        _("People in Household under 18 Count"),
+        help_text=_('How many people in your household are under the age of 18?'),
         blank=True,
         default=0,
     )
