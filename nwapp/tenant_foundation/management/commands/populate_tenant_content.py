@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
 from tenant_foundation.models import (
-    Tag, HowHearAboutUsItem, ExpectationItem
+    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
 
 
@@ -43,6 +43,7 @@ class Command(BaseCommand):
         self.populate_default_tags()
         self.populate_default_how_did_you_hear_items()
         self.populate_default_expectation_items()
+        self.populate_default_meaning_items()
 
         # For debugging purposes.
         self.stdout.write(
@@ -141,6 +142,31 @@ class Command(BaseCommand):
 
         for data_arr in DATA_ARRAY:
             ExpectationItem.objects.update_or_create(
+                id=int(data_arr[0]),
+                defaults={
+                    'id': int(data_arr[0]),
+                    'sort_number': int(data_arr[1]),
+                    'text': data_arr[2],
+                    'is_for_associate': data_arr[3],
+                    'is_for_customer': data_arr[4],
+                    'is_for_staff': data_arr[5],
+                    'is_for_partner': data_arr[6],
+                }
+            )
+
+    def populate_default_meaning_items(self):
+        DATA_ARRAY = [
+            # ID | SORT # | TEXT | ASSOCIATE | CUSTOMER | STAFF | PARTNER
+            #-------------------------------------------------------------------
+            # Associate
+            [1, 99,"Other",                            True, True, True, True,],
+            [2, 2, "It means ZZZ",                     True, True, True, True,],
+            [3, 3, "It means YYY",                     True, True, True, True,],
+            [4, 4, "It means XXX",                     True, True, True, True,],
+        ]
+
+        for data_arr in DATA_ARRAY:
+            MeaningItem.objects.update_or_create(
                 id=int(data_arr[0]),
                 defaults={
                     'id': int(data_arr[0]),
