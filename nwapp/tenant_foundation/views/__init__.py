@@ -1,0 +1,2 @@
+from tenant_foundation.views.tags.list_create_views import TagListCreateAPIView
+from tenant_foundation.views.tags.retrieve_update_delete_views import TagRetrieveUpdateDestroyAPIView

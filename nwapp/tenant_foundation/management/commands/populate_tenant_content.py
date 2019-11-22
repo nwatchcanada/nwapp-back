@@ -4,10 +4,11 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
 from django.utils.translation import ugettext_lazy as _
+
 from shared_foundation import constants
-from shared_foundation.models import (
-    SharedUser,
-    SharedOrganization
+from shared_foundation.models import SharedUser, SharedOrganization
+from tenant_foundation.models import (
+    Tag
 )
 
 
@@ -39,9 +40,47 @@ class Command(BaseCommand):
         connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
         # Update content.
-        # TODO: Please write them in here...
+        self.populate_default_tags(organization)
 
         # For debugging purposes.
         self.stdout.write(
             self.style.SUCCESS(_('Successfully populated tenant content.'))
+        )
+
+    def populate_default_tags(self, tenant):
+        Tag.objects.update_or_create(
+            id=1,
+            defaults={
+                'id': 1,
+                'text': 'Security',
+                'description': 'Please use this tag if something is related to security.',
+                'is_archived': False,
+            }
+        )
+        Tag.objects.update_or_create(
+            id=2,
+            defaults={
+                'id': 2,
+                'text': 'Blacklist',
+                'description': 'Please use this tag if someone is blacklisted from our system.',
+                'is_archived': False,
+            }
+        )
+        Tag.objects.update_or_create(
+            id=3,
+            defaults={
+                'id': 3,
+                'text': 'Residential',
+                'description': 'Tag pertaining to residential items in our system.',
+                'is_archived': False,
+            }
+        )
+        Tag.objects.update_or_create(
+            id=4,
+            defaults={
+                'id': 4,
+                'text': 'Commercial',
+                'description': 'Tag pertaining to commercial items in our system.',
+                'is_archived': False,
+            }
         )
