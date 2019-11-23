@@ -112,11 +112,14 @@ class MemberUpdateSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         return validated_data
-        # """
-        # Override the `create` function to add extra functinality.
-        # """
-        # request = self.context.get('request')
-        #
+        """
+        Override the `create` function to add extra functinality.
+        """
+        request = self.context.get('request')
+        print("---->>>>", request)
+
+        #TODO: IMPLEMENT CODE BELOW.
+
         # # ------ MEMBER ------ #
         #
         # type_of = validated_data.get('type_of')
