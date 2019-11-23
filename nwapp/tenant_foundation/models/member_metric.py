@@ -107,6 +107,7 @@ class MemberMetric(models.Model):
         max_length=2055,
         help_text=_('How member heared/learned about this NWApp.'),
         blank=True,
+        null=True,
         default="Did not answer"
     )
     expectation = models.ForeignKey(
@@ -122,6 +123,7 @@ class MemberMetric(models.Model):
         max_length=2055,
         help_text=_('-'),
         blank=True,
+        null=True,
         default="Did not answer"
     )
     meaning = models.ForeignKey(
@@ -137,6 +139,7 @@ class MemberMetric(models.Model):
         max_length=2055,
         help_text=_('-'),
         blank=True,
+        null=True,
         default="Did not answer"
     )
     gender = models.CharField(
@@ -257,12 +260,6 @@ class MemberMetric(models.Model):
         '''
         Override the `save` function to support extra functionality of our model.
         '''
-
-        '''
-        If we are creating a new model, then we will automatically increment the `id`.
-        '''
-        if self.id == 0 or self.id == None:
-            self.id = MemberMetric.objects.count() + 1
 
         '''
         Finally call the parent function which handles saving so we can carry

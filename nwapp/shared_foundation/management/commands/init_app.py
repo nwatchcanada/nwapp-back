@@ -40,12 +40,12 @@ class Command(BaseCommand):
         )
 
     def process_group(self):
-        SharedGroup.objects.update_or_create(id=1, defaults={'id': 1, 'name': 'Executive'})
-        SharedGroup.objects.update_or_create(id=2, defaults={'id': 2, 'name': 'Manager'})
-        SharedGroup.objects.update_or_create(id=3, defaults={'id': 3, 'name': 'Frontline Staff'})
-        SharedGroup.objects.update_or_create(id=4, defaults={'id': 4, 'name': 'Associate'})
-        SharedGroup.objects.update_or_create(id=5, defaults={'id': 5, 'name': 'Area Coordinator'})
-        SharedGroup.objects.update_or_create(id=6, defaults={'id': 6, 'name': 'Member'})
+        SharedGroup.objects.update_or_create(id=EXECUTIVE_GROUP_ID, defaults={'id': EXECUTIVE_GROUP_ID, 'name': 'Executive'})
+        SharedGroup.objects.update_or_create(id=MANAGEMENT_GROUP_ID, defaults={'id': MANAGEMENT_GROUP_ID, 'name': 'Manager'})
+        SharedGroup.objects.update_or_create(id=FRONTLINE_GROUP_ID, defaults={'id': FRONTLINE_GROUP_ID, 'name': 'Frontline Staff'})
+        SharedGroup.objects.update_or_create(id=ASSOCIATE_GROUP_ID, defaults={'id': ASSOCIATE_GROUP_ID, 'name': 'Associate'})
+        SharedGroup.objects.update_or_create(id=AREA_COORDINATOR_GROUP_ID, defaults={'id': AREA_COORDINATOR_GROUP_ID, 'name': 'Area Coordinator'})
+        SharedGroup.objects.update_or_create(id=MEMBER_GROUP_ID, defaults={'id': MEMBER_GROUP_ID, 'name': 'Member'})
         self.stdout.write(
             self.style.SUCCESS(_('Updated shared groups.'))
         )

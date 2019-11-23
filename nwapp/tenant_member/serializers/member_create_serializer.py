@@ -5,8 +5,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
-from django.contrib.auth.models import Group
-from django.contrib.auth import authenticate
 from django.db import transaction
 from django.db.models import Q, Prefetch
 from django.utils.translation import ugettext_lazy as _
@@ -16,11 +14,13 @@ from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
+from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.models import SharedUser
 from shared_foundation.drf.fields import PhoneNumberField
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    Member, MemberContact, Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
+    Member, MemberContact, MemberAddress, MemberMetric,
+    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
 
 
@@ -47,8 +47,12 @@ class MemberCreateSerializer(serializers.Serializer):
     organization_type_of = serializers.IntegerField(required=False,allow_null=True,)
     first_name = serializers.CharField()
     last_name = serializers.CharField()
-    email = serializers.EmailField()
-    primary_phone = PhoneNumberField(allow_null=True, required=False)
+    email = serializers.EmailField(
+        validators=[
+            UniqueValidator(queryset=SharedUser.objects.all()),
+        ],
+    )
+    primary_phone = PhoneNumberField()
     secondary_phone = PhoneNumberField(allow_null=True, required=False)
 
     # ------ MEMBER ADDRESS ------ #
@@ -110,108 +114,146 @@ class MemberCreateSerializer(serializers.Serializer):
         """
         Override the `create` function to add extra functinality.
         """
+        request = self.context.get('request')
 
-        #TODO: IMPLEMENT FIELDS.
+        # ------ MEMBER ------ #
+
+        type_of = validated_data.get('type_of')
+        first_name = validated_data.get('first_name')
+        last_name = validated_data.get('last_name')
+        email = validated_data.get('email')
+
+        user = SharedUser.objects.create(
+            tenant=request.tenant,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            was_email_activated=True,
+            is_active=True,
+        )
+        logger.info("Created shared user.")
+
+        # Attach the user to the `Member` group.
+        user.groups.add(MEMBER_GROUP_ID)
+        logger.info("Shared user assigned as member.")
+
+        member = Member.objects.create(
+            user=user,
+            type_of=type_of,
+            created_by=request.user,
+            created_from=request.client_ip,
+            created_from_is_public=request.client_ip_is_routable,
+            last_modified_by=request.user,
+            last_modified_from=request.client_ip,
+            last_modified_from_is_public=request.client_ip_is_routable,
+        )
+        logger.info("Created member profile for shared user.")
+
+        # ------ MEMBER CONTACT ------ #
+
+        is_ok_to_email = validated_data.get('is_ok_to_email')
+        is_ok_to_text = validated_data.get('is_ok_to_text')
+        organization_name = validated_data.get('organization_name')
+        # organization_type_of = validated_data.get('organization_type_of')
+        primary_phone = validated_data.get('primary_phone', None)
+        primary_phone = phonenumbers.parse(primary_phone, "CA")
+        secondary_phone = validated_data.get('secondary_phone', None)
+        if secondary_phone is not None:
+            secondary_phone = phonenumbers.parse(secondary_phone, "CA")
+
+        member_contact = MemberContact.objects.create(
+            member=member,
+            is_ok_to_email=is_ok_to_email,
+            is_ok_to_text=is_ok_to_text,
+            organization_name=organization_name,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            primary_phone=primary_phone,
+            secondary_phone=secondary_phone,
+            created_by=request.user,
+            created_from=request.client_ip,
+            created_from_is_public=request.client_ip_is_routable,
+            last_modified_by=request.user,
+            last_modified_from=request.client_ip,
+            last_modified_from_is_public=request.client_ip_is_routable,
+        )
+        logger.info("Created member contact profile for shared user.")
+
+        # ------ MEMBER ADDRESS ------ #
+
+        country = validated_data.get('country', None)
+        region = validated_data.get('region', None)
+        locality = validated_data.get('locality', None)
+        street_number = validated_data.get('street_number', None)
+        street_name = validated_data.get('street_name', None)
+        apartment_unit = validated_data.get('apartment_unit', None)
+        street_type = validated_data.get('street_type', None)
+        street_type_other = validated_data.get('street_type_other', None)
+        street_direction = validated_data.get('street_direction', None)
+        postal_code = validated_data.get('postal_code', None)
+        member_address = MemberAddress.objects.create(
+            member=member,
+            country=country,
+            region=region,
+            locality=locality,
+            street_number=street_number,
+            street_name=street_name,
+            apartment_unit=apartment_unit,
+            street_type=street_type,
+            street_type_other=street_type_other,
+            street_direction=street_direction,
+            postal_code=postal_code,
+            created_by=request.user,
+            created_from=request.client_ip,
+            created_from_is_public=request.client_ip_is_routable,
+            last_modified_by=request.user,
+            last_modified_from=request.client_ip,
+            last_modified_from_is_public=request.client_ip_is_routable,
+        )
+        logger.info("Created member address profile for shared user.")
+
+        # ------ MEMBER METRICS ------ #
+
+        how_did_you_hear = validated_data.get('how_did_you_hear')
+        how_did_you_hear_other = validated_data.get('how_did_you_hear_other', None)
+        expectation = validated_data.get('expectation')
+        expectation_other = validated_data.get('expectation', None)
+        meaning = validated_data.get('meaning')
+        meaning_other = validated_data.get('meaning_other', None)
+        gender = validated_data.get('gender')
+        willing_to_volunteer = validated_data.get('willing_to_volunteer')
+        another_household_member_registered = validated_data.get('another_household_member_registered')
+        year_of_birth = validated_data.get('year_of_birth')
+        total_household_count = validated_data.get('total_household_count')
+        under_18_years_household_count = validated_data.get('under_18_years_household_count')
+        organization_employee_count = validated_data.get('organization_employee_count')
+        organization_founding_year = validated_data.get('organization_founding_year')
+        organization_type_of = validated_data.get('organization_type_of')
+
+        member_metric = MemberMetric.objects.create(
+            member=member,
+            how_did_you_hear=how_did_you_hear,
+            how_did_you_hear_other=how_did_you_hear_other,
+            expectation=expectation,
+            expectation_other=expectation_other,
+            meaning=meaning,
+            meaning_other=meaning_other,
+            gender=gender,
+            willing_to_volunteer=willing_to_volunteer,
+            another_household_member_registered=another_household_member_registered,
+            year_of_birth=year_of_birth,
+            total_household_count=total_household_count,
+            under_18_years_household_count=under_18_years_household_count,
+            organization_employee_count=organization_employee_count,
+            organization_founding_year=organization_founding_year,
+            organization_type_of=organization_type_of,
+        )
+
+        raise serializers.ValidationError("This a test.")
 
 
-        # type_of_customer = validated_data.get('type_of', UNASSIGNED_CUSTOMER_TYPE_OF_ID)
-        #
-        # # Format our telephone(s)
-        # fax_number = validated_data.get('fax_number', None)
-        # if fax_number:
-        #     fax_number = phonenumbers.parse(fax_number, "CA")
-        # telephone = validated_data.get('telephone', None)
-        # if telephone:
-        #     telephone = phonenumbers.parse(telephone, "CA")
-        # other_telephone = validated_data.get('other_telephone', None)
-        # if other_telephone:
-        #     other_telephone = phonenumbers.parse(other_telephone, "CA")
-        #
-        # #-------------------
-        # # Create our user.
-        # #-------------------
-        # # Extract our "email" field.
-        # email = validated_data.get('email', None)
-        #
-        # # If an email exists then
-        # owner = None
-        # if email:
-        #     owner = SharedUser.objects.create(
-        #         first_name=validated_data['given_name'],
-        #         last_name=validated_data['last_name'],
-        #         email=email,
-        #         is_active=True,
-        #         franchise=self.context['franchise'],
-        #         was_email_activated=True
-        #     )
-        #
-        #     # Attach the user to the `Customer` group.
-        #     owner.groups.add(CUSTOMER_GROUP_ID)
-        #
-        #     # Update the password.
-        #     password = validated_data.get('password', None)
-        #     owner.set_password(password)
-        #     owner.save()
-        #     logger.info("Created shared user.")
-        #
-        # #---------------------------------------------------
-        # # Create our `Customer` object in our tenant schema.
-        # #---------------------------------------------------
-        # customer = Customer.objects.create(
-        #     owner=owner,
-        #     created_by=self.context['created_by'],
-        #     last_modified_by=self.context['created_by'],
-        #     description=validated_data.get('description', None),
-        #     organization_name=validated_data.get('organization_name', None),
-        #     organization_type_of=validated_data.get('organization_type_of', None),
-        #
-        #     # Profile
-        #     given_name=validated_data['given_name'],
-        #     last_name=validated_data['last_name'],
-        #     middle_name=validated_data['middle_name'],
-        #     birthdate=validated_data.get('birthdate', None),
-        #     join_date=validated_data.get('join_date', None),
-        #     gender=validated_data.get('gender', None),
-        #
-        #     # Misc
-        #     is_senior=validated_data.get('is_senior', False),
-        #     is_support=validated_data.get('is_support', False),
-        #     job_info_read=validated_data.get('job_info_read', False),
-        #     how_did_you_hear=validated_data.get('how_did_you_hear', 1),
-        #     how_did_you_hear_other=validated_data.get('how_did_you_hear_other', "Not answered"),
-        #     type_of=type_of_customer,
-        #     created_from = self.context['created_from'],
-        #     created_from_is_public = self.context['created_from_is_public'],
-        #
-        #     # Contact Point
-        #     email=email,
-        #     area_served=validated_data.get('area_served', None),
-        #     available_language=validated_data.get('available_language', None),
-        #     contact_type=validated_data.get('contact_type', None),
-        #     fax_number=fax_number,
-        #     # 'hours_available', #TODO: IMPLEMENT.
-        #     telephone=telephone,
-        #     telephone_extension=validated_data.get('telephone_extension', None),
-        #     telephone_type_of=validated_data.get('telephone_type_of', None),
-        #     other_telephone=other_telephone,
-        #     other_telephone_extension=validated_data.get('other_telephone_extension', None),
-        #     other_telephone_type_of=validated_data.get('other_telephone_type_of', None),
-        #
-        #     # Postal Address
-        #     address_country=validated_data.get('address_country', None),
-        #     address_locality=validated_data.get('address_locality', None),
-        #     address_region=validated_data.get('address_region', None),
-        #     post_office_box_number=validated_data.get('post_office_box_number', None),
-        #     postal_code=validated_data.get('postal_code', None),
-        #     street_address=validated_data.get('street_address', None),
-        #     street_address_extra=validated_data.get('street_address_extra', None),
-        #
-        #     # Geo-coordinate
-        #     elevation=validated_data.get('elevation', None),
-        #     latitude=validated_data.get('latitude', None),
-        #     longitude=validated_data.get('longitude', None),
-        #     # 'location' #TODO: IMPLEMENT.
-        # )
+
         # logger.info("Created customer.")
         #
         # #------------------------

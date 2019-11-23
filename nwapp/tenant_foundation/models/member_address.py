@@ -218,12 +218,6 @@ class MemberAddress(models.Model):
         # self.indexed_text = Truncator(search_text).chars(511)
 
         '''
-        If we are creating a new model, then we will automatically increment the `id`.
-        '''
-        if self.id == 0 or self.id == None:
-            self.id = MemberAddress.objects.count() + 1
-
-        '''
         Finally call the parent function which handles saving so we can carry
         out the saving operation by Django in our ORM.
         '''

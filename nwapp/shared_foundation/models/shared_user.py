@@ -22,6 +22,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.fields import JSONField
 from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string  # HTML / TXT
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
@@ -408,6 +409,13 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
             #TODO: HANDLE THE CASE WHEN EDITING IS BEING MADE.
             #TODO: HANDLE CASE IF FIRST/LAST NAMES ARE NOT UNIQUE.
             self.slug = slugify(self.get_full_name())+"-"+get_referral_code(4)
+
+        if self.tos_agreement == None or tos_agreement == None:
+            # Open up the current "terms of agreement" file and extract the text
+            # context which we will save with the user account.
+            self.tos_agreement = render_to_string('account/terms_of_service/2019_05_01.txt', {})
+            self.has_signed_tos = True
+            self.tos_signed_on = timezone.now()
 
         '''
         Finally call the parent function which handles saving so we can carry

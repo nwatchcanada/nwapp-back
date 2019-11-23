@@ -169,6 +169,7 @@ class Member(models.Model):
         max_length=2055,
         help_text=_('The reason why this member was deactivated which was not in the list.'),
         blank=True,
+        null=True,
         default=""
     )
 
@@ -258,14 +259,6 @@ class Member(models.Model):
         # # if self.description:
         # #     search_text += " " + self.description
         # self.indexed_text = Truncator(search_text).chars(511)
-
-        '''
-        If we are creating a new model, then we will automatically increment the `id`.
-        '''
-        if self.id == 0 or self.id == None:
-            self.id = Member.objects.count() + 1
-        if self.slug == None or self.slug == "":
-            self.slug = slugify(self.user.get_full_name())+"-"+str(self.user.id)
 
         '''
         Finally call the parent function which handles saving so we can carry
