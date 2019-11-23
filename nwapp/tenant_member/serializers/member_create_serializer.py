@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import phonenumbers
-from phonenumber_field.modelfields import PhoneNumberField
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings

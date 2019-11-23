@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import phonenumbers
-from phonenumber_field.modelfields import PhoneNumberField
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
@@ -43,6 +42,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     last_name = serializers.CharField(source="contact.last_name")
     email = serializers.EmailField(source="contact.email")
     primary_phone = PhoneNumberField(source="contact.primary_phone")
+    e164_primary_phone = serializers.SerializerMethodField()
     secondary_phone = PhoneNumberField(source="contact.secondary_phone")
 
     # ------ MEMBER ADDRESS ------ #
@@ -97,3 +97,16 @@ class MemberRetrieveSerializer(serializers.Serializer):
     under_18_years_household_count = serializers.IntegerField(source="metric.under_18_years_household_count",)
     organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count",)
     organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year",)
+
+    def get_e164_primary_phone(self, obj):
+        """
+        Converts the "PhoneNumber" object into a "E164" format.
+        See: https://github.com/daviddrysdale/python-phonenumbers
+        """
+        try:
+            if obj.telephone:
+                return phonenumbers.format_number(obj.primary_phone, phonenumbers.PhoneNumberFormat.E164)
+            else:
+                return "-"
+        except Exception as e:
+            return None

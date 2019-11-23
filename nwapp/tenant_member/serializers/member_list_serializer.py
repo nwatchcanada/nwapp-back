@@ -18,18 +18,14 @@ from rest_framework.validators import UniqueValidator
 
 # from tenant_foundation.constants import *
 from tenant_foundation.models import Member
+from shared_foundation.drf.fields import PhoneNumberField
 
 
 logger = logging.getLogger(__name__)
 
 
 class MemberListSerializer(serializers.Serializer):
-    organization_name = serializers.CharField(
-        required=False,
-        allow_blank=True,
-        allow_null=True,
-        source="contact.organization_name",
-    )
+    type_of = serializers.IntegerField()
     organization_type_of = serializers.IntegerField(
         required=False,
         allow_null=True,
@@ -47,10 +43,38 @@ class MemberListSerializer(serializers.Serializer):
         validators=[],
         source="contact.last_name",
     )
+    primary_phone = PhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
+    e164_primary_phone = serializers.SerializerMethodField()
+    email = serializers.EmailField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="contact.email",
+    )
+    slug = serializers.SlugField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="user.slug",
+    )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related(
-            'contact', 'address', 'metric', 'created_by', 'last_modified_by'
+            'user', 'contact', 'address', 'metric', 'created_by', 'last_modified_by'
         )
         return queryset
+
+    def get_e164_primary_phone(self, obj):
+        """
+        Converts the "PhoneNumber" object into a "E164" format.
+        See: https://github.com/daviddrysdale/python-phonenumbers
+        """
+        try:
+            if obj.contact.primary_phone:
+                return phonenumbers.format_number(obj.contact.primary_phone, phonenumbers.PhoneNumberFormat.E164)
+            else:
+                return "-"
+        except Exception as e:
+            print("get_e164_primary_phone", e)
+            return None
