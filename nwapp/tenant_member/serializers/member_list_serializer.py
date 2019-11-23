@@ -28,18 +28,29 @@ class MemberListSerializer(serializers.Serializer):
         required=False,
         allow_blank=True,
         allow_null=True,
+        source="contact.organization_name",
     )
     organization_type_of = serializers.IntegerField(
         required=False,
         allow_null=True,
+        source="contact.organization_type_of",
     )
     first_name = serializers.CharField(
         required=True,
         allow_blank=False,
-        validators=[]
+        validators=[],
+        source="contact.first_name",
     )
     last_name = serializers.CharField(
         required=True,
         allow_blank=False,
-        validators=[]
+        validators=[],
+        source="contact.last_name",
     )
+
+    def setup_eager_loading(cls, queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.prefetch_related(
+            'contact', 'address', 'metric', 'created_by', 'last_modified_by'
+        )
+        return queryset

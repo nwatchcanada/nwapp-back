@@ -37,7 +37,11 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = Member.objects.all().order_by('last_name')
+        queryset = Member.objects.all().order_by('contact__last_name')
+
+        # Fetch all the queries.
+        s = self.get_serializer_class()
+        queryset = s.setup_eager_loading(self, queryset)
 
         # # The following code will use the 'django-filter'
         # filter = MemberFilter(self.request.GET, queryset=queryset)
