@@ -147,7 +147,7 @@ class MemberCreateSerializer(serializers.Serializer):
             last_modified_from=request.client_ip,
             last_modified_from_is_public=request.client_ip_is_routable,
         )
-        logger.info("Created member profile for shared user.")
+        logger.info("Created member.")
 
         # ------ MEMBER CONTACT ------ #
 
@@ -178,7 +178,7 @@ class MemberCreateSerializer(serializers.Serializer):
             last_modified_from=request.client_ip,
             last_modified_from_is_public=request.client_ip_is_routable,
         )
-        logger.info("Created member contact profile for shared user.")
+        logger.info("Created member contact.")
 
         # ------ MEMBER ADDRESS ------ #
 
@@ -211,7 +211,7 @@ class MemberCreateSerializer(serializers.Serializer):
             last_modified_from=request.client_ip,
             last_modified_from_is_public=request.client_ip_is_routable,
         )
-        logger.info("Created member address profile for shared user.")
+        logger.info("Created member address.")
 
         # ------ MEMBER METRICS ------ #
 
@@ -249,47 +249,13 @@ class MemberCreateSerializer(serializers.Serializer):
             organization_founding_year=organization_founding_year,
             organization_type_of=organization_type_of,
         )
+        logger.info("Created member metric.")
 
-        raise serializers.ValidationError("This a test.")
+        # Attached our tags.
+        tags = validated_data.get('tags', None)
+        if tags is not None:
+            if len(tags) > 0:
+                member_metric.tags.set(tags)
+                logger.info("Attached tag.")
 
-
-
-        # logger.info("Created customer.")
-        #
-        # #------------------------
-        # # Set our `Tag` objects.
-        # #------------------------
-        # tags = validated_data.get('tags', None)
-        # if tags is not None:
-        #     if len(tags) > 0:
-        #         customer.tags.set(tags)
-        #
-        # #-----------------------------
-        # # Create our `Comment` object.
-        # #-----------------------------
-        # extra_comment = validated_data.get('extra_comment', None)
-        # if extra_comment is not None:
-        #     comment = Comment.objects.create(
-        #         created_by=self.context['created_by'],
-        #         last_modified_by=self.context['created_by'],
-        #         text=extra_comment,
-        #         created_from = self.context['created_from'],
-        #         created_from_is_public = self.context['created_from_is_public']
-        #     )
-        #     CustomerComment.objects.create(
-        #         about=customer,
-        #         comment=comment,
-        #     )
-        #
-        # # Update validation data.
-        # # validated_data['comments'] = CustomerComment.objects.filter(customer=customer)
-        # validated_data['created_by'] = self.context['created_by']
-        # validated_data['last_modified_by'] = self.context['created_by']
-        # validated_data['extra_comment'] = None
-        # validated_data['telephone'] = telephone
-        # validated_data['fax_number'] = fax_number
-        # validated_data['other_telephone'] = other_telephone
-        # validated_data['id'] = customer.id
-
-        # Return our validated data.
-        return validated_data
+        return member
