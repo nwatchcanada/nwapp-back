@@ -478,7 +478,17 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         """
         try:
             if method_name == 'is_executive':
-                del self.draft_invoice
+                del self.is_executive
+            if method_name == 'is_management':
+                del self.is_management
+            if method_name == 'is_frontline':
+                del self.is_frontline
+            if method_name == 'is_associate':
+                del self.is_associate
+            if method_name == 'is_area_coordinator':
+                del self.is_area_coordinator
+            if method_name == 'is_member':
+                del self.is_member
             else:
                 raise Exception("Method name not found.")
         except AttributeError:
@@ -491,8 +501,32 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
 
     @cached_property
     def is_executive(self):
-        """
-        Returns either True or False depending on if this user belongs to the
-        executive group.
-        """
         return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.EXECUTIVE).exists()
+
+    @cached_property
+    def is_management(self):
+        return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.MANAGER).exists()
+
+    @cached_property
+    def is_frontline(self):
+        return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.FRONTLINE_STAFF).exists()
+
+    @cached_property
+    def is_associate(self):
+        return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE).exists()
+
+    @cached_property
+    def is_area_coordinator(self):
+        return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR).exists()
+
+    @cached_property
+    def is_member(self):
+        return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.MEMBER).exists()
+
+    def invalidate_all(self):
+        self.invalidate("is_executive")
+        self.invalidate("is_management")
+        self.invalidate("is_frontline")
+        self.invalidate("is_associate")
+        self.invalidate("is_area_coordinator")
+        self.invalidate("is_member")

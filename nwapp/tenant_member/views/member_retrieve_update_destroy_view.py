@@ -7,7 +7,9 @@ from rest_framework import generics
 from rest_framework import authentication, viewsets, permissions, status
 from rest_framework.response import Response
 
+from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_foundation.models import Member
+from tenant_member.permissions import CanRetrieveUpdateDestroyMemberPermission
 from tenant_member.serializers import (
     MemberRetrieveSerializer,
     MemberUpdateSerializer
@@ -16,7 +18,11 @@ from tenant_member.serializers import (
 
 class MemberRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (
-        # permissions.IsAuthenticatedOrReadOnly,
+        DisableOptionsPermission,
+        permissions.IsAuthenticated,
+        SharedUserIsActivePermission,
+        TenantPermission,
+        CanRetrieveUpdateDestroyMemberPermission
     )
 
     @transaction.atomic

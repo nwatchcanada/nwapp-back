@@ -278,7 +278,7 @@ class Member(models.Model):
     def get_pretty_organization_type_of(self):
         return dict(MEMBER_ORGANIZATION_TYPE_OF_CHOICES).get(self.organization_type_of)
 
-    def invalidate(self, method_name):
+    def invalidate(self, method_name): #TODO: IMPLEMENT
         """
         Function used to clear the cache for the cached property functions.
         """
