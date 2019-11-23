@@ -63,6 +63,7 @@ class MemberAddress(models.Model):
         "Member",
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name="address"
     )
     country = models.CharField(
         _("Country"),

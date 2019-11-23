@@ -18,10 +18,10 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 # )
 from tenant_member.serializers import (
     MemberCreateSerializer,
-    MemberListSerializer
+    MemberListSerializer,
+    MemberRetrieveSerializer
 )
 from tenant_foundation.models import Member
-# from tenant_foundation.constants import UNASSIGNED_CUSTOMER_TYPE_OF_ID
 
 
 class MemberListCreateAPIView(generics.ListCreateAPIView):
@@ -55,7 +55,8 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         """
         Create
         """
-        serializer = MemberCreateSerializer(data=request.data, context={'request': request,});
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        post_serializer = MemberCreateSerializer(data=request.data, context={'request': request,});
+        post_serializer.is_valid(raise_exception=True)
+        member = post_serializer.save()
+        retrieve_serializer = MemberRetrieveSerializer(member, many=False)
+        return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)

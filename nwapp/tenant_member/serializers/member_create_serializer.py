@@ -154,7 +154,7 @@ class MemberCreateSerializer(serializers.Serializer):
         is_ok_to_email = validated_data.get('is_ok_to_email')
         is_ok_to_text = validated_data.get('is_ok_to_text')
         organization_name = validated_data.get('organization_name')
-        # organization_type_of = validated_data.get('organization_type_of')
+        organization_type_of = validated_data.get('organization_type_of')
         primary_phone = validated_data.get('primary_phone', None)
         primary_phone = phonenumbers.parse(primary_phone, "CA")
         secondary_phone = validated_data.get('secondary_phone', None)
@@ -166,6 +166,7 @@ class MemberCreateSerializer(serializers.Serializer):
             is_ok_to_email=is_ok_to_email,
             is_ok_to_text=is_ok_to_text,
             organization_name=organization_name,
+            organization_type_of=organization_type_of,
             first_name=first_name,
             last_name=last_name,
             email=email,
@@ -229,7 +230,6 @@ class MemberCreateSerializer(serializers.Serializer):
         under_18_years_household_count = validated_data.get('under_18_years_household_count')
         organization_employee_count = validated_data.get('organization_employee_count')
         organization_founding_year = validated_data.get('organization_founding_year')
-        organization_type_of = validated_data.get('organization_type_of')
 
         member_metric = MemberMetric.objects.create(
             member=member,
@@ -247,7 +247,6 @@ class MemberCreateSerializer(serializers.Serializer):
             under_18_years_household_count=under_18_years_household_count,
             organization_employee_count=organization_employee_count,
             organization_founding_year=organization_founding_year,
-            organization_type_of=organization_type_of,
         )
         logger.info("Created member metric.")
 
@@ -256,6 +255,6 @@ class MemberCreateSerializer(serializers.Serializer):
         if tags is not None:
             if len(tags) > 0:
                 member_metric.tags.set(tags)
-                logger.info("Attached tag.")
+                logger.info("Attached tag to member metric.")
 
         return member

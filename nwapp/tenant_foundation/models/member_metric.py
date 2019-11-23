@@ -50,12 +50,6 @@ class MemberMetric(models.Model):
         NO = 0
         MAYBE = 2
 
-    class MEMBER_ORGANIZATION_TYPE_OF:
-        PRIVATE = 2
-        GOVERNMENT = 3
-        NON_PROFIT = 4
-        UNSPECIFIED = 1
-
     '''
     CHOICES
     '''
@@ -64,13 +58,6 @@ class MemberMetric(models.Model):
         (MEMBER_VOLUNTEER.YES, _('Yes')),
         (MEMBER_VOLUNTEER.NO, _('No')),
         (MEMBER_VOLUNTEER.MAYBE, _('Maybe')),
-    )
-
-    MEMBER_ORGANIZATION_TYPE_OF_CHOICES = (
-        (MEMBER_ORGANIZATION_TYPE_OF.PRIVATE, _('Private')),
-        (MEMBER_ORGANIZATION_TYPE_OF.GOVERNMENT, _('Government')),
-        (MEMBER_ORGANIZATION_TYPE_OF.NON_PROFIT, _('Non-Profit')),
-        (MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED, _('Unspecified')),
     )
 
     '''
@@ -87,6 +74,7 @@ class MemberMetric(models.Model):
         "Member",
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name="metric"
     )
     tags = models.ManyToManyField(
         "Tag",
@@ -191,13 +179,6 @@ class MemberMetric(models.Model):
         help_text=_('The year this organization was founded.'),
         default=0,
         blank=True,
-    )
-    organization_type_of = models.PositiveSmallIntegerField(
-        _("Organization Type of"),
-        help_text=_('The type of organization this is based on Neighbourhood Watch Canada internal classification.'),
-        default=MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED,
-        blank=True,
-        choices=MEMBER_ORGANIZATION_TYPE_OF_CHOICES,
     )
 
     # AUDITING FIELDS
