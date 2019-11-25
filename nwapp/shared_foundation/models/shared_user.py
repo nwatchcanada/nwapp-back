@@ -410,7 +410,7 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
             #TODO: HANDLE CASE IF FIRST/LAST NAMES ARE NOT UNIQUE.
             self.slug = slugify(self.get_full_name())+"-"+get_referral_code(4)
 
-        if self.tos_agreement == None or tos_agreement == None:
+        if self.tos_agreement == None or self.tos_agreement == None:
             # Open up the current "terms of agreement" file and extract the text
             # context which we will save with the user account.
             self.tos_agreement = render_to_string('account/terms_of_service/2019_05_01.txt', {})
