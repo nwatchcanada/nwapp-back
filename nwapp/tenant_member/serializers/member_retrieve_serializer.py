@@ -109,6 +109,11 @@ class MemberRetrieveSerializer(serializers.Serializer):
     organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count",)
     organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year",)
 
+    # ------ AUDITING ------ #
+
+    created_by = serializers.CharField(source="created_by.get_full_name")
+    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name")
+
     def get_e164_primary_phone(self, obj):
         """
         Converts the "PhoneNumber" object into a "E164" format.
