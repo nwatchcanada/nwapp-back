@@ -79,6 +79,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
         queryset=HowHearAboutUsItem.objects.all()
     )
     how_did_you_hear_other = serializers.CharField(source="metric.how_did_you_hear_other", required=False, allow_null=True, allow_blank=True,)
+    how_did_you_hear_label = serializers.CharField(source="metric.how_did_you_hear.text")
     expectation = serializers.PrimaryKeyRelatedField(
         source="metric.expectation",
         many=False,
@@ -87,6 +88,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
         queryset=ExpectationItem.objects.all()
     )
     expectation_other = serializers.CharField(source="metric.expectation_other", required=False, allow_null=True, allow_blank=True,)
+    expectation_label = serializers.CharField(source="metric.expectation.text")
     meaning = serializers.PrimaryKeyRelatedField(
         source="metric.meaning",
         many=False,
@@ -95,8 +97,11 @@ class MemberRetrieveSerializer(serializers.Serializer):
         queryset=MeaningItem.objects.all()
     )
     meaning_other = serializers.CharField(source="metric.meaning_other", required=False, allow_null=True, allow_blank=True,)
-    gender = serializers.CharField(source="metric.gender",)
+    meaning_label = serializers.CharField(source="metric.meaning.text")
+    gender = serializers.IntegerField(source="metric.gender",)
+    gender_label = serializers.CharField(source="metric.get_pretty_gender",)
     willing_to_volunteer = serializers.IntegerField(source="metric.willing_to_volunteer",)
+    willing_to_volunteer_label = serializers.CharField(source="metric.get_pretty_willing_to_volunteer",)
     another_household_member_registered = serializers.BooleanField(source="metric.another_household_member_registered",)
     year_of_birth = serializers.IntegerField(source="metric.year_of_birth",)
     total_household_count = serializers.IntegerField(source="metric.total_household_count",)

@@ -50,6 +50,11 @@ class MemberMetric(models.Model):
         NO = 0
         MAYBE = 2
 
+    class MEMBER_GENDER:
+        MALE = 1
+        FEMALE = 2
+        PREFER_NOT_TO_SAY = 3
+
     '''
     CHOICES
     '''
@@ -58,6 +63,12 @@ class MemberMetric(models.Model):
         (MEMBER_VOLUNTEER.YES, _('Yes')),
         (MEMBER_VOLUNTEER.NO, _('No')),
         (MEMBER_VOLUNTEER.MAYBE, _('Maybe')),
+    )
+
+    MEMBER_GENDER_CHOICES = (
+        (MEMBER_GENDER.MALE, _('Male')),
+        (MEMBER_GENDER.FEMALE, _('Female')),
+        (MEMBER_GENDER.PREFER_NOT_TO_SAY, _('Prefer not to say')),
     )
 
     '''
@@ -130,12 +141,12 @@ class MemberMetric(models.Model):
         null=True,
         default="Did not answer"
     )
-    gender = models.CharField(
+    gender = models.PositiveSmallIntegerField(
         _("Gender"),
-        max_length=31,
         help_text=_('Gender of the person. While `Male` and `Female` may be used, text strings are also acceptable for people who do not identify as a binary gender.'),
         blank=True,
-        null=True,
+        default=MEMBER_GENDER.PREFER_NOT_TO_SAY,
+        choices=MEMBER_GENDER_CHOICES,
     )
     willing_to_volunteer = models.PositiveSmallIntegerField(
         _("Willing to willing_to_volunteer?"),
@@ -247,3 +258,10 @@ class MemberMetric(models.Model):
         out the saving operation by Django in our ORM.
         '''
         super(MemberMetric, self).save(*args, **kwargs)
+
+    def get_pretty_gender(self):
+        return "TODO: IMPLEMENT"
+        # return str(dict(MemberMetric.MEMBER_GENDER).get(self.gender))
+
+    def get_pretty_willing_to_volunteer(self):
+        return str(dict(MemberMetric.MEMBER_VOLUNTEER_CHOICES).get(self.willing_to_volunteer))
