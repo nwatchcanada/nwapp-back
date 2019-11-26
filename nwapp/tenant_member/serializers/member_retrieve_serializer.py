@@ -32,6 +32,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
 
     slug = serializers.SlugField(source="user.slug")
     type_of = serializers.IntegerField()
+    type_of_label = serializers.CharField(source="get_pretty_type_of")
 
     # ------ MEMBER CONTACT ------ #
 

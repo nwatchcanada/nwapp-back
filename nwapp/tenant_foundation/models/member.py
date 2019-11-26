@@ -72,9 +72,9 @@ class Member(models.Model):
         INACTIVE = 'inactive'
 
     class MEMBER_TYPE_OF:
-        BUSINESS = 'business'
-        RESIDENTIAL = 'residential'
-        COMMUNITY_CARES = 'community_cares'
+        RESIDENTIAL = 1
+        BUSINESS = 2
+        COMMUNITY_CARES = 3
 
     class MEMBER_DEACTIVATION_REASON:
         NOT_SPECIFIED = 0
@@ -267,16 +267,16 @@ class Member(models.Model):
         super(Member, self).save(*args, **kwargs)
 
     def get_pretty_state(self):
-        return dict(MEMBER_STATE_CHOICES).get(self.state)
+        return str(dict(Member.MEMBER_STATE_CHOICES).get(self.state))
 
     def get_pretty_type_of(self):
-        return dict(MEMBER_TYPE_OF_CHOICES).get(self.type_of)
+        return str(dict(Member.MEMBER_TYPE_OF_CHOICES).get(self.type_of))
 
     def get_pretty_deactivation_reason(self):
-        return dict(MEMBER_DEACTIVATION_REASON_CHOICES).get(self.deactivation_reason)
+        return str(dict(Member.MEMBER_DEACTIVATION_REASON_CHOICES).get(self.deactivation_reason))
 
     def get_pretty_organization_type_of(self):
-        return dict(MEMBER_ORGANIZATION_TYPE_OF_CHOICES).get(self.organization_type_of)
+        return str(dict(Member.MEMBER_ORGANIZATION_TYPE_OF_CHOICES).get(self.organization_type_of))
 
     def invalidate(self, method_name): #TODO: IMPLEMENT
         """
