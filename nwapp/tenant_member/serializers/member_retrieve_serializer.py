@@ -60,6 +60,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     street_type_other = serializers.CharField(source="address.street_type_other")
     street_direction = serializers.CharField(source="address.street_direction")
     postal_code = serializers.CharField(source="address.postal_code")
+    address = serializers.CharField(source="address.street_address")
 
     # ------ MEMBER WATCH ------ #
 

@@ -45,9 +45,48 @@ class MemberAddress(models.Model):
     CONSTANTS
     '''
 
+    class STREET_TYPE:
+        OTHER = 1
+        AVENUE = 2
+        DRIVE = 3
+        ROAD = 4
+        STREET = 5
+        WAY = 6
+
+    class STREET_DIRECTION:
+        NONE = 0
+        EAST = 1
+        NORTH = 2
+        NORTH_EAST = 3
+        NORTH_WEST = 4
+        SOUTH = 5
+        SOUTH_EAST = 6
+        SOUTH_WEST = 7
+        WEST = 8
+
     '''
     CHOICES
     '''
+
+    STREET_TYPE_CHOICES = (
+        (STREET_TYPE.AVENUE, _('Avenue')),
+        (STREET_TYPE.DRIVE, _('Drive')),
+        (STREET_TYPE.ROAD, _('Road')),
+        (STREET_TYPE.STREET, _('Street')),
+        (STREET_TYPE.WAY, _('Way')),
+    )
+
+    STREET_DIRECTION_CHOICES = (
+        (STREET_DIRECTION.NONE, _('-')),
+        (STREET_DIRECTION.EAST, _('East')),
+        (STREET_DIRECTION.NORTH, _('North')),
+        (STREET_DIRECTION.NORTH_EAST, _('North East')),
+        (STREET_DIRECTION.NORTH_WEST, _('North West')),
+        (STREET_DIRECTION.SOUTH, _('South')),
+        (STREET_DIRECTION.SOUTH_EAST, _('South East')),
+        (STREET_DIRECTION.SOUTH_WEST, _('South West')),
+        (STREET_DIRECTION.WEST, _('West')),
+    )
 
     '''
     OBJECT MANAGERS
@@ -101,26 +140,24 @@ class MemberAddress(models.Model):
         null=True,
         blank=True,
     )
-    street_type = models.CharField(
-        _("Region"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
-        blank=True,
+    street_type = models.PositiveSmallIntegerField(
+        _("Street Type"),
+        help_text=_('Please select the street type.'),
+        choices=STREET_TYPE_CHOICES,
     )
     street_type_other = models.CharField(
-        _("Street Type Other"),
+        _("Street Type (Other)"),
         max_length=127,
-        help_text=_('-'),
+        help_text=_('Please select the street type not listed in our types.'),
         null=True,
         blank=True,
     )
-    street_direction = models.CharField(
+    street_direction = models.PositiveSmallIntegerField(
         _("Street Direction"),
-        max_length=127,
-        help_text=_('-'),
-        null=True,
+        help_text=_('Please select the street direction.'),
+        choices=STREET_DIRECTION_CHOICES,
         blank=True,
+        default=STREET_DIRECTION.NONE,
     )
     postal_code = models.CharField(
         _("Postal Code"),
@@ -224,10 +261,23 @@ class MemberAddress(models.Model):
         '''
         super(MemberAddress, self).save(*args, **kwargs)
 
+    def get_pretty_street_type(self):
+        return dict(MemberAddress.STREET_TYPE_CHOICES).get(self.street_type)
+
     @cached_property
     def street_address(self):
         address = ""
-        return None
+        if self.apartment_unit:
+            address = self.apartment_unit + " - "
+        address += str(self.street_number) + " "
+        address += str(self.street_name) + " "
+        if self.street_type == MemberAddress.STREET_TYPE.OTHER:
+            address += self.street_type_other
+        else:
+            address += self.get_pretty_street_type()
+
+        # street_type street_type_other street_direction postal_code
+        return address
 
     @cached_property
     def postal_address_without_postal_code(self):
