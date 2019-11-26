@@ -61,6 +61,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     street_direction = serializers.CharField(source="address.street_direction")
     postal_code = serializers.CharField(source="address.postal_code")
     address = serializers.CharField(source="address.street_address")
+    google_maps_url = serializers.URLField(source="address.google_maps_url")
 
     # ------ MEMBER WATCH ------ #
 

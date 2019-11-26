@@ -262,37 +262,40 @@ class MemberAddress(models.Model):
         super(MemberAddress, self).save(*args, **kwargs)
 
     def get_pretty_street_type(self):
-        return dict(MemberAddress.STREET_TYPE_CHOICES).get(self.street_type)
+        return str(dict(MemberAddress.STREET_TYPE_CHOICES).get(self.street_type))
+
+    def get_pretty_street_direction(self):
+        return str(dict(MemberAddress.STREET_DIRECTION_CHOICES).get(self.street_direction))
 
     @cached_property
     def street_address(self):
         address = ""
         if self.apartment_unit:
-            address = self.apartment_unit + " - "
+            address = self.apartment_unit + "-"
         address += str(self.street_number) + " "
         address += str(self.street_name) + " "
         if self.street_type == MemberAddress.STREET_TYPE.OTHER:
             address += self.street_type_other
         else:
             address += self.get_pretty_street_type()
-
-        # street_type street_type_other street_direction postal_code
+        if self.street_direction != MemberAddress.STREET_DIRECTION.NONE:
+            address += self.get_pretty_street_direction()
         return address
 
     @cached_property
     def postal_address_without_postal_code(self):
         address = ""
         address += self.street_address
-        address += ', ' + self.address_locality
-        address += ', ' + self.address_region
-        address += ', ' + self.address_country
-        return address
+        address += ', ' + self.locality
+        address += ', ' + self.region
+        address += ', ' + self.country
+        return str(address)
 
     @cached_property
     def postal_address(self):
-        address = self.postal_address_without_postal_code()
-        address += ', ' + self.postal_code.upper()
-        return address
+        the_address = self.postal_address_without_postal_code
+        the_address += ', ' + self.postal_code.upper()
+        return the_address
 
     @cached_property
     def google_maps_url(self):

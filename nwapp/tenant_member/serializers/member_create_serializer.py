@@ -62,9 +62,9 @@ class MemberCreateSerializer(serializers.Serializer):
     street_number = serializers.CharField()
     street_name =serializers.CharField()
     apartment_unit = serializers.CharField()
-    street_type = serializers.CharField()
+    street_type = serializers.ChoiceField(choices=MemberAddress.STREET_TYPE_CHOICES,)
     street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    street_direction = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    street_direction = serializers.ChoiceField(required=False, allow_null=True, allow_blank=True,choices=MemberAddress.STREET_DIRECTION_CHOICES,)
     postal_code = serializers.CharField()
 
     # ------ MEMBER WATCH ------ #
