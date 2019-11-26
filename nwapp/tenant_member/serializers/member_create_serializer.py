@@ -33,8 +33,8 @@ class MemberCreateSerializer(serializers.Serializer):
 
     # ------ MEMBER CONTACT ------ #
 
-    is_ok_to_email = serializers.IntegerField()
-    is_ok_to_text = serializers.IntegerField()
+    is_ok_to_email = serializers.BooleanField()
+    is_ok_to_text = serializers.BooleanField()
     organization_name = serializers.CharField(
         required=False,
         allow_blank=True,
@@ -43,7 +43,11 @@ class MemberCreateSerializer(serializers.Serializer):
             UniqueValidator(queryset=MemberContact.objects.all()),
         ],
     )
-    organization_type_of = serializers.IntegerField(required=False,allow_null=True,)
+    organization_type_of = serializers.ChoiceField(
+        required=False,
+        allow_null=True,
+        choices=MemberContact.MEMBER_ORGANIZATION_TYPE_OF_CHOICES,
+    )
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email = serializers.EmailField(
