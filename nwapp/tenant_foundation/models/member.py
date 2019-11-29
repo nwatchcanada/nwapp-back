@@ -8,7 +8,6 @@ from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
-from phonenumber_field.modelfields import PhoneNumberField
 
 from shared_foundation.models import SharedUser
 

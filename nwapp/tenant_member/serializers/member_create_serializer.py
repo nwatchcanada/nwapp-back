@@ -107,11 +107,11 @@ class MemberCreateSerializer(serializers.Serializer):
     willing_to_volunteer = serializers.IntegerField()
     another_household_member_registered = serializers.BooleanField()
     year_of_birth = serializers.IntegerField()
-    total_household_count = serializers.IntegerField()
-    under_18_years_household_count = serializers.IntegerField()
-    organization_employee_count = serializers.IntegerField()
-    organization_founding_year = serializers.IntegerField()
-    organization_type_of = serializers.IntegerField()
+    total_household_count = serializers.IntegerField(required=False,)
+    under_18_years_household_count = serializers.IntegerField(required=False,)
+    organization_employee_count = serializers.IntegerField(required=False,)
+    organization_founding_year = serializers.IntegerField(required=False,)
+    organization_type_of = serializers.IntegerField(required=False,)
 
     def create(self, validated_data):
         """

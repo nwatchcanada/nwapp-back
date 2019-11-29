@@ -15,6 +15,7 @@ class PhoneNumberField(serializers.Field):
         try:
             return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.NATIONAL)
         except Exception as e:
+            print("shared_foundation | PhoneNumberField | to_representation | e:", e)
             return None
 
     def to_internal_value(self, text):
@@ -26,6 +27,7 @@ class PhoneNumberField(serializers.Field):
             obj = phonenumbers.parse(text, "CA")
             return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.NATIONAL)
         except Exception as e:
+            print("shared_foundation | PhoneNumberField | to_internal_value | e:", e)
             return None
 
 # python-phonenumbers - https://github.com/daviddrysdale/python-phonenumbers
