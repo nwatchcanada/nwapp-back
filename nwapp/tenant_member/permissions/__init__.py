@@ -1,0 +1,2 @@
+from tenant_member.permissions.member_contact_permissions import CanListCreateMemberContactPermission, CanRetrieveUpdateDestroyMemberContactPermission
+from tenant_member.permissions.member_permissions import CanListCreateMemberPermission, CanRetrieveUpdateDestroyMemberPermission

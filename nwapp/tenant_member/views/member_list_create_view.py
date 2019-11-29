@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 # from tenant_api.filters.member import MemberFilter
-from tenant_member.permissions import CanListCreateMemberRootPermission
+from tenant_member.permissions import CanListCreateMemberPermission
 from tenant_member.serializers import (
     MemberCreateSerializer,
     MemberListSerializer,
@@ -27,7 +27,7 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         permissions.IsAuthenticated,
         SharedUserIsActivePermission,
         TenantPermission,
-        CanListCreateMemberRootPermission
+        CanListCreateMemberPermission
     )
     # filter_backends = (filters.SearchFilter, DjangoFilterBackend)
     # search_fields = ('@given_name', '@middle_name', '@last_name', '@email', 'telephone',)

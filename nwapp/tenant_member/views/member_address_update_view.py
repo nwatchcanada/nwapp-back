@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_foundation.models import Member
-from tenant_member.permissions import CanRetrieveUpdateDestroyMemberRootPermission
+from tenant_member.permissions import CanRetrieveUpdateDestroyMemberPermission
 from tenant_member.serializers import MemberRetrieveSerializer, MemberUpdateSerializer
 
 
@@ -19,7 +19,7 @@ class MemberAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticated,
         SharedUserIsActivePermission,
         TenantPermission,
-        CanRetrieveUpdateDestroyMemberRootPermission
+        CanRetrieveUpdateDestroyMemberPermission
     )
 
     @transaction.atomic
