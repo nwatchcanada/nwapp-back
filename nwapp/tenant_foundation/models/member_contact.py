@@ -9,7 +9,7 @@ from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
-from shared_foundation.models import SharedUser
+from shared_foundation.models import SharedUser, e164_phone_regex
 
 # Override the validator to have our custom message.
 email_validator = EmailValidator(message=_("Invalid email"))
@@ -157,6 +157,7 @@ class MemberContact(models.Model):
         blank=True,
         null=True,
         max_length=31,
+        validators=[e164_phone_regex],
     )
     secondary_phone = models.CharField(
         _("Secondary Telephone"),
@@ -164,6 +165,7 @@ class MemberContact(models.Model):
         blank=True,
         null=True,
         max_length=31,
+        validators=[e164_phone_regex],
     )
 
     # AUDITING FIELDS

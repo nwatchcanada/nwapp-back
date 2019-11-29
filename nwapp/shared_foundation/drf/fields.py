@@ -18,12 +18,13 @@ class E164PhoneNumberField(serializers.Field):
         representation.
         """
         try:
-            country_code = self.context.get('request').tenant.country_code
-            obj = phonenumbers.parse(text, country_code)
-            return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.E164)
+            if text:
+                country_code = self.context.get('request').tenant.country_code
+                obj = phonenumbers.parse(text, country_code)
+                return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.E164)
         except Exception as e:
             print("shared_foundation | E164PhoneNumberField | to_representation | e:", e)
-            return None
+        return None
 
     def to_internal_value(self, text):
         """
@@ -31,12 +32,13 @@ class E164PhoneNumberField(serializers.Field):
         representation.
         """
         try:
-            country_code = self.context.get('request').tenant.country_code
-            obj = phonenumbers.parse(text, country_code)
-            return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.E164)
+            if text:
+                country_code = self.context.get('request').tenant.country_code
+                obj = phonenumbers.parse(text, country_code)
+                return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.E164)
         except Exception as e:
             print("shared_foundation | E164PhoneNumberField | to_internal_value | e:", e)
-            return None
+        return None
 
 class NationalPhoneNumberField(serializers.Field):
     """
