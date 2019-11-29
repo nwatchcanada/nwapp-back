@@ -8,6 +8,8 @@ class E164PhoneNumberField(serializers.Field):
     This objects is from the "python-phonenumbers" library. This class will
     convert the telephone string into a `E164` formatted telephone string.
 
+    Format: +1xxxyyyzzzz
+
     Class is integrated with the `SharedOrganization` object and is required
     to be placed in the Django REST Framework `context` using the `request`
     key.
@@ -45,6 +47,8 @@ class NationalPhoneNumberField(serializers.Field):
     Class used to convert the "PhoneNumber" objects "to" and "from" strings.
     This objects is from the "python-phonenumbers" library. This class will
     convert the telephone string into a `NATIONAL` formatted telephone string.
+
+    Format: +(xxx) xxx-xxxx
 
     Class is integrated with the `SharedOrganization` object and is required
     to be placed in the Django REST Framework `context` using the `request`

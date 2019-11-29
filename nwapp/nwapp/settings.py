@@ -460,12 +460,6 @@ SESSION_REDIS = {
 }
 
 
-# django-phonenumber-field
-# https://github.com/stefanfoulis/django-phonenumber-field
-
-PHONENUMBER_DEFAULT_REGION = 'CA'  # ISO-3166-1 Country: Canada
-PHONENUMBER_DB_FORMAT = 'E164'     # Format: +1xxxyyyzzzz
-
 
 # # sorl-thumbnail
 # # https://github.com/jazzband/sorl-thumbnail
