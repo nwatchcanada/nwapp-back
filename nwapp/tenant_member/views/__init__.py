@@ -1,2 +1,6 @@
 from tenant_member.views.member_list_create_view import MemberListCreateAPIView
 from tenant_member.views.member_retrieve_update_destroy_view import MemberRetrieveUpdateDestroyAPIView
+from tenant_member.views.member_retrieve_view import MemberRetrieveAPIView
+from tenant_member.views.member_address_update_view import MemberAddressUpdateAPIView
+from tenant_member.views.member_contact_update_view import MemberContactUpdateAPIView
+from tenant_member.views.member_metric_update_view import MemberMetricUpdateAPIView
