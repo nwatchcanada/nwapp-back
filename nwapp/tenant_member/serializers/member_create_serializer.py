@@ -164,6 +164,13 @@ class MemberCreateSerializer(serializers.Serializer):
         if secondary_phone is not None:
             secondary_phone = phonenumbers.parse(secondary_phone, "CA")
 
+        # DEVELOPERS NOTE:
+        # (1) Non-business members cannot have the following fields set,
+        #     therefore we need to remove the data if the user submits them.
+        if type_of != Member.MEMBER_TYPE_OF.BUSINESS:
+            organization_name = None
+            organization_type_of = MemberContact.MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED
+
         member_contact = MemberContact.objects.create(
             member=member,
             is_ok_to_email=is_ok_to_email,
@@ -234,6 +241,13 @@ class MemberCreateSerializer(serializers.Serializer):
         organization_employee_count = validated_data.get('organization_employee_count')
         organization_founding_year = validated_data.get('organization_founding_year')
 
+        # DEVELOPERS NOTE:
+        # (1) Non-business members cannot have the following fields set,
+        #     therefore we need to remove the data if the user submits them.
+        if type_of != Member.MEMBER_TYPE_OF.BUSINESS:
+            organization_employee_count = None
+            organization_founding_year = None
+
         member_metric = MemberMetric.objects.create(
             member=member,
             how_did_you_hear=how_did_you_hear,
@@ -259,5 +273,9 @@ class MemberCreateSerializer(serializers.Serializer):
             if len(tags) > 0:
                 member_metric.tags.set(tags)
                 logger.info("Attached tag to member metric.")
+
+        # raise serializers.ValidationError({
+        #     "error": "For debugging purposes only."
+        # })
 
         return member

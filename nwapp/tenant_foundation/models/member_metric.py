@@ -159,7 +159,7 @@ class MemberMetric(models.Model):
         _("Another Household Member Registered?"),
         help_text=_('Is there another member of your household which is registered with us?'),
         default=False,
-        blank=True
+        null=True,
     )
     year_of_birth = models.PositiveSmallIntegerField(
         _("Year of Birth"),
@@ -171,24 +171,24 @@ class MemberMetric(models.Model):
         _("Total Household Count"),
         help_text=_('How many people are in your household?'),
         blank=True,
-        default=0,
+        null=True,
     )
     under_18_years_household_count = models.PositiveSmallIntegerField(
         _("Under 18 Years Household Count"),
         help_text=_('How many people in your household are under the age of 18?'),
         blank=True,
-        default=0,
+        null=True,
     )
     organization_employee_count = models.PositiveSmallIntegerField(
         _("Organization Employee Count"),
         help_text=_('The employee count at this member\'s organization.'),
-        default=0,
+        null=True,
         blank=True,
     )
     organization_founding_year = models.PositiveSmallIntegerField(
         _("Organization Founding Year"),
         help_text=_('The year this organization was founded.'),
-        default=0,
+        null=True,
         blank=True,
     )
 
@@ -260,8 +260,7 @@ class MemberMetric(models.Model):
         super(MemberMetric, self).save(*args, **kwargs)
 
     def get_pretty_gender(self):
-        return "TODO: IMPLEMENT"
-        # return str(dict(MemberMetric.MEMBER_GENDER).get(self.gender))
+        return str(dict(MemberMetric.MEMBER_GENDER_CHOICES).get(self.gender))
 
     def get_pretty_willing_to_volunteer(self):
         return str(dict(MemberMetric.MEMBER_VOLUNTEER_CHOICES).get(self.willing_to_volunteer))
