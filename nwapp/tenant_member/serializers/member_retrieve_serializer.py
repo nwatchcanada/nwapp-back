@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from shared_foundation.constants import MEMBER_GROUP_ID
+from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
@@ -42,9 +43,10 @@ class MemberRetrieveSerializer(serializers.Serializer):
     last_name = serializers.CharField(source="contact.last_name")
     full_name = serializers.SerializerMethodField()
     email = serializers.EmailField(source="contact.email")
-    primary_phone = serializers.CharField(source="contact.primary_phone")
-    primary_phone_e164 = serializers.CharField(allow_null=False, required=True,source="contact.primary_phone_e164")
-    secondary_phone = serializers.CharField(source="contact.secondary_phone")
+    primary_phone_e164 = E164PhoneNumberField(source="contact.primary_phone")
+    primary_phone_national = NationalPhoneNumberField(source="contact.primary_phone")
+    secondary_phone_e164 = E164PhoneNumberField(source="contact.secondary_phone")
+    secondary_phone_national = NationalPhoneNumberField(source="contact.secondary_phone")
 
     # ------ MEMBER ADDRESS ------ #
 

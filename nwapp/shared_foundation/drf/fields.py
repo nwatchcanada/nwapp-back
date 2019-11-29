@@ -2,20 +2,27 @@ import phonenumbers
 from rest_framework import serializers
 
 
-class PhoneNumberField(serializers.Field):
+class E164PhoneNumberField(serializers.Field):
     """
     Class used to convert the "PhoneNumber" objects "to" and "from" strings.
-    This objects is from the "python-phonenumbers" library.
+    This objects is from the "python-phonenumbers" library. This class will
+    convert the telephone string into a `E164` formatted telephone string.
+
+    Class is integrated with the `SharedOrganization` object and is required
+    to be placed in the Django REST Framework `context` using the `request`
+    key.
     """
-    def to_representation(self, obj):
+    def to_representation(self, text):
         """
         Function used to convert the PhoneNumber object to text string
         representation.
         """
         try:
-            return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.NATIONAL)
+            country_code = self.context.get('request').tenant.country_code
+            obj = phonenumbers.parse(text, country_code)
+            return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.E164)
         except Exception as e:
-            print("shared_foundation | PhoneNumberField | to_representation | e:", e)
+            print("shared_foundation | E164PhoneNumberField | to_representation | e:", e)
             return None
 
     def to_internal_value(self, text):
@@ -24,11 +31,49 @@ class PhoneNumberField(serializers.Field):
         representation.
         """
         try:
-            obj = phonenumbers.parse(text, "CA")
+            country_code = self.context.get('request').tenant.country_code
+            obj = phonenumbers.parse(text, country_code)
+            return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.E164)
+        except Exception as e:
+            print("shared_foundation | E164PhoneNumberField | to_internal_value | e:", e)
+            return None
+
+class NationalPhoneNumberField(serializers.Field):
+    """
+    Class used to convert the "PhoneNumber" objects "to" and "from" strings.
+    This objects is from the "python-phonenumbers" library. This class will
+    convert the telephone string into a `NATIONAL` formatted telephone string.
+
+    Class is integrated with the `SharedOrganization` object and is required
+    to be placed in the Django REST Framework `context` using the `request`
+    key.
+    """
+    def to_representation(self, text):
+        """
+        Function used to convert the PhoneNumber object to text string
+        representation.
+        """
+        try:
+            country_code = self.context.get('request').tenant.country_code
+            obj = phonenumbers.parse(text, country_code)
             return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.NATIONAL)
         except Exception as e:
-            print("shared_foundation | PhoneNumberField | to_internal_value | e:", e)
+            print("shared_foundation | NationalPhoneNumberField | to_representation | e:", e)
             return None
+
+    def to_internal_value(self, text):
+        """
+        Function used to conver the text into the PhoneNumber object
+        representation.
+        """
+        try:
+            country_code = self.context.get('request').tenant.country_code
+            obj = phonenumbers.parse(text, country_code)
+            return phonenumbers.format_number(obj, phonenumbers.PhoneNumberFormat.NATIONAL)
+        except Exception as e:
+            print("shared_foundation | NationalPhoneNumberField | to_internal_value | e:", e)
+            return None
+
 
 # python-phonenumbers - https://github.com/daviddrysdale/python-phonenumbers
 # Custom Fields - http://www.django-rest-framework.org/api-guide/fields/#custom-fields

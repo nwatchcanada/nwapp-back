@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from shared_foundation.constants import MEMBER_GROUP_ID
+from shared_foundation.drf.fields import E164PhoneNumberField
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
@@ -53,8 +54,8 @@ class MemberCreateSerializer(serializers.Serializer):
             UniqueValidator(queryset=SharedUser.objects.all()),
         ],
     )
-    primary_phone = serializers.CharField()
-    secondary_phone = serializers.CharField(allow_null=True, required=False)
+    primary_phone = E164PhoneNumberField()
+    secondary_phone = E164PhoneNumberField(allow_null=True, required=False)
 
     # ------ MEMBER ADDRESS ------ #
 

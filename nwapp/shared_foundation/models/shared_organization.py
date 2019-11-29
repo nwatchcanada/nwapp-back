@@ -286,6 +286,16 @@ class SharedOrganization(TenantMixin):
     def is_public(self):
         return self.schema_name == "public"
 
+    @cached_property
+    def country_code(self):
+        if self.country == "Canada":
+            return "CA"
+
+        #TODO: Pay off technical debit by finding out how to handle other countries.
+        else:
+            print("SharedOrganization | country_code | COUNTRY NOT SPECIFIED")
+            return "CA"
+
 
 class SharedOrganizationDomain(DomainMixin):
     class Meta:

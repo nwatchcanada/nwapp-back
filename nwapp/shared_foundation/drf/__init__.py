@@ -5,6 +5,7 @@ from shared_foundation.drf.permissions import (
     TenantPermission
 )
 from shared_foundation.drf.fields import (
-    PhoneNumberField,
+    E164PhoneNumberField,
+    NationalPhoneNumberField,
     GenericFileBase64File
 )

@@ -14,7 +14,7 @@ from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
-
+from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
 # from tenant_foundation.constants import *
 from tenant_foundation.models import Member
 
@@ -41,8 +41,8 @@ class MemberListSerializer(serializers.Serializer):
         validators=[],
         source="contact.last_name",
     )
-    primary_phone = serializers.CharField(allow_null=False, required=True,source="contact.primary_phone",)
-    primary_phone_e164 = serializers.CharField(allow_null=False, required=True,source="contact.primary_phone_e164",)
+    primary_phone_e164 = E164PhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
+    primary_phone_national = NationalPhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
     email = serializers.EmailField(
         required=True,
         allow_blank=False,
