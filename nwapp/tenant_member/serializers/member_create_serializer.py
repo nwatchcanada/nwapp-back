@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import phonenumbers
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
@@ -15,7 +14,6 @@ from rest_framework.validators import UniqueValidator
 
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.models import SharedUser
-from shared_foundation.drf.fields import PhoneNumberField
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
@@ -55,8 +53,8 @@ class MemberCreateSerializer(serializers.Serializer):
             UniqueValidator(queryset=SharedUser.objects.all()),
         ],
     )
-    primary_phone = PhoneNumberField()
-    secondary_phone = PhoneNumberField(allow_null=True, required=False)
+    primary_phone = serializers.CharField()
+    secondary_phone = serializers.CharField(allow_null=True, required=False)
 
     # ------ MEMBER ADDRESS ------ #
 
@@ -68,7 +66,7 @@ class MemberCreateSerializer(serializers.Serializer):
     apartment_unit = serializers.CharField()
     street_type = serializers.ChoiceField(choices=MemberAddress.STREET_TYPE_CHOICES,)
     street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    street_direction = serializers.ChoiceField(required=False, allow_null=True, allow_blank=True,choices=MemberAddress.STREET_DIRECTION_CHOICES,)
+    street_direction = serializers.ChoiceField(choices=MemberAddress.STREET_DIRECTION_CHOICES,)
     postal_code = serializers.CharField()
 
     # ------ MEMBER WATCH ------ #
@@ -159,10 +157,7 @@ class MemberCreateSerializer(serializers.Serializer):
         organization_name = validated_data.get('organization_name')
         organization_type_of = validated_data.get('organization_type_of')
         primary_phone = validated_data.get('primary_phone', None)
-        primary_phone = phonenumbers.parse(primary_phone, "CA")
         secondary_phone = validated_data.get('secondary_phone', None)
-        if secondary_phone is not None:
-            secondary_phone = phonenumbers.parse(secondary_phone, "CA")
 
         # DEVELOPERS NOTE:
         # (1) Non-business members cannot have the following fields set,
@@ -201,7 +196,7 @@ class MemberCreateSerializer(serializers.Serializer):
         apartment_unit = validated_data.get('apartment_unit', None)
         street_type = validated_data.get('street_type', None)
         street_type_other = validated_data.get('street_type_other', None)
-        street_direction = validated_data.get('street_direction', None)
+        street_direction = validated_data.get('street_direction', MemberAddress.STREET_DIRECTION.NONE)
         postal_code = validated_data.get('postal_code', None)
         member_address = MemberAddress.objects.create(
             member=member,
@@ -274,8 +269,8 @@ class MemberCreateSerializer(serializers.Serializer):
                 member_metric.tags.set(tags)
                 logger.info("Attached tag to member metric.")
 
-        # raise serializers.ValidationError({
-        #     "error": "For debugging purposes only."
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
         # })
 
         return member

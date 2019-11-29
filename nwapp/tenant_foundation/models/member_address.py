@@ -1,4 +1,3 @@
-import phonenumbers
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.core.validators import EmailValidator
@@ -8,7 +7,6 @@ from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
-from phonenumber_field.modelfields import PhoneNumberField
 
 from shared_foundation.models import SharedUser
 
@@ -268,6 +266,14 @@ class MemberAddress(models.Model):
         return str(dict(MemberAddress.STREET_DIRECTION_CHOICES).get(self.street_direction))
 
     @cached_property
+    def country_code(self):
+        if self.country == "Canada":
+            return "CA"
+        else:
+            print("country_code - COUNTRY NOT SPECIFIED")
+            return "CA" #TODO: Pay off technical debit by finding out how to handle other countries.
+
+    @cached_property
     def street_address(self):
         address = ""
         if self.apartment_unit:
@@ -310,6 +316,8 @@ class MemberAddress(models.Model):
         try:
             if method_name == 'fullname':
                 del self.fullname
+            if method_name == 'country_code':
+                del self.country_code
             if method_name == 'street_address':
                 del self.street_address
             if method_name == 'postal_address_without_postal_code':
@@ -325,6 +333,7 @@ class MemberAddress(models.Model):
 
     def invalidate_all(self):
         self.invalidate("fullname")
+        self.invalidate("country_code")
         self.invalidate("street_address")
         self.invalidate("postal_address_without_postal_code")
         self.invalidate("postal_address")

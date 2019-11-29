@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import phonenumbers
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
@@ -15,7 +14,6 @@ from rest_framework.validators import UniqueValidator
 
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.models import SharedUser
-from shared_foundation.drf.fields import PhoneNumberField
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
@@ -44,10 +42,9 @@ class MemberRetrieveSerializer(serializers.Serializer):
     last_name = serializers.CharField(source="contact.last_name")
     full_name = serializers.SerializerMethodField()
     email = serializers.EmailField(source="contact.email")
-    primary_phone = PhoneNumberField(source="contact.primary_phone")
-    e164_primary_phone = serializers.SerializerMethodField()
-    secondary_phone = PhoneNumberField(source="contact.secondary_phone")
-    e164_secondary_phone = serializers.SerializerMethodField()
+    primary_phone = serializers.CharField(source="contact.primary_phone")
+    primary_phone_e164 = serializers.CharField(allow_null=False, required=True,source="contact.primary_phone_e164")
+    secondary_phone = serializers.CharField(source="contact.secondary_phone")
 
     # ------ MEMBER ADDRESS ------ #
 
@@ -114,33 +111,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     created_by = serializers.CharField(source="created_by.get_full_name")
     last_modified_by = serializers.CharField(source="last_modified_by.get_full_name")
 
-    def get_e164_primary_phone(self, obj):
-        """
-        Converts the "PhoneNumber" object into a "E164" format.
-        See: https://github.com/daviddrysdale/python-phonenumbers
-        """
-        try:
-            if obj.contact.primary_phone:
-                return phonenumbers.format_number(obj.contact.primary_phone, phonenumbers.PhoneNumberFormat.E164)
-            else:
-                return "-"
-        except Exception as e:
-            print(e)
-            return None
-
-    def get_e164_secondary_phone(self, obj):
-        """
-        Converts the "PhoneNumber" object into a "E164" format.
-        See: https://github.com/daviddrysdale/python-phonenumbers
-        """
-        try:
-            if obj.contact.secondary_phone:
-                return phonenumbers.format_number(obj.contact.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
-            else:
-                return "-"
-        except Exception as e:
-            print(e)
-            return None
+    # ------ FUNCTIONS ------ #
 
     def get_full_name(self, obj):
         try:

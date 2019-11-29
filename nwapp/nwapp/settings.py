@@ -78,7 +78,7 @@ SHARED_APPS = ( # (Django-Tenants)
     'oauth2_provider',
     'djmoney',
     # 'anymail',
-    'phonenumber_field',
+    # 'phonenumber_field',
     # 'storages',
     # 'sorl.thumbnail',
     # # . . .

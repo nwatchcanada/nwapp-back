@@ -8,7 +8,6 @@ from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
-from phonenumber_field.modelfields import PhoneNumberField
 
 from shared_foundation.models import SharedUser
 
@@ -152,17 +151,19 @@ class MemberContact(models.Model):
         validators=[email_validator],
         db_index=True
     )
-    primary_phone = PhoneNumberField(
+    primary_phone = models.CharField(
         _("Primary Telephone"),
         help_text=_('The primary telephone number used by the member.'),
         blank=True,
         null=True,
+        max_length=31,
     )
-    secondary_phone = PhoneNumberField(
+    secondary_phone = models.CharField(
         _("Secondary Telephone"),
         help_text=_('The secondary or other telephone number used by the member.'),
         blank=True,
         null=True,
+        max_length=31,
     )
 
     # AUDITING FIELDS
@@ -258,3 +259,28 @@ class MemberContact(models.Model):
         out the saving operation by Django in our ORM.
         '''
         super(MemberContact, self).save(*args, **kwargs)
+
+    @cached_property
+    def primary_phone_e164(self):
+        try:
+            # Note: https://github.com/daviddrysdale/python-phonenumbers
+            phone_obj = phonenumbers.parse(self.primary_phone, self.member.address.country_code)
+            return phonenumbers.format_number(phone_obj, phonenumbers.PhoneNumberFormat.E164)
+        except Exception as e:
+            print("MemberRetrieveSerializer | get_primary_phone_e164 | error:", e)
+            return None
+
+    def invalidate(self, method_name):
+        """
+        Function used to clear the cache for the cached property functions.
+        """
+        try:
+            if method_name == 'primary_phone_e164':
+                del self.primary_phone_e164
+            else:
+                raise Exception("Method name not found.")
+        except AttributeError:
+            pass
+
+    def invalidate_all(self):
+        self.invalidate("primary_phone_e164")
