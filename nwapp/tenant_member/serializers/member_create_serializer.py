@@ -225,7 +225,7 @@ class MemberCreateSerializer(serializers.Serializer):
         how_did_you_hear = validated_data.get('how_did_you_hear')
         how_did_you_hear_other = validated_data.get('how_did_you_hear_other', None)
         expectation = validated_data.get('expectation')
-        expectation_other = validated_data.get('expectation', None)
+        expectation_other = validated_data.get('expectation_other', None)
         meaning = validated_data.get('meaning')
         meaning_other = validated_data.get('meaning_other', None)
         gender = validated_data.get('gender')

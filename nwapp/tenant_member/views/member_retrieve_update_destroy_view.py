@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from ipware import get_client_ip
 from django.conf.urls import url, include
 from django.db import transaction
 from django.shortcuts import get_list_or_404, get_object_or_404
