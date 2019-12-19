@@ -55,6 +55,36 @@ class MemberListSerializer(serializers.Serializer):
         validators=[],
         source="user.slug",
     )
+    street_address = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="address.street_address",
+    )
+    country = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="address.country",
+    )
+    region = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="address.region",
+    )
+    locality = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="address.locality",
+    )
+    postal_code = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="address.postal_code",
+    )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
