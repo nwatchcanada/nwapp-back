@@ -9,7 +9,7 @@ from rest_framework import authentication, viewsets, permissions, status
 from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
-# from tenant_api.filters.member import MemberFilter
+from tenant_member.filters import MemberFilter
 from tenant_member.permissions import CanListCreateMemberPermission
 from tenant_member.serializers import (
     MemberCreateSerializer,
@@ -29,8 +29,6 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         TenantPermission,
         CanListCreateMemberPermission
     )
-    # filter_backends = (filters.SearchFilter, DjangoFilterBackend)
-    # search_fields = ('@given_name', '@middle_name', '@last_name', '@email', 'telephone',)
 
     def get_queryset(self):
         """
@@ -43,9 +41,9 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         s = self.get_serializer_class()
         queryset = s.setup_eager_loading(self, queryset)
 
-        # # The following code will use the 'django-filter'
-        # filter = MemberFilter(self.request.GET, queryset=queryset)
-        # queryset = filter.qs
+        # The following code will use the 'django-filter'
+        filter = MemberFilter(self.request.GET, queryset=queryset)
+        queryset = filter.qs
 
         # Return our filtered list.
         return queryset
