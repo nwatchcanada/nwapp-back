@@ -245,6 +245,21 @@ class MemberMetric(models.Model):
         '''
         return str(self.member)
 
+    def get_searchable_content(self):
+        """
+        Function returns text data of this object we can use for searching purposes.
+        """
+        text = ""
+        for tag in self.tags:
+            text += " " + str(tag)
+        text += " " + str(self.how_did_you_hear)
+        text += " " + str(self.how_did_you_hear_other)
+        text += " " + str(self.expectation)
+        text += " " + str(self.expectation_other)
+        text += " " + str(self.meaning)
+        text += " " + str(self.meaning_other)
+        text += " " + str(self.year_of_birth)
+        return text
 
     @transaction.atomic
     def save(self, *args, **kwargs):

@@ -21,27 +21,27 @@ class MemberManager(models.Manager):
         for item in items.all():
             item.delete()
 
-    # def search(self, keyword):
-    #     """Default search algorithm used for this model."""
-    #     self.partial_text_search(keyword)
-    #
-    # def partial_text_search(self, keyword):
-    #     """Function performs partial text search of various textfields."""
-    #     return Member.objects.filter(
-    #         Q(indexed_text__icontains=keyword) |
-    #         Q(indexed_text__istartswith=keyword) |
-    #         Q(indexed_text__iendswith=keyword) |
-    #         Q(indexed_text__exact=keyword) |
-    #         Q(indexed_text__icontains=keyword)
-    #     )
-    #
-    # def full_text_search(self, keyword):
-    #     """Function performs full text search of various textfields."""
-    #     # The following code will use the native 'PostgreSQL' library
-    #     # which comes with Django to utilize the 'full text search' feature.
-    #     # For more details please read:
-    #     # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
-    #     return Member.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
+    def search(self, keyword):
+        """Default search algorithm used for this model."""
+        self.partial_text_search(keyword)
+
+    def partial_text_search(self, keyword):
+        """Function performs partial text search of various textfields."""
+        return Member.objects.filter(
+            Q(indexed_text__icontains=keyword) |
+            Q(indexed_text__istartswith=keyword) |
+            Q(indexed_text__iendswith=keyword) |
+            Q(indexed_text__exact=keyword) |
+            Q(indexed_text__icontains=keyword)
+        )
+
+    def full_text_search(self, keyword):
+        """Function performs full text search of various textfields."""
+        # The following code will use the native 'PostgreSQL' library
+        # which comes with Django to utilize the 'full text search' feature.
+        # For more details please read:
+        # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
+        return Member.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
 
 
 class Member(models.Model):
@@ -126,15 +126,6 @@ class Member(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    indexed_text = models.CharField(
-        _("Indexed Text"),
-        max_length=511,
-        help_text=_('The searchable content text used by the keyword searcher function.'),
-        blank=True,
-        null=True,
-        db_index=True,
-        unique=True
-    )
     type_of = models.PositiveSmallIntegerField(
         _("Type of"),
         help_text=_('The type of member this is.'),
@@ -215,6 +206,18 @@ class Member(models.Model):
         blank=True
     )
 
+    # SEARCHABLE FIELDS
+
+    indexed_text = models.CharField(
+        _("Indexed Text"),
+        max_length=1023,
+        help_text=_('The searchable content text used by the keyword searcher function.'),
+        blank=True,
+        null=True,
+        db_index=True,
+        unique=True
+    )
+
     """
     MODEL FUNCTIONS
     """
@@ -232,32 +235,16 @@ class Member(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
-        # '''
-        # The following code will populate our indexed_custom search text with
-        # the latest model data before we save.
-        # '''
-        # search_text = str(self.id)
-        # search_text += " " + intcomma(self.id)
-        # if self.last_name:
-        #     search_text += " " + self.last_name
-        # if self.first_name:
-        #     search_text += " " + self.first_name
-        # if self.organization_name:
-        #     search_text += " " + self.organization_name
-        # search_text += " " + str(self.id)
-        # if self.email:
-        #     search_text += " " + self.email
-        # if self.primary_phone:
-        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.E164)
-        # if self.secondary_phone:
-        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
-        # # if self.description:
-        # #     search_text += " " + self.description
-        # self.indexed_text = Truncator(search_text).chars(511)
+        '''
+        The following code will populate our indexed_custom search text with
+        the latest model data before we save.
+        '''
+        search_text = str(self.id)
+        search_text += " " + intcomma(self.id)
+        search_text += self.contact.get_searchable_content()
+        search_text += self.address.get_searchable_content()
+        search_text += self.metrics.get_searchable_content()
+        self.indexed_text = Truncator(search_text).chars(1023)
 
         '''
         Finally call the parent function which handles saving so we can carry

@@ -23,6 +23,11 @@ class MemberFilter(django_filters.FilterSet):
         # }
     )
 
+    def keyword_filtering(self, queryset, name, value):
+        return queryset.objects.search(value)
+
+    search = django_filters.CharFilter(method='keyword_filtering')
+
     def first_name_filtering(self, queryset, name, value):
         return queryset.filter(
             Q(contact__first_name__icontains=value) |
@@ -135,6 +140,7 @@ class MemberFilter(django_filters.FilterSet):
     class Meta:
         model = Member
         fields = [
+            'search',
             'first_name',
             'last_name',
             'email',

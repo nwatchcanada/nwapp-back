@@ -222,39 +222,30 @@ class MemberContact(models.Model):
         '''
         return str(self.member)
 
+    def get_searchable_content(self):
+        """
+        Function returns text data of this object we can use for searching purposes.
+        """
+        text = ""
+        text += self.organization_name
+        text += " " + self.first_name
+        text += " " + self.last_name
+        text += " " + str(self.email)
+        if self.primary_phone:
+            text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
+            text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+            text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.E164)
+        if self.secondary_phone:
+            text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
+            text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+            text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
+        return text
 
     @transaction.atomic
     def save(self, *args, **kwargs):
         '''
         Override the `save` function to support extra functionality of our model.
         '''
-
-        # '''
-        # The following code will populate our indexed_custom search text with
-        # the latest model data before we save.
-        # '''
-        # search_text = str(self.id)
-        # search_text += " " + intcomma(self.id)
-        # if self.last_name:
-        #     search_text += " " + self.last_name
-        # if self.first_name:
-        #     search_text += " " + self.first_name
-        # if self.organization_name:
-        #     search_text += " " + self.organization_name
-        # search_text += " " + str(self.id)
-        # if self.email:
-        #     search_text += " " + self.email
-        # if self.primary_phone:
-        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.E164)
-        # if self.secondary_phone:
-        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-        #     search_text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
-        # # if self.description:
-        # #     search_text += " " + self.description
-        # self.indexed_text = Truncator(search_text).chars(511)
 
         '''
         Finally call the parent function which handles saving so we can carry
