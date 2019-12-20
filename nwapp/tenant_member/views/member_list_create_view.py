@@ -53,7 +53,10 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         """
         Create
         """
-        post_serializer = MemberCreateSerializer(data=request.data, context={'request': request,});
+        post_serializer = MemberCreateSerializer(
+            data=request.data,
+            context={'request': request,
+        });
         post_serializer.is_valid(raise_exception=True)
         member = post_serializer.save()
         retrieve_serializer = MemberRetrieveSerializer(member, many=False)

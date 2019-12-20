@@ -24,6 +24,12 @@ logger = logging.getLogger(__name__)
 
 class MemberListSerializer(serializers.Serializer):
     type_of = serializers.IntegerField()
+    organization_name = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        validators=[],
+        source="contact.organization_name",
+    )
     organization_type_of = serializers.IntegerField(
         required=False,
         allow_null=True,

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+import django_rq
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
+from django.core.management import call_command
 from django.db import transaction
 from django.db.models import Q, Prefetch
 from django.utils.translation import ugettext_lazy as _
@@ -20,6 +22,7 @@ from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
+from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +67,7 @@ class MemberCreateSerializer(serializers.Serializer):
     locality = serializers.CharField()
     street_number = serializers.CharField()
     street_name =serializers.CharField()
-    apartment_unit = serializers.CharField()
+    apartment_unit = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
     street_type = serializers.ChoiceField(choices=MemberAddress.STREET_TYPE_CHOICES,)
     street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
     street_direction = serializers.ChoiceField(choices=MemberAddress.STREET_DIRECTION_CHOICES,)
@@ -111,6 +114,18 @@ class MemberCreateSerializer(serializers.Serializer):
     organization_employee_count = serializers.IntegerField(required=False,)
     organization_founding_year = serializers.IntegerField(required=False,)
     organization_type_of = serializers.IntegerField(required=False,)
+
+    def validate_organization_name(self, value):
+        """
+        Custom validation to handle case of user selecting an organization type
+        of member but then forgetting to fill in the `organization_name` field.
+        """
+        request = self.context.get('request')
+        type_of = request.data.get('type_of')
+        if type_of == Member.MEMBER_TYPE_OF.BUSINESS:
+            if value == None or value == "":
+                raise serializers.ValidationError(_('Please fill this field in.'))
+        return value
 
     def create(self, validated_data):
         """
@@ -269,6 +284,16 @@ class MemberCreateSerializer(serializers.Serializer):
             if len(tags) > 0:
                 member_metric.tags.set(tags)
                 logger.info("Attached tag to member metric.")
+
+        '''
+        Run in the background the code which will `process` the newly created
+        member object.
+        '''
+        django_rq.enqueue(
+            process_member_with_slug_func,
+            request.tenant.schema_name,
+            member.user.slug
+        )
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."

@@ -236,17 +236,6 @@ class Member(models.Model):
         '''
 
         '''
-        The following code will populate our indexed_custom search text with
-        the latest model data before we save.
-        '''
-        search_text = str(self.id)
-        search_text += " " + intcomma(self.id)
-        search_text += self.contact.get_searchable_content()
-        search_text += self.address.get_searchable_content()
-        search_text += self.metrics.get_searchable_content()
-        self.indexed_text = Truncator(search_text).chars(1023)
-
-        '''
         Finally call the parent function which handles saving so we can carry
         out the saving operation by Django in our ORM.
         '''
