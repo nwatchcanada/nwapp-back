@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 # from tenant_api.filters.tag import TagFilter
-# from tenant_api.pagination import TinyResultsSetPagination
+from shared_foundation.drf.pagination import StandardResultsSetPagination
 # from tenant_api.permissions.tag import (
 #    CanListCreateTagPermission,
 #    CanRetrieveUpdateDestroyTagPermission
@@ -22,7 +22,7 @@ from tenant_foundation.models import Tag
 
 class TagListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = TagListCreateSerializer
-    # pagination_class = TinyResultsSetPagination
+    pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,

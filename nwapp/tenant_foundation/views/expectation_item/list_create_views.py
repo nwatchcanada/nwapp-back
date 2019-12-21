@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 # from tenant_api.filters.expectation_item import ExpectationItemFilter
-# from tenant_api.pagination import TinyResultsSetPagination
+from shared_foundation.drf.pagination import StandardResultsSetPagination
 # from tenant_api.permissions.expectation_item import (
 #    CanListCreateExpectationItemPermission,
 #    CanRetrieveUpdateDestroyExpectationItemPermission
@@ -22,7 +22,7 @@ from tenant_foundation.models import ExpectationItem
 
 class ExpectationItemListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ExpectationItemListCreateSerializer
-    # pagination_class = TinyResultsSetPagination
+    pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,
@@ -37,7 +37,7 @@ class ExpectationItemListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = ExpectationItem.objects.all().order_by('text')
+        queryset = ExpectationItem.objects.all().order_by('sort_number')
 
         # # The following code will use the 'django-filter'
         # filter = ExpectationItemFilter(self.request.GET, queryset=queryset)

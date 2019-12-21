@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 # from tenant_api.filters.how_did_you_hear import HowHearAboutUsItemFilter
-# from tenant_api.pagination import TinyResultsSetPagination
+from shared_foundation.drf.pagination import StandardResultsSetPagination
 # from tenant_api.permissions.tag import (
 #    CanListCreateTagPermission,
 #    CanRetrieveUpdateDestroyTagPermission
@@ -25,7 +25,7 @@ from tenant_foundation.models import HowHearAboutUsItem
 
 class HowHearAboutUsItemListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = HowHearAboutUsItemListCreateSerializer
-    # pagination_class = TinyResultsSetPagination
+    pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,
@@ -40,7 +40,7 @@ class HowHearAboutUsItemListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = HowHearAboutUsItem.objects.all().order_by('text')
+        queryset = HowHearAboutUsItem.objects.all().order_by('sort_number')
 
         # # The following code will use the 'django-filter'
         # filter = HowHearAboutUsItemFilter(self.request.GET, queryset=queryset)
