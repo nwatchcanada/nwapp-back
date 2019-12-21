@@ -170,6 +170,7 @@ class MemberContact(models.Model):
 
     # AUDITING FIELDS
 
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom created this object.'),
@@ -190,6 +191,7 @@ class MemberContact(models.Model):
         default=False,
         blank=True
     )
+    last_modified_at = models.DateTimeField(auto_now=True)
     last_modified_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom modified this object last.'),
@@ -227,18 +229,26 @@ class MemberContact(models.Model):
         Function returns text data of this object we can use for searching purposes.
         """
         text = ""
-        text += self.organization_name
-        text += " " + self.first_name
-        text += " " + self.last_name
-        text += " " + str(self.email)
+        text += str(self.organization_name)
+        text += ", " + str(self.first_name)
+        text += ", " + str(self.last_name)
+        text += ", " + str(self.email)
         if self.primary_phone:
-            text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-            text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-            text += " " + phonenumbers.format_number(self.primary_phone, phonenumbers.PhoneNumberFormat.E164)
+            primary_phone = phonenumbers.parse(self.primary_phone, None)
+            national_numb = phonenumbers.format_number(primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
+            international_numb = phonenumbers.format_number(primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+            e164_numb = phonenumbers.format_number(primary_phone, phonenumbers.PhoneNumberFormat.E164)
+            text += ", " + str(national_numb)
+            text += ", " + str(international_numb)
+            text += ", " + str(e164_numb)
         if self.secondary_phone:
-            text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
-            text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-            text += " " + phonenumbers.format_number(self.secondary_phone, phonenumbers.PhoneNumberFormat.E164)
+            secondary_phone = phonenumbers.parse(self.secondary_phone, None)
+            national_numb = phonenumbers.format_number(secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
+            international_numb = phonenumbers.format_number(secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+            e164_numb = phonenumbers.format_number(secondary_phone, phonenumbers.PhoneNumberFormat.E164)
+            text += ", " + str(national_numb)
+            text += ", " + str(international_numb)
+            text += ", " + str(e164_numb)
         return text
 
     @transaction.atomic

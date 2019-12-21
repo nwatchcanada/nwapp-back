@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from freezegun import freeze_time
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
+from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation import constants
@@ -18,7 +20,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """
         Run manually in console:
-        python manage.py process_member_with_slug "london" "bartlomiej-mika-1234"
+        python manage.py process_member_with_slug "london" "bartlomiej-mika-fauG"
         """
         parser.add_argument('schema_name', nargs='+', type=str)
         parser.add_argument('slug', nargs='+', type=str)
@@ -56,5 +58,17 @@ class Command(BaseCommand):
                 'slug': slug
             })
 
+    @transaction.atomic
     def process(self, member):
-        print("\n\n", member, "\n\n")
+        freezer = freeze_time(member.last_modified_at)
+        freezer.start()
+        self.process_searchable_content(member)
+        freezer.stop()
+
+    def process_searchable_content(self, member):
+        text = ""
+        text += member.contact.get_searchable_content()
+        text += " " + member.address.get_searchable_content()
+        text += " " + member.metric.get_searchable_content()
+        member.indexed_text = text
+        member.save()

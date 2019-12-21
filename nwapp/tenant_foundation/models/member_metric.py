@@ -193,6 +193,7 @@ class MemberMetric(models.Model):
 
     # AUDITING FIELDS
 
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom created this object.'),
@@ -207,6 +208,7 @@ class MemberMetric(models.Model):
         blank=True,
         null=True
     )
+    last_modified_at = models.DateTimeField(auto_now=True)
     created_from_is_public = models.BooleanField(
         _("Is the IP "),
         help_text=_('Is creator a public IP and is routable.'),
@@ -250,15 +252,15 @@ class MemberMetric(models.Model):
         Function returns text data of this object we can use for searching purposes.
         """
         text = ""
-        for tag in self.tags:
-            text += " " + str(tag)
-        text += " " + str(self.how_did_you_hear)
-        text += " " + str(self.how_did_you_hear_other)
-        text += " " + str(self.expectation)
-        text += " " + str(self.expectation_other)
-        text += " " + str(self.meaning)
-        text += " " + str(self.meaning_other)
-        text += " " + str(self.year_of_birth)
+        for tag in self.tags.all():
+            text += str(tag) + ", "
+        text += str(self.how_did_you_hear)
+        text += ", " + str(self.how_did_you_hear_other)
+        text += ", " + str(self.expectation)
+        text += ", " + str(self.expectation_other)
+        text += ", " + str(self.meaning)
+        text += ", " + str(self.meaning_other)
+        text += ", " + str(self.year_of_birth)
         return text
 
     @transaction.atomic

@@ -165,6 +165,7 @@ class Member(models.Model):
 
     # AUDITING FIELDS
 
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom created this object.'),
@@ -185,6 +186,7 @@ class Member(models.Model):
         default=False,
         blank=True
     )
+    last_modified_at = models.DateTimeField(auto_now=True)
     last_modified_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom modified this object last.'),

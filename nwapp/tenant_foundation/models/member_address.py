@@ -167,6 +167,7 @@ class MemberAddress(models.Model):
 
     # AUDITING FIELDS
 
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom created this object.'),
@@ -187,6 +188,7 @@ class MemberAddress(models.Model):
         default=False,
         blank=True
     )
+    last_modified_at = models.DateTimeField(auto_now=True)
     last_modified_by = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom modified this object last.'),
@@ -272,10 +274,10 @@ class MemberAddress(models.Model):
     @cached_property
     def postal_address_without_postal_code(self):
         address = ""
-        address += self.street_address
-        address += ', ' + self.locality
-        address += ', ' + self.region
-        address += ', ' + self.country
+        address += str(self.street_address)
+        address += ', ' + str(self.locality)
+        address += ', ' + str(self.region)
+        address += ', ' + str(self.country)
         return str(address)
 
     @cached_property
