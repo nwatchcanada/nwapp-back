@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 import logging
 from datetime import datetime, timedelta
 from dateutil import tz
@@ -20,6 +21,7 @@ from tenant_foundation.models import (
     Member, MemberMetric, MemberAddress, MemberMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
+from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -107,6 +109,16 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
         instance.last_modified_from_is_public = request.client_ip_is_routable
         instance.save()
         logger.info("Updated member metrics.")
+
+        '''
+        Run in the background the code which will `process` the newly created
+        member object.
+        '''
+        django_rq.enqueue(
+            process_member_with_slug_func,
+            request.tenant.schema_name,
+            instance.member.user.slug
+        )
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
