@@ -21,9 +21,9 @@ class MemberManager(models.Manager):
         for item in items.all():
             item.delete()
 
-    def default_search(self, keyword):
+    def search(self, keyword):
         """Default search algorithm used for this model."""
-        self.partial_text_search(keyword)
+        return self.partial_text_search(keyword)
 
     def partial_text_search(self, keyword):
         """Function performs partial text search of various textfields."""
