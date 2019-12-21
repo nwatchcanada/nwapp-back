@@ -35,9 +35,9 @@ class MemberAddressUpdateSerializer(serializers.Serializer):
     street_number = serializers.CharField()
     street_name =serializers.CharField()
     apartment_unit = serializers.CharField()
-    street_type = serializers.IntegerField()
+    street_type = serializers.ChoiceField(choices=MemberAddress.STREET_TYPE_CHOICES,)
     street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    street_direction = serializers.IntegerField(required=False, allow_null=True,)
+    street_direction = serializers.ChoiceField(choices=MemberAddress.STREET_DIRECTION_CHOICES,)
     postal_code = serializers.CharField()
 
     def update(self, instance, validated_data):

@@ -72,6 +72,7 @@ class MemberAddress(models.Model):
         (STREET_TYPE.ROAD, _('Road')),
         (STREET_TYPE.STREET, _('Street')),
         (STREET_TYPE.WAY, _('Way')),
+        (STREET_TYPE.OTHER, _('Other')),
     )
 
     STREET_DIRECTION_CHOICES = (
