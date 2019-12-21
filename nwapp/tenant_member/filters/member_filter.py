@@ -24,7 +24,7 @@ class MemberFilter(django_filters.FilterSet):
     )
 
     def keyword_filtering(self, queryset, name, value):
-        return Member.objects.search(value)
+        return Member.objects.default_search(value).order_by('contact__last_name')
 
     search = django_filters.CharFilter(method='keyword_filtering')
 
