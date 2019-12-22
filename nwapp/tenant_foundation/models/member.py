@@ -243,6 +243,9 @@ class Member(models.Model):
         '''
         super(Member, self).save(*args, **kwargs)
 
+    def get_full_name(self):
+        return self.user.get_full_name()
+
     def get_pretty_state(self):
         return str(dict(Member.MEMBER_STATE_CHOICES).get(self.state))
 

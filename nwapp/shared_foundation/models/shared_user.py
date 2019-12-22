@@ -27,11 +27,11 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.utils.functional import cached_property
-from django.utils.crypto import get_random_string
 from faker import Faker
 
 from shared_foundation import constants
 from shared_foundation.models.shared_group import SharedGroup
+from shared_foundation.utils.string import get_referral_code
 
 
 def _createHash():
@@ -41,15 +41,6 @@ def _createHash():
 def get_expiry_date(days=2):
     """Returns the current date plus paramter number of days."""
     return timezone.now() + timedelta(days=days)
-
-
-def get_referral_code(max_length=31):
-    return get_random_string(
-        length=max_length,
-        allowed_chars='abcdefghijkmnpqrstuvwxyz'
-                      'ABCDEFGHIJKLMNPQRSTUVWXYZ'
-                      '23456789'
-    )
 
 
 class SharedUserManager(BaseUserManager):
@@ -147,6 +138,7 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
     slug = models.SlugField(
         _("Slug"),
         help_text=_('The unique identifier used externally.'),
+        max_length=255,
         null=False,
         unique=True,
         db_index=True,

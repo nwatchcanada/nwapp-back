@@ -1,0 +1,1 @@
+from shared_foundation.utils.string import get_referral_code

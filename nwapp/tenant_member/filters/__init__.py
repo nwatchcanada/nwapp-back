@@ -1,1 +1,2 @@
 from tenant_member.filters.member_filter import MemberFilter
+from tenant_member.filters.member_comment_filter import MemberCommentFilter
