@@ -269,7 +269,7 @@ class MemberAddress(models.Model):
         else:
             address += self.get_pretty_street_type()
         if self.street_direction != MemberAddress.STREET_DIRECTION.NONE:
-            address += self.get_pretty_street_direction()
+            address += " " + self.get_pretty_street_direction()
         return address
 
     @cached_property
