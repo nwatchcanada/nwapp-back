@@ -9,25 +9,25 @@ from rest_framework import authentication, viewsets, permissions, status
 from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
-from tenant_member.filters import MemberFilter
-from tenant_member.permissions import CanListCreateMemberPermission
-from tenant_member.serializers import (
-    MemberCreateSerializer,
-    MemberListSerializer,
-    MemberRetrieveSerializer
+from tenant_private_file_upload.filters import PrivateFileUploadFilter
+from tenant_private_file_upload.permissions import CanListCreatePrivateFileUploadPermission
+from tenant_private_file_upload.serializers import (
+    PrivateFileUploadCreateSerializer,
+    PrivateFileUploadListSerializer,
+    PrivateFileUploadRetrieveSerializer
 )
-from tenant_foundation.models import Member
+from tenant_foundation.models import PrivateFileUpload
 
 
 class PrivateFileUploadListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = MemberListSerializer
+    serializer_class = PrivateFileUploadListSerializer
     # pagination_class = TinyResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,
         SharedUserIsActivePermission,
         TenantPermission,
-        CanListCreateMemberPermission
+        CanListCreatePrivateFileUploadPermission
     )
 
     def get_queryset(self):
@@ -35,14 +35,14 @@ class PrivateFileUploadListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = Member.objects.all().order_by('contact__last_name')
+        queryset = PrivateFileUpload.objects.all().order_by('created_at')
 
         # Fetch all the queries.
         s = self.get_serializer_class()
         queryset = s.setup_eager_loading(self, queryset)
 
         # The following code will use the 'django-filter'
-        filter = MemberFilter(self.request.GET, queryset=queryset)
+        filter = PrivateFileUploadFilter(self.request.GET, queryset=queryset)
         queryset = filter.qs
 
         # Return our filtered list.
@@ -53,11 +53,11 @@ class PrivateFileUploadListCreateAPIView(generics.ListCreateAPIView):
         """
         Create
         """
-        post_serializer = MemberCreateSerializer(
+        post_serializer = PrivateFileUploadCreateSerializer(
             data=request.data,
             context={'request': request,
         });
         post_serializer.is_valid(raise_exception=True)
         member = post_serializer.save()
-        retrieve_serializer = MemberRetrieveSerializer(member, many=False)
+        retrieve_serializer = PrivateFileUploadRetrieveSerializer(member, many=False)
         return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)
