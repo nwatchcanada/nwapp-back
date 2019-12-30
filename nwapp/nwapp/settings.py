@@ -79,9 +79,9 @@ SHARED_APPS = ( # (Django-Tenants)
     'djmoney',
     # 'anymail',
     # 'phonenumber_field',
-    # 'storages',
-    # 'sorl.thumbnail',
-    # # . . .
+    'storages',
+    'sorl.thumbnail',
+    # . . .
 
     # Our Apps
     'shared_foundation.apps.SharedFoundationConfig',
@@ -111,6 +111,7 @@ TENANT_APPS = ( # (Django-Tenants)
     'tenant_foundation.apps.TenantFoundationConfig',
     'tenant_dashboard.apps.TenantDashboardConfig',
     'tenant_member.apps.TenantMemberConfig',
+    'tenant_private_file_upload.apps.TenantPrivateFileUploadConfig',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS] # (Django-Tenants)
@@ -294,14 +295,56 @@ ANYMAIL = {
 }
 
 
+'''
+################################################################################
+# OLD CONFIGURATION
+# THIS IS THE PREVIOUS CONFIGURATION WE HAVE USED WHEN WE WERE USING THE
+# AMAZON AWS S3 SERVICES.
+################################################################################
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+'''
 
 
-# Template Directory
-#
+'''
+django-storages
+https://github.com/jschneier/django-storages
+'''
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+AWS_STATIC_LOCATION = 'static'
+AWS_DEFAULT_ACL = 'private'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
+AWS_LOCATION = 'static'
+STATIC_URL = '{}/{}/'.format(AWS_S3_ENDPOINT_URL, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+DEFAULT_FILE_STORAGE = 'nwapp.s3utils.PublicMediaStorage'
+
+AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
+PRIVATE_FILE_STORAGE = 'nwapp.s3utils.PrivateMediaStorage'
+
+
+'''
+Template Directory
+'''
+
 TEMPLATE_DIRS = (
     BASE_DIR + '/templates/',
 )
@@ -460,23 +503,21 @@ SESSION_REDIS = {
 }
 
 
+'''
+sorl-thumbnail
+https://github.com/jazzband/sorl-thumbnail
+'''
 
-# # sorl-thumbnail
-# # https://github.com/jazzband/sorl-thumbnail
-#
-# THUMBNAIL_ENGINE = 'nwapp.snorlutil.Engine'
-# THUMBNAIL_DEBUG = env('DEBUG', default=False)
-# THUMBNAIL_FORCE_OVERWRITE = True
-
-
-# Application Specific Variables #
-#
+THUMBNAIL_ENGINE = 'nwapp.snorlutil.Engine'
+THUMBNAIL_DEBUG = env('DEBUG', default=False)
+THUMBNAIL_FORCE_OVERWRITE = True
 
 
-# '''
-# nwapp-back
-# https://github.com/nwapp/nwapp-back
-# '''
+'''
+Application Specific Variables
+https://github.com/nwapp/nwapp-back
+'''
+
 NWAPP_BACKEND_HTTP_PROTOCOL = env("NWAPP_BACKEND_HTTP_PROTOCOL")
 NWAPP_BACKEND_HTTP_DOMAIN = env("NWAPP_BACKEND_HTTP_DOMAIN")
 # NWAPP_BACKEND_DEFAULT_MONEY_CURRENCY = env("NWAPP_BACKEND_DEFAULT_MONEY_CURRENCY")
@@ -487,8 +528,10 @@ NWAPP_RESOURCE_SERVER_NAME = env("NWAPP_RESOURCE_SERVER_NAME")
 # NWAPP_FRONTEND_HTTP_DOMAIN = env("NWAPP_FRONTEND_HTTP_DOMAIN")
 
 
-# Django Custom Settings Override
-# https://docs.djangoproject.com/en/dev/ref/settings/
+'''
+Django Custom Settings Override
+https://docs.djangoproject.com/en/dev/ref/settings/
+'''
 
 # Note:
 # (1) 2.5 MB x 20 = 50 MB

@@ -39,10 +39,12 @@ pip install django-oauth-toolkit          # oAuth 2.0 Client and Provider Framew
 pip install django-money                  # Money fields for django forms and models
 pip install phonenumbers                  # Google's libphonenumber written in Python
 pip install freezegun                     # Python datetime override library
-
-pip install django-phonenumber-field      # Telephone field using Google's libphonenumber
+pip install sorl-thumbnail                # Thumbnails for Django
 pip install django-storages               # Collection of custom storage backends for Django.
 pip install boto3                         # AWS S3 Bindings
+
+pip install django-phonenumber-field      # Telephone field using Google's libphonenumber
+
 ```
 
 DigitalOcean Tutorials:

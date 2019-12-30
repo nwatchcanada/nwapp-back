@@ -1,0 +1,1 @@
+from tenant_private_file_upload.views.list_create_views import PrivateFileUploadListCreateAPIView

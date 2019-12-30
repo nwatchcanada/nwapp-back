@@ -5,3 +5,4 @@ from tenant_member.views.member_address_update_view import MemberAddressUpdateAP
 from tenant_member.views.member_contact_update_view import MemberContactUpdateAPIView
 from tenant_member.views.member_metric_update_view import MemberMetricUpdateAPIView
 from tenant_member.views.member_comment_views import MemberCommentListCreateAPIView
+from tenant_member.views.member_file_upload_view import MemberFileUploadListCreateAPIView

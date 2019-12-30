@@ -9,3 +9,6 @@ from tenant_foundation.models.member_address import MemberAddress
 from tenant_foundation.models.member_contact import MemberContact
 from tenant_foundation.models.member_metric import MemberMetric
 from tenant_foundation.models.member_comment import MemberComment
+
+from tenant_foundation.models.private_file_upload import PrivateFileUpload
+from tenant_foundation.models.private_image_upload import PrivateImageUpload

@@ -1,0 +1,1 @@
+default_app_config = 'tenant_private_file_upload.apps.TenantPrivateFileUploadConfig'
