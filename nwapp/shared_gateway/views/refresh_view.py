@@ -36,9 +36,18 @@ class SharedRefreshTokenAPIView(generics.RetrieveUpdateDestroyAPIView):
         # STEP 1:
         # Lookup the refresh token and if it does not exist then return 401 error.
         token = request.data.get('refresh_token', None)
+
+        # # For debugging purposeses only.
+        # print("Refresh Token Serializer --> post() -->", str(token))
+
         refresh_token = RefreshToken.objects.filter(token=token).first()
+
+        # # For debugging purposeses only.
+        # print("Refresh Token Serializer --> post() -->", str(refresh_token))
+
         if refresh_token is None:
-            print(token, "not found!")
+            # # For debugging purposeses only.
+            # print("Refresh Token Serializer --> post() --> Not found!")
             return Response(data=[], status=status.HTTP_401_UNAUTHORIZED)
 
         # STEP 2:
@@ -75,9 +84,9 @@ class SharedRefreshTokenAPIView(generics.RetrieveUpdateDestroyAPIView):
         )
 
         # STEP 4:
-        # Return our new credentials.
+        # Generate our output.
         revoked_at = int(refresh_token.revoked.timestamp()) if refresh_token.revoked is not None else None
-        return Response(data={
+        data = {
             'access_token': {
                 'token': str(access_token),
                 'expires': int(access_token.expires.timestamp()),
@@ -87,4 +96,7 @@ class SharedRefreshTokenAPIView(generics.RetrieveUpdateDestroyAPIView):
                 'token': str(refresh_token),
                 'revoked': revoked_at,
             }
-        }, status=status.HTTP_200_OK)
+        }
+
+        # Return our new credentials.
+        return Response(data=data, status=status.HTTP_200_OK)

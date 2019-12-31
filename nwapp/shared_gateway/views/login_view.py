@@ -46,12 +46,12 @@ class SharedLoginAPIView(APIView):
         # Get our web application authorization.
         application = Application.objects.filter(name=settings.NWAPP_RESOURCE_SERVER_NAME).first()
 
-        # Generate our "NEW" access token which does not have a time limit.
-        # We want to generate a new token every time because the user may be
-        # logging in from multiple locations and may log out from multiple
-        # locations so we don't want the user using the same token every time.
+        # Generate a temporary "access_token" for the login procedure.
+        # Once the token expires, the user will use the "refresh_token" to
+        # get a more longer lasting "access_token". This is done for security
+        # purposes.
         aware_dt = timezone.now()
-        expires_dt = aware_dt + timezone.timedelta(days=1)
+        expires_dt = aware_dt + timezone.timedelta(seconds=10)
         access_token = AccessToken.objects.create(
             application=application,
             user=authenticated_user,
@@ -74,4 +74,4 @@ class SharedLoginAPIView(APIView):
             'access_token': access_token,
             'refresh_token': refresh_token
         })
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data = serializer.data, status=status.HTTP_200_OK)
