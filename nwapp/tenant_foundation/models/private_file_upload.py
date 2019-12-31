@@ -188,7 +188,7 @@ class PrivateFileUpload(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
-        if self.slug:
+        if self.slug == None or self.slug == "":
             self.slug = self.user.slug + "-" + get_referral_code(16)
 
         search_text = str(self.slug)

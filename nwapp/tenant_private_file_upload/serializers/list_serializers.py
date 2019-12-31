@@ -24,7 +24,10 @@ from tenant_foundation.models import (
 
 
 class PrivateFileUploadListSerializer(serializers.ModelSerializer):
-    user = serializers.SlugField(required=True,)
+    user = serializers.SlugField(
+        read_only=True,
+        source="user.slug",
+    )
     file_url = serializers.FileField(
         read_only=True,
         max_length=None,
@@ -41,7 +44,7 @@ class PrivateFileUploadListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrivateFileUpload
         fields = (
-            'id',
+            'slug',
             'file_url',
             'title',
             'description',
