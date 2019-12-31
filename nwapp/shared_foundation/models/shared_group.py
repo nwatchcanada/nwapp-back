@@ -19,7 +19,7 @@ class SharedGroup(Group):
         FRONTLINE_STAFF = 3
         ASSOCIATE = 4
         AREA_COORDINATOR = 5
-        MEMBER = 0
+        MEMBER = 6
         NONE = 0
 
     GROUP_MEMBERSHIP_CHOICES = (

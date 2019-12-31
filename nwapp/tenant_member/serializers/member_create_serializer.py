@@ -14,9 +14,8 @@ from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
-from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.drf.fields import E164PhoneNumberField
-from shared_foundation.models import SharedUser
+from shared_foundation.models import SharedUser, SharedGroup
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
@@ -151,7 +150,7 @@ class MemberCreateSerializer(serializers.Serializer):
         logger.info("Created shared user.")
 
         # Attach the user to the `Member` group.
-        user.groups.add(MEMBER_GROUP_ID)
+        user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
         logger.info("Shared user assigned as member.")
 
         member = Member.objects.create(
