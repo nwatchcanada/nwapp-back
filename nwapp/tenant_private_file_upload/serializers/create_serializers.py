@@ -114,7 +114,7 @@ class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
         #-----------------------------
         # Create our `Comment` object.
         #-----------------------------
-        text = _("A file named \"%(filename)s\" has been uploaded to this associate's record by %(name)s.") % {
+        text = _("A file named \"%(filename)s\" has been uploaded to this member's record by %(name)s.") % {
             'filename': str(filename),
             'name': str(request.user),
         }

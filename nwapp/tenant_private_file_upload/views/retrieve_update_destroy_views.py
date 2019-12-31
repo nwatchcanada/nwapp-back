@@ -29,9 +29,9 @@ class PrivateFileUploadRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestr
         """
         Retrieve
         """
-        order = get_object_or_404(PrivateFileUpload, user__slug=slug)
-        self.check_object_permissions(request, order)  # Validate permissions.
-        serializer = PrivateFileUploadRetrieveSerializer(order, many=False, context={'request': request,})
+        object = get_object_or_404(PrivateFileUpload, user__slug=slug)
+        self.check_object_permissions(request, object)  # Validate permissions.
+        serializer = PrivateFileUploadRetrieveSerializer(object, many=False, context={'request': request,})
         # queryset = serializer.setup_eager_loading(self, queryset)
         return Response(
             data=serializer.data,
@@ -51,3 +51,23 @@ class PrivateFileUploadRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestr
         object = write_serializer.save()
         read_serializer = PrivateFileUploadRetrieveSerializer(object, many=False, context={'request': request,})
         return Response(read_serializer.data, status=status.HTTP_200_OK)
+
+    @transaction.atomic
+    def delete(self, request, slug=None):
+        """
+        Delete
+        """
+        object = get_object_or_404(PrivateFileUpload, slug=slug)
+        self.check_object_permissions(request, object)  # Validate permissions.
+        
+        object.is_archived = not object.is_archived
+        object.last_modified_by = request.user
+        object.last_modified_from = request.client_ip
+        object.last_modified_from_is_public = request.client_ip_is_routable
+        object.save()
+
+        serializer = PrivateFileUploadRetrieveSerializer(object, many=False, context={'request': request,})
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK
+        )
