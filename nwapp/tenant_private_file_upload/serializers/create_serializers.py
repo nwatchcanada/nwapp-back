@@ -17,7 +17,7 @@ from rest_framework.validators import UniqueValidator
 
 from shared_foundation.models import SharedUser
 from shared_foundation.utils import get_content_file_from_base64_string
-# from tenant_api.serializers.associate_comment import AssociateCommentSerializer
+# from tenant_api.serializers.associate_comment import MemberCommentSerializer
 from tenant_foundation.constants import *
 from tenant_foundation.models import (
     PrivateFileUpload,
@@ -28,12 +28,11 @@ from tenant_foundation.models import (
 
 
 class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
-    user = serializers.SlugField(required=True,)
-    title = serializers.CharField(required=True, allow_null=False,)
-    description = serializers.CharField(required=True, allow_null=False,)
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True)
-    is_archived = serializers.BooleanField(required=True,)
-    created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    user = serializers.SlugField(required=True, write_only=True,)
+    title = serializers.CharField(required=True, allow_null=False, write_only=True,)
+    description = serializers.CharField(required=True, allow_null=False, write_only=True,)
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, write_only=True,)
+    is_archived = serializers.BooleanField(required=True, write_only=True,)
 
     # REACT-DJANGO UPLOAD | STEP 1 OF 4: We define two string fields required (write-only)
     # for accepting our file uploads.
@@ -47,6 +46,12 @@ class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
         allow_null=False,
         required=True,
     )
+
+    def validate_user(self, value):
+        #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
+        if not SharedUser.objects.filter(slug=value).exists():
+            raise serializers.ValidationError("User does not exist")
+        return value
 
     # Meta Information.
     class Meta:
@@ -68,69 +73,75 @@ class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
         """
         Override the `create` function to add extra functinality.
         """
-        user = validated_data.get('user')
+        slug = validated_data.get('user')
+        user = SharedUser.objects.get(slug=slug)
+        request = self.context.get("request")
 
         #-----------------------------
         # Create our file.
         #-----------------------------
 
-        # # Extract our upload file data
-        # content = validated_data.get('upload_content')
-        # filename = validated_data.get('upload_filename')
-        # if settings.DEBUG:
-        #     filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
-        # content_file = get_content_file_from_base64_string(content, filename) # REACT-DJANGO UPLOAD | STEP 3 OF 4: Convert to `ContentFile` type.
-        #
-        # # Create our file.
-        # private_file = PrivateFileUpload.objects.create(
-        #     title = validated_data.get('title'),
-        #     description = validated_data.get('description'),
-        #     is_archived = validated_data.get('is_archived'),
-        #     associate = associate,
-        #     data_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentFile`, Django handles all file uploading.
-        #     created_by = self.context['created_by'],
-        #     created_from = self.context['created_from'],
-        #     created_from_is_public = self.context['created_from_is_public'],
-        #     last_modified_by = self.context['created_by'],
-        #     last_modified_from = self.context['created_from'],
-        #     last_modified_from_is_public = self.context['created_from_is_public'],
-        # )
-        #
-        # tags = validated_data.get('tags', None)
-        # if tags is not None:
-        #     if len(tags) > 0:
-        #         private_file.tags.set(tags)
-        #
-        # # For debugging purposes only.
-        # print("Created private file #", private_file)
-        #
-        # #-----------------------------
-        # # Create our `Comment` object.
-        # #-----------------------------
-        # text = _("A file named \"%(filename)s\" has been uploaded to this associate's record by %(name)s.") % {
-        #     'filename': str(filename),
-        #     'name': str(self.context['created_by']),
-        # }
-        # comment = Comment.objects.create(
-        #     created_by = self.context['created_by'],
-        #     created_from = self.context['created_from'],
-        #     created_from_is_public = self.context['created_from_is_public'],
-        #     last_modified_by = self.context['created_by'],
-        #     last_modified_from = self.context['created_from'],
-        #     last_modified_from_is_public = self.context['created_from_is_public'],
-        #     text=text
-        # )
-        # AssociateComment.objects.create(
-        #     about=associate,
-        #     comment=comment,
-        # )
-        # print("Created comment #", comment)
-        #
-        # # Return our validated data.
-        # return private_file
+        # Extract our upload file data
+        content = validated_data.get('upload_content')
+        filename = validated_data.get('upload_filename')
+        if settings.DEBUG:
+            filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
+        content_file = get_content_file_from_base64_string(content, filename) # REACT-DJANGO UPLOAD | STEP 3 OF 4: Convert to `ContentFile` type.
 
-        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-            "error": "Terminating for debugging purposes only."
-        })
+        # Create our file.
+        private_file = PrivateFileUpload.objects.create(
+            title = validated_data.get('title'),
+            description = validated_data.get('description'),
+            is_archived = validated_data.get('is_archived'),
+            user = user,
+            data_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentFile`, Django handles all file uploading.
+            created_by = request.user,
+            created_from = request.client_ip,
+            created_from_is_public = request.client_ip_is_routable,
+            last_modified_by = request.user,
+            last_modified_from = request.client_ip,
+            last_modified_from_is_public = request.client_ip_is_routable,
+        )
 
-        return None
+        tags = validated_data.get('tags', None)
+        if tags is not None:
+            if len(tags) > 0:
+                private_file.tags.set(tags)
+
+        # For debugging purposes only.
+        print("Created private file #", private_file)
+
+        #-----------------------------
+        # Create our `Comment` object.
+        #-----------------------------
+        text = _("A file named \"%(filename)s\" has been uploaded to this associate's record by %(name)s.") % {
+            'filename': str(filename),
+            'name': str(request.user),
+        }
+        comment = Comment.objects.create(
+            created_by = request.user,
+            created_from = request.client_ip,
+            created_from_is_public = request.client_ip_is_routable,
+            last_modified_by = request.user,
+            last_modified_from = request.client_ip,
+            last_modified_from_is_public = request.client_ip_is_routable,
+            text=text
+        )
+
+        if user.is_member:
+            MemberComment.objects.create(
+                member=user.member,
+                comment=comment,
+            )
+            print("Created comment for member")
+        else:
+            raise serializers.ValidationError({
+                "error": "Programmer did not write the code for this yet.",
+            })
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
+        # Return our validated data.
+        return private_file

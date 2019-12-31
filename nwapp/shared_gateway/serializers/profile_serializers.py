@@ -25,6 +25,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
     role_id = serializers.SerializerMethodField()
 
     # --- User Details ---
+    slug = serializers.SlugField(read_only=True,)
     email = serializers.CharField(required=True,allow_blank=False,)
     first_name = serializers.CharField(required=True,allow_blank=False,)
     middle_name = serializers.CharField(required=False,allow_blank=True,)
@@ -45,6 +46,7 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
             'role_id',
 
             # --- User Details ---
+            'slug',
             'email',
             'first_name',
             'middle_name',

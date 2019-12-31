@@ -195,7 +195,7 @@ class PrivateFileUpload(models.Model):
         if self.title:
             search_text += " " + self.title
         if self.description:
-            search_text += " " + self.middle_name
+            search_text += " " + self.description
         if self.data_file:
             search_text += " " + str(self.data_file)
         self.indexed_text = Truncator(search_text).chars(511)
