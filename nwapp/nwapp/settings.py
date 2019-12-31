@@ -112,6 +112,7 @@ TENANT_APPS = ( # (Django-Tenants)
     'tenant_dashboard.apps.TenantDashboardConfig',
     'tenant_member.apps.TenantMemberConfig',
     'tenant_private_file_upload.apps.TenantPrivateFileUploadConfig',
+    'tenant_private_image_upload.apps.TenantPrivateImageUploadConfig',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS] # (Django-Tenants)

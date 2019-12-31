@@ -1,0 +1,2 @@
+from tenant_private_image_upload.views.list_create_views import PrivateImageUploadListCreateAPIView
+from tenant_private_image_upload.views.retrieve_update_destroy_views import PrivateImageUploadRetrieveUpdateDestroyAPIView
