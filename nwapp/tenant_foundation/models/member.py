@@ -162,6 +162,14 @@ class Member(models.Model):
         null=True,
         default=""
     )
+    avatar_image = models.ForeignKey(
+        "PrivateImageUpload",
+        help_text=_('The avatar image of this member.'),
+        related_name="members",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     # AUDITING FIELDS
 

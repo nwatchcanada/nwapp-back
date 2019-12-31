@@ -32,6 +32,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     slug = serializers.SlugField(source="user.slug")
     type_of = serializers.IntegerField()
     type_of_label = serializers.CharField(source="get_pretty_type_of")
+    avatar_url = serializers.SerializerMethodField()
 
     # ------ MEMBER CONTACT ------ #
 
@@ -120,4 +121,10 @@ class MemberRetrieveSerializer(serializers.Serializer):
             return obj.contact.first_name + " " + obj.contact.last_name
         except Exception as e:
             print(e)
+            return None
+
+    def get_avatar_url(self, obj):
+        try:
+            return obj.avatar_image.image_file.url
+        except Exception as e:
             return None

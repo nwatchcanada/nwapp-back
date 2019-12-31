@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import phonenumbers
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth import authenticate
 from django.db.models import Q, Prefetch
+from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.utils.http import urlquote
@@ -25,7 +25,7 @@ from tenant_foundation.models import (
 
 
 class MemberAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer):
-    member = serializers.PrimaryKeyRelatedField(many=False, queryset=Member.objects.all(), required=True,)
+    member = serializers.SlugField(required=True, write_only=True,)
 
     # REACT-DJANGO UPLOAD | STEP 1 OF 4: We define two string fields required (write-only)
     # for accepting our file uploads.
@@ -36,7 +36,6 @@ class MemberAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer)
     class Meta:
         model = PrivateImageUpload
         fields = (
-            'id',
             'member',
 
             # REACT-DJANGO UPLOAD | STEP 2 OF 4: Define required fields.
@@ -44,19 +43,21 @@ class MemberAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer)
             'upload_filename',
         )
 
-    def setup_eager_loading(cls, queryset):
-        """ Perform necessary eager loading of data. """
-        queryset = queryset.prefetch_related(
-            'member',
-        )
-        return queryset
+    def validate_member(self, value):
+        #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
+        if not Member.objects.filter(user__slug=value).exists():
+            raise serializers.ValidationError("Member does not exist")
+        return value
 
+    @transaction.atomic
     def create(self, validated_data):
         """
         Override the `create` function to add extra functinality.
         """
-        # Extract the member we are processing.
-        member = validated_data.get('member')
+        # Extract the data we are processing.
+        slug = validated_data.get('member')
+        member = Member.objects.select_for_update().get(user__slug=slug)
+        request = self.context.get('request')
 
         # Extract our upload file data
         content = validated_data.get('upload_content')
@@ -70,26 +71,33 @@ class MemberAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer)
         if member.avatar_image == None or member.avatar_image is None:
             member.avatar_image = PrivateImageUpload.objects.create(
                 image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentFile`, Django handles all file uploading.
-                created_by = self.context['created_by'],
-                created_from = self.context['created_from'],
-                created_from_is_public = self.context['created_from_is_public'],
-                last_modified_by = self.context['created_by'],
-                last_modified_from = self.context['created_from'],
-                last_modified_from_is_public = self.context['created_from_is_public'],
+                user = member.user,
+                created_by = request.user,
+                created_from = request.client_ip,
+                created_from_is_public = request.client_ip_is_routable,
+                last_modified_by = request.user,
+                last_modified_from = request.client_ip,
+                last_modified_from_is_public = request.client_ip_is_routable,
             )
-            member.last_modified_by = self.context['created_by']
-            member.last_modified_from = self.context['created_from']
-            member.last_modified_from_is_public = self.context['created_from_is_public']
+            member.last_modified_by = request.user
+            member.last_modified_from = request.client_ip
+            member.last_modified_from_is_public = request.client_ip_is_routable
             member.save()
+            print("MemberAvatarCreateOrUpdateOperationSerializer --> create() --> CREATED IMAGE")
         else:
             member.avatar_image.image_file = content_file
-            member.avatar_image.last_modified_by = self.context['created_by']
-            member.avatar_image.last_modified_from = self.context['created_from']
-            member.avatar_image.last_modified_from_is_public = self.context['created_from_is_public']
+            member.avatar_image.last_modified_by = request.user
+            member.avatar_image.last_modified_from = request.client_ip
+            member.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
             member.avatar_image.save()
-            member.last_modified_by = self.context['created_by']
-            member.last_modified_from = self.context['created_from']
-            member.last_modified_from_is_public = self.context['created_from_is_public']
+            member.last_modified_by = request.user
+            member.last_modified_from = request.client_ip
+            member.last_modified_from_is_public = request.client_ip_is_routable
             member.save()
+            print("MemberAvatarCreateOrUpdateOperationSerializer --> create() --> UPDATED IMAGE")
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
 
         return validated_data
