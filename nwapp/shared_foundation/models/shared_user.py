@@ -347,7 +347,7 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
     )
     tos_signed_on = models.DateTimeField(
         _('Terms of service signed on'),
-        help_text=_('The date where the access code expires and no longer works.'),
+        help_text=_('The date when the service agreement was signed on.'),
         blank=True,
         null=True,
     )

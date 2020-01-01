@@ -98,6 +98,7 @@ class MemberListSerializer(serializers.Serializer):
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related(
-            'user', 'contact', 'address', 'metric', 'created_by', 'last_modified_by'
+            'user', 'user__groups', 'contact', 'address', 'metric',
+            'created_by', 'last_modified_by'
         )
         return queryset

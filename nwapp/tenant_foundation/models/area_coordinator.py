@@ -1,0 +1,283 @@
+import phonenumbers
+from django.contrib.humanize.templatetags.humanize import intcomma
+from django.contrib.postgres.search import SearchVector, SearchVectorField
+from django.db import models
+from django.db.models import Q
+from django.db import transaction
+from django.utils.text import Truncator
+from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
+
+from shared_foundation.models import SharedUser
+
+
+class AreaCoordinatorManager(models.Manager):
+    def delete_all(self):
+        items = AreaCoordinator.objects.iterator(chunk_size=50)
+        for item in items.all():
+            item.delete()
+
+    def search(self, keyword):
+        """Default search algorithm used for this model."""
+        return self.partial_text_search(keyword)
+
+    def partial_text_search(self, keyword):
+        """Function performs partial text search of various textfields."""
+        return AreaCoordinator.objects.filter(
+            Q(indexed_text__icontains=keyword) |
+            Q(indexed_text__istartswith=keyword) |
+            Q(indexed_text__iendswith=keyword) |
+            Q(indexed_text__exact=keyword) |
+            Q(indexed_text__icontains=keyword)
+        )
+
+    def full_text_search(self, keyword):
+        """Function performs full text search of various textfields."""
+        # The following code will use the native 'PostgreSQL' library
+        # which comes with Django to utilize the 'full text search' feature.
+        # For more details please read:
+        # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
+        return AreaCoordinator.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
+
+
+class AreaCoordinator(models.Model):
+    """
+    Class model represents the Neighbourhood Watch registered area coordinator
+    for the particular tenant.
+    """
+
+    '''
+    METADATA
+    '''
+
+    class Meta:
+        app_label = 'tenant_foundation'
+        db_table = 'nwapp_area_coordinators'
+        verbose_name = _('Area Coordinator')
+        verbose_name_plural = _('Area Coordinators')
+        default_permissions = ()
+        permissions = ()
+
+    '''
+    CONSTANTS
+    '''
+
+    class STATE:
+        ACTIVE = 'active'
+        INACTIVE = 'inactive'
+
+    '''
+    CHOICES
+    '''
+
+    STATE_CHOICES = (
+        (STATE.ACTIVE, _('Active')),
+        (STATE.INACTIVE, _('Inactive')),
+    )
+
+    '''
+    OBJECT MANAGERS
+    '''
+
+    objects = AreaCoordinatorManager()
+
+    '''
+    MODEL FIELDS
+    '''
+
+    # SYSTEM FIELDS
+
+    member = models.OneToOneField(
+        "Member",
+        help_text=_('The member whom this area coordinator was promoted from.'),
+        related_name="area_coordinator",
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+
+    # BUSINESS LOGIC SPECIFIC FIELDS
+
+    has_signed_area_coordinator_agreement = models.BooleanField(
+        _("Has signed terms of service"),
+        default=False,
+        help_text=_('Boolean indicates whether has agreed to the terms of service.'),
+        blank=True,
+    )
+    area_coordinator_agreement = models.TextField(
+        _("Area Coordinator agreement"),
+        help_text=_('The actual terms of agreement the user agreed to when they signed.'),
+        blank=True,
+        null=True,
+    )
+    area_coordinator_agreement_signed_on = models.DateTimeField(
+        _('Terms of service signed on'),
+        help_text=_('The date the terms of service agreement was signed on.'),
+        blank=True,
+        null=True,
+    )
+
+    has_signed_conflict_of_interest_agreement = models.BooleanField(
+        _("Has signed conflict of interest agreement"),
+        default=False,
+        help_text=_('Boolean indicates whether has agreed to the conflict of interest agreement.'),
+        blank=True,
+    )
+    conflict_of_interest_agreement_agreement = models.TextField(
+        _("Conflict of interest agreement"),
+        help_text=_('The actual terms of conflict of interest agreement the user agreed to when they signed.'),
+        blank=True,
+        null=True,
+    )
+    conflict_of_interest_agreement_signed_on = models.DateTimeField(
+        _('Conflict of interest agreement signed on'),
+        help_text=_('The date when the agreement was signed on.'),
+        blank=True,
+        null=True,
+    )
+
+    has_signed_code_of_conduct_agreement = models.BooleanField(
+        _("Has signed code of conduct agreement"),
+        default=False,
+        help_text=_('Boolean indicates whether has agreed to the code of conduct.'),
+        blank=True,
+    )
+    code_of_conduct_agreement_agreement = models.TextField(
+        _("Code of conduct agreement"),
+        help_text=_('The code of conduct agreement the user agreed to when they signed.'),
+        blank=True,
+        null=True,
+    )
+    code_of_conduct_agreement_signed_on = models.DateTimeField(
+        _('Code of conduct agreement signed on'),
+        help_text=_('The date when the code of conduct agreement was signed on.'),
+        blank=True,
+        null=True,
+    )
+
+    has_signed_confidentiality_agreement = models.BooleanField(
+        _("Has signed confidentiality agreement"),
+        default=False,
+        help_text=_('Boolean indicates whether has agreed to the confidentiality agreement.'),
+        blank=True,
+    )
+    confidentiality_agreement_agreement = models.TextField(
+        _("Confidentiality agreement agreement"),
+        help_text=_('The actual terms of confidentiality agreement the user agreed to when they signed.'),
+        blank=True,
+        null=True,
+    )
+    confidentiality_agreement_signed_on = models.DateTimeField(
+        _('Confidentiality agreement signed on'),
+        help_text=_('The date when the agreement was signed on.'),
+        blank=True,
+        null=True,
+    )
+
+    police_check_date = models.DateField(
+        _('Police check date'),
+        help_text=_('The date when the police check was taken on.'),
+        blank=True,
+        null=True,
+    )
+
+    # AUDITING FIELDS
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_by = models.ForeignKey(
+        SharedUser,
+        help_text=_('The user whom created this object.'),
+        related_name="created_area_coordinators",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    created_from = models.GenericIPAddressField(
+        _("Created from"),
+        help_text=_('The IP address of the creator.'),
+        blank=True,
+        null=True
+    )
+    created_from_is_public = models.BooleanField(
+        _("Is the IP "),
+        help_text=_('Is creator a public IP and is routable.'),
+        default=False,
+        blank=True
+    )
+    last_modified_at = models.DateTimeField(auto_now=True)
+    last_modified_by = models.ForeignKey(
+        SharedUser,
+        help_text=_('The user whom modified this object last.'),
+        related_name="last_modified_area_coordinators",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    last_modified_from = models.GenericIPAddressField(
+        _("Last modified from"),
+        help_text=_('The IP address of the modifier.'),
+        blank=True,
+        null=True
+    )
+    last_modified_from_is_public = models.BooleanField(
+        _("Is the IP "),
+        help_text=_('Is modifier a public IP and is routable.'),
+        default=False,
+        blank=True
+    )
+
+    # # SEARCHABLE FIELDS
+    #
+    # indexed_text = models.CharField(
+    #     _("Indexed Text"),
+    #     max_length=1023,
+    #     help_text=_('The searchable content text used by the keyword searcher function.'),
+    #     blank=True,
+    #     null=True,
+    #     db_index=True,
+    #     unique=True
+    # )
+
+    """
+    MODEL FUNCTIONS
+    """
+
+    def __str__(self):
+        '''
+        Override the `casting` function so we output the following string when
+        an object gets casted to a string.
+        '''
+        return str(self.member)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        '''
+        Override the `save` function to support extra functionality of our model.
+        '''
+
+        '''
+        Finally call the parent function which handles saving so we can carry
+        out the saving operation by Django in our ORM.
+        '''
+        super(AreaCoordinator, self).save(*args, **kwargs)
+
+    def get_full_name(self):
+        return self.member.user.get_full_name()
+
+    def get_pretty_state(self):
+        return str(dict(AreaCoordinator.STATE_CHOICES).get(self.state))
+
+    def invalidate(self, method_name): #TODO: IMPLEMENT
+        """
+        Function used to clear the cache for the cached property functions.
+        """
+        try:
+            pass
+            # if method_name == 'fullname':
+            #     del self.fullname
+            # else:
+            #     raise Exception("Method name not found.")
+        except AttributeError:
+            pass
+
+    def invalidate_all(self):
+        self.invalidate("fullname")
