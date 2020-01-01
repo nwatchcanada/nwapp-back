@@ -33,6 +33,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     type_of = serializers.IntegerField()
     type_of_label = serializers.CharField(source="get_pretty_type_of")
     avatar_url = serializers.SerializerMethodField()
+    state = serializers.CharField(read_only=True,)
 
     # ------ MEMBER CONTACT ------ #
 
