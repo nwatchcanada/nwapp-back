@@ -91,6 +91,9 @@ class MemberListSerializer(serializers.Serializer):
         validators=[],
         source="address.postal_code",
     )
+    state = serializers.CharField(
+        read_only=True,
+    )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
