@@ -47,7 +47,6 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         conflict_of_interest_agreement = validated_data.get('conflict_of_interest_agreement')
         code_of_conduct_agreement = validated_data.get('code_of_conduct_agreement')
         confidentiality_agreement = validated_data.get('confidentiality_agreement')
-        # associate_agreement = validated_data.get('associate_agreement')
         police_check_date = validated_data.get('police_check_date')
 
         logger.info("Beginning promotion...")
@@ -57,7 +56,6 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         conflict_of_interest_agreement = render_to_string('account/conflict_of_interest_agreement/2019_05_01.txt', {})
         code_of_conduct_agreement = render_to_string('account/code_of_conduct_agreement/2019_05_01.txt', {})
         confidentiality_agreement = render_to_string('account/confidentiality_agreement/2019_05_01.txt', {})
-        # associate_agreement = render_to_string('account/associate_agreement/2019_05_01.txt', {})
 
         # Create or update our model.
         area_coordinator = AreaCoordinator.objects.update_or_create(
@@ -97,7 +95,6 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         slug = validated_data.get('member')
         member = Member.objects.select_for_update().get(user__slug=slug)
         request = self.context.get('request')
-        # area_coordinator_agreement = validated_data.get('area_coordinator_agreement')
         conflict_of_interest_agreement = validated_data.get('conflict_of_interest_agreement')
         code_of_conduct_agreement = validated_data.get('code_of_conduct_agreement')
         confidentiality_agreement = validated_data.get('confidentiality_agreement')
@@ -107,7 +104,6 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         logger.info("Beginning promotion...")
 
         # Get the text agreement which will be signed.
-        # area_coordinator_agreement = render_to_string('account/area_coordinator_agreement/2019_05_01.txt', {})
         conflict_of_interest_agreement = render_to_string('account/conflict_of_interest_agreement/2019_05_01.txt', {})
         code_of_conduct_agreement = render_to_string('account/code_of_conduct_agreement/2019_05_01.txt', {})
         confidentiality_agreement = render_to_string('account/confidentiality_agreement/2019_05_01.txt', {})
@@ -118,9 +114,6 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
             member=member,
             defaults={
                 'member': member,
-                # 'has_signed_area_coordinator_agreement': True,
-                # 'area_coordinator_agreement': area_coordinator_agreement,
-                # 'area_coordinator_agreement_signed_on': timezone.now(),
                 'has_signed_conflict_of_interest_agreement': True,
                 'conflict_of_interest_agreement': conflict_of_interest_agreement,
                 'conflict_of_interest_agreement_signed_on': timezone.now(),

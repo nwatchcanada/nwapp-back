@@ -103,7 +103,7 @@ class Associate(models.Model):
         help_text=_('Boolean indicates whether has agreed to the conflict of interest agreement.'),
         blank=True,
     )
-    conflict_of_interest_agreement_agreement = models.TextField(
+    conflict_of_interest_agreement = models.TextField(
         _("Conflict of interest agreement"),
         help_text=_('The actual terms of conflict of interest agreement the user agreed to when they signed.'),
         blank=True,
@@ -122,7 +122,7 @@ class Associate(models.Model):
         help_text=_('Boolean indicates whether has agreed to the code of conduct.'),
         blank=True,
     )
-    code_of_conduct_agreement_agreement = models.TextField(
+    code_of_conduct_agreement = models.TextField(
         _("Code of conduct agreement"),
         help_text=_('The code of conduct agreement the user agreed to when they signed.'),
         blank=True,
@@ -141,7 +141,7 @@ class Associate(models.Model):
         help_text=_('Boolean indicates whether has agreed to the confidentiality agreement.'),
         blank=True,
     )
-    confidentiality_agreement_agreement = models.TextField(
+    confidentiality_agreement = models.TextField(
         _("Confidentiality agreement agreement"),
         help_text=_('The actual terms of confidentiality agreement the user agreed to when they signed.'),
         blank=True,
