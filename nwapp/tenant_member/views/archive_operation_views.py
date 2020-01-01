@@ -10,11 +10,11 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_member.permissions import CanRetrieveUpdateDestroyMemberPermission
-from tenant_member.serializers import MemberAvatarCreateOrUpdateOperationSerializer
+from tenant_member.serializers import MemberArchiveOperationSerializer
 
 
 class MemberArchiveOperationAPIView(generics.CreateAPIView):
-    serializer_class = MemberAvatarCreateOrUpdateOperationSerializer
+    serializer_class = MemberArchiveOperationSerializer
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,
@@ -25,7 +25,7 @@ class MemberArchiveOperationAPIView(generics.CreateAPIView):
 
     @transaction.atomic
     def post(self, request, format=None):
-        serializer = MemberAvatarCreateOrUpdateOperationSerializer(
+        serializer = MemberArchiveOperationSerializer(
             data=request.data,
             context={
                 'request': request
