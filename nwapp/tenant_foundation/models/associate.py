@@ -154,24 +154,24 @@ class Associate(models.Model):
         null=True,
     )
 
-    # has_signed_associate_agreement = models.BooleanField(
-    #     _("Has signed associate agreement"),
-    #     default=False,
-    #     help_text=_('Boolean indicates whether has agreed to the associate agreement.'),
-    #     blank=True,
-    # )
-    # associate_agreement = models.TextField(
-    #     _("Associate agreement"),
-    #     help_text=_('The actual terms of associate agreement the user agreed to when they signed.'),
-    #     blank=True,
-    #     null=True,
-    # )
-    # associate_agreement_signed_on = models.DateTimeField(
-    #     _('Associate agreement signed on'),
-    #     help_text=_('The date when the associate agreement was signed on.'),
-    #     blank=True,
-    #     null=True,
-    # )
+    has_signed_associate_agreement = models.BooleanField(
+        _("Has signed associate agreement"),
+        default=False,
+        help_text=_('Boolean indicates whether has agreed to the associate agreement.'),
+        blank=True,
+    )
+    associate_agreement = models.TextField(
+        _("Associate agreement"),
+        help_text=_('The actual terms of associate agreement the user agreed to when they signed.'),
+        blank=True,
+        null=True,
+    )
+    associate_agreement_signed_on = models.DateTimeField(
+        _('Associate agreement signed on'),
+        help_text=_('The date when the associate agreement was signed on.'),
+        blank=True,
+        null=True,
+    )
 
     police_check_date = models.DateField(
         _('Police check date'),

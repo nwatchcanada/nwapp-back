@@ -89,13 +89,15 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         #     "error": "Terminating for debugging purposes only."
         # })
 
+        logger.info("Promoted to area coordinator")
+
         return member
 
     def create_associate(self, validated_data):
         slug = validated_data.get('member')
         member = Member.objects.select_for_update().get(user__slug=slug)
         request = self.context.get('request')
-        area_coordinator_agreement = validated_data.get('area_coordinator_agreement')
+        # area_coordinator_agreement = validated_data.get('area_coordinator_agreement')
         conflict_of_interest_agreement = validated_data.get('conflict_of_interest_agreement')
         code_of_conduct_agreement = validated_data.get('code_of_conduct_agreement')
         confidentiality_agreement = validated_data.get('confidentiality_agreement')
@@ -104,11 +106,49 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
 
         logger.info("Beginning promotion...")
 
-        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-            "error": "Terminating for debugging purposes only."
-        })
+        # Get the text agreement which will be signed.
+        # area_coordinator_agreement = render_to_string('account/area_coordinator_agreement/2019_05_01.txt', {})
+        conflict_of_interest_agreement = render_to_string('account/conflict_of_interest_agreement/2019_05_01.txt', {})
+        code_of_conduct_agreement = render_to_string('account/code_of_conduct_agreement/2019_05_01.txt', {})
+        confidentiality_agreement = render_to_string('account/confidentiality_agreement/2019_05_01.txt', {})
+        associate_agreement = render_to_string('account/associate_agreement/2019_05_01.txt', {})
 
-        return validated_data
+        # Create or update our model.
+        associate = Associate.objects.update_or_create(
+            member=member,
+            defaults={
+                'member': member,
+                # 'has_signed_area_coordinator_agreement': True,
+                # 'area_coordinator_agreement': area_coordinator_agreement,
+                # 'area_coordinator_agreement_signed_on': timezone.now(),
+                'has_signed_conflict_of_interest_agreement': True,
+                'conflict_of_interest_agreement': conflict_of_interest_agreement,
+                'conflict_of_interest_agreement_signed_on': timezone.now(),
+                'has_signed_code_of_conduct_agreement': True,
+                'code_of_conduct_agreement': code_of_conduct_agreement,
+                'code_of_conduct_agreement_signed_on': timezone.now(),
+                'has_signed_confidentiality_agreement': True,
+                'confidentiality_agreement': confidentiality_agreement,
+                'confidentiality_agreement_signed_on': timezone.now(),
+                'has_signed_associate_agreement': True,
+                'associate_agreement': associate_agreement,
+                'associate_agreement_signed_on': timezone.now(),
+                'police_check_date': police_check_date,
+            }
+        )
+
+        # Set the user's role to be a area coordinator after clearing the
+        # previous group memberships.
+        member.user.groups.clear()
+        member.user.groups.add(SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE)
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
+        logger.info("Promoted to associate")
+
+        return member
 
     @transaction.atomic
     def create(self, validated_data):
