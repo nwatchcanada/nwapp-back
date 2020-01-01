@@ -1,10 +1,10 @@
 ![Neighbourhood Watch Canada](https://github.com/nwatchcanada/nwapp-docs/blob/master/docs/img/nwl-logo-256x256.png)
 
-# Neigbhourhood Watch App Backend
+# Neighbourhood Watch App Backend
 [![Documentation Status](https://readthedocs.org/projects/nwapp-back/badge/?version=latest)](https://nwapp-back.readthedocs.io/en/latest/?badge=latest)
 
 ## Overview
-Neigbhourhood Watch App (**nwapp-back**) is an application server, written in ``python3`` using the ``Django`` web framework, which provides a RESTful API interface to be utilized by the [nwapp-front](https://github.com/nwatchcanada/nwapp-front) project.
+Neighbourhood Watch App (**nwapp-back**) is an application server, written in ``python3`` using the ``Django`` web framework, which provides a RESTful API interface to be utilized by the [nwapp-front](https://github.com/nwatchcanada/nwapp-front) project.
 
 ## Documentation
 For local installation, API reference and developer notes, the documentation can be found [here](https://nwapp-back.readthedocs.io/en/latest/).
