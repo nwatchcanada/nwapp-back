@@ -89,7 +89,7 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        return area_coordinator
+        return member
 
     def create_associate(self, validated_data):
         slug = validated_data.get('member')

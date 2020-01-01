@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_member.permissions import CanRetrieveUpdateDestroyMemberPermission
-from tenant_member.serializers import MemberPromoteOperationSerializer
+from tenant_member.serializers import MemberPromoteOperationSerializer, MemberRetrieveSerializer
 
 
 class MemberPromoteOperationAPIView(generics.CreateAPIView):
@@ -25,12 +25,13 @@ class MemberPromoteOperationAPIView(generics.CreateAPIView):
 
     @transaction.atomic
     def post(self, request, format=None):
-        serializer = MemberPromoteOperationSerializer(
+        write_serializer = MemberPromoteOperationSerializer(
             data=request.data,
             context={
                 'request': request
             }
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        write_serializer.is_valid(raise_exception=True)
+        member = write_serializer.save()
+        read_serializer = MemberRetrieveSerializer(member, many=False,)
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
