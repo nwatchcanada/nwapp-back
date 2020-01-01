@@ -1,0 +1,1 @@
+default_app_config = 'tenant_area_coordinator.apps.TenantAreaCoordinatorConfig'

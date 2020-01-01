@@ -111,6 +111,7 @@ TENANT_APPS = ( # (Django-Tenants)
     'tenant_foundation.apps.TenantFoundationConfig',
     'tenant_dashboard.apps.TenantDashboardConfig',
     'tenant_member.apps.TenantMemberConfig',
+    'tenant_area_coordinator.apps.TenantAreaCoordinatorConfig',
     'tenant_private_file_upload.apps.TenantPrivateFileUploadConfig',
     'tenant_private_image_upload.apps.TenantPrivateImageUploadConfig',
 )

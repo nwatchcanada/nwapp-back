@@ -1,0 +1,2 @@
+from tenant_area_coordinator.filters.base_filter import AreaCoordinatorFilter
+from tenant_area_coordinator.filters.comment_filter import AreaCoordinatorCommentFilter
