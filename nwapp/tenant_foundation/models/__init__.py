@@ -14,5 +14,9 @@ from tenant_foundation.models.private_file_upload import PrivateFileUpload
 from tenant_foundation.models.private_image_upload import PrivateImageUpload
 
 from tenant_foundation.models.area_coordinator import AreaCoordinator
+from tenant_foundation.models.area_coordinator_address import AreaCoordinatorAddress
+from tenant_foundation.models.area_coordinator_contact import AreaCoordinatorContact
+from tenant_foundation.models.area_coordinator_metric import AreaCoordinatorMetric
+from tenant_foundation.models.area_coordinator_comment import AreaCoordinatorComment
 
 from tenant_foundation.models.associate import Associate

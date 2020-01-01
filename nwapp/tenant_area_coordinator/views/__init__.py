@@ -1,4 +1,4 @@
-# from tenant_area_coordinator.views.list_create_view import AreaCoordinatorListCreateAPIView
+from tenant_area_coordinator.views.list_create_view import AreaCoordinatorListCreateAPIView
 # from tenant_area_coordinator.views.retrieve_update_destroy_view import AreaCoordinatorRetrieveUpdateDestroyAPIView
 # from tenant_area_coordinator.views.retrieve_view import AreaCoordinatorRetrieveAPIView
 # from tenant_area_coordinator.views.address_update_view import AreaCoordinatorAddressUpdateAPIView
