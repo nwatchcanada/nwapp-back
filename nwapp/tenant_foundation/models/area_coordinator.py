@@ -87,9 +87,9 @@ class AreaCoordinator(models.Model):
 
     # SYSTEM FIELDS
 
-    member = models.OneToOneField(
-        "Member",
-        help_text=_('The member whom this area coordinator was promoted from.'),
+    user = models.OneToOneField(
+        SharedUser,
+        help_text=_('The user whom is a member.'),
         related_name="area_coordinator",
         on_delete=models.CASCADE,
         primary_key=True,
