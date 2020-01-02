@@ -3,6 +3,9 @@ from tenant_foundation.models.expectation_item import ExpectationItem
 from tenant_foundation.models.meaning_item import MeaningItem
 from tenant_foundation.models.how_did_you_hear_about_us_item import HowHearAboutUsItem
 from tenant_foundation.models.tag import Tag
+from tenant_foundation.models.score_point import ScorePoint
+from tenant_foundation.models.award import Award
+from tenant_foundation.models.badge import Badge
 
 from tenant_foundation.models.member import Member
 from tenant_foundation.models.member_address import MemberAddress

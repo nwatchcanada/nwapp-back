@@ -12,4 +12,6 @@ urlpatterns = (
     path('api/v1/expectation/<int:id>', views.ExpectationItemRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_expectation_items_retrieve_update_delete_api_endpoint'),
     path('api/v1/meanings', views.MeaningItemListCreateAPIView.as_view(), name='nwapp_meaning_item_list_create_api_endpoint'),
     path('api/v1/meaning/<int:id>', views.MeaningItemRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_meaning_item_retrieve_update_delete_api_endpoint'),
+    path('api/v1/score-points', views.ScorePointListCreateAPIView.as_view(), name='nwapp_score_point_list_create_api_endpoint'),
+    # path('api/v1/meaning/<int:id>', views.MeaningItemRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_meaning_item_retrieve_update_delete_api_endpoint'),
 )

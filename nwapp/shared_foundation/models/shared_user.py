@@ -147,6 +147,7 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
     #
     # PERSON FIELDS - http://schema.org/Person
     #
+
     first_name = models.CharField(
         _("First Name"),
         max_length=63,
@@ -190,6 +191,18 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         help_text=_('The date and time of the last report email was created.'),
         blank=True,
         null=True
+    )
+
+    #
+    # GAMIFICATION FIELDS
+    #
+
+    score = models.PositiveSmallIntegerField(
+        _("Score"),
+        help_text=_('The total score accumulated currently.'),
+        blank=True,
+        null=False,
+        default=0,
     )
 
     #

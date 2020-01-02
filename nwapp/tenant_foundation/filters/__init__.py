@@ -1,0 +1,1 @@
+from tenant_foundation.filters.score_point_filter import ScorePointFilter
