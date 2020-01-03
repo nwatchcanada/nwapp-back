@@ -34,6 +34,7 @@ class ScorePointListSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True,)
     last_modified_at = serializers.DateTimeField(read_only=True,)
     is_archived = serializers.BooleanField(read_only=True,)
+    uuid = serializers.UUIDField(read_only=True,)
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """

@@ -227,3 +227,30 @@ class ScorePoint(models.Model):
 
             # Return our new object.
             return score_point
+
+    @classmethod
+    def archive(cls, uuid, last_modified_by, last_modified_from, last_modified_from_is_public):
+        """
+        Custom constructor used to archive the object using `Pessimistic approach`
+        method for handling locking and concurrency; furthermore, the user's
+        score will get automatically updated.
+
+        Special thanks: https://medium.com/@hakibenita/how-to-manage-concurrency-in-django-models-b240fed4ee2
+        """
+        with transaction.atomic():
+            # Create our award.
+            score_point = cls.objects.select_for_update().get(
+                uuid=uuid
+            )
+            score_point.is_archived = True
+            score_point.last_modified_by = last_modified_by
+            score_point.last_modified_from = last_modified_from
+            score_point.last_modified_from_is_public = last_modified_from_is_public
+            score_point.save()
+
+            # Update total score.
+            score_point.user.score -= score_point.amount
+            score_point.user.save()
+
+            # Return our new object.
+            return score_point

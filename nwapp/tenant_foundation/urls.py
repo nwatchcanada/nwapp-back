@@ -13,5 +13,5 @@ urlpatterns = (
     path('api/v1/meanings', views.MeaningItemListCreateAPIView.as_view(), name='nwapp_meaning_item_list_create_api_endpoint'),
     path('api/v1/meaning/<int:id>', views.MeaningItemRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_meaning_item_retrieve_update_delete_api_endpoint'),
     path('api/v1/score-points', views.ScorePointListCreateAPIView.as_view(), name='nwapp_score_point_list_create_api_endpoint'),
-    # path('api/v1/meaning/<int:id>', views.MeaningItemRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_meaning_item_retrieve_update_delete_api_endpoint'),
+    path('api/v1/score-point/<uuid>', views.ScorePointRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_score_point_retrieve_update_delete_api_endpoint'),
 )

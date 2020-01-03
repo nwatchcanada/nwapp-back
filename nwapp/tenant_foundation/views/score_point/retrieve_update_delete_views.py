@@ -12,7 +12,7 @@ from tenant_foundation.models import ScorePoint
 from tenant_foundation.serializers import ScorePointRetrieveSerializer
 
 
-class ScorePointRetrieveAPIView(generics.RetrieveAPIView):
+class ScorePointRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,
@@ -22,15 +22,44 @@ class ScorePointRetrieveAPIView(generics.RetrieveAPIView):
     )
 
     @transaction.atomic
-    def get(self, request, slug=None):
+    def get(self, request, uuid=None):
         """
         Retrieve
         """
-        order = get_object_or_404(ScorePoint, user__slug=slug)
-        self.check_object_permissions(request, order)  # Validate permissions.
-        serializer = ScorePointRetrieveSerializer(order, many=False, context={'request': request,})
+        sp = get_object_or_404(ScorePoint, uuid=uuid)
+        self.check_object_permissions(request, sp)  # Validate permissions.
+        serializer = ScorePointRetrieveSerializer(sp, many=False, context={'request': request,})
         # queryset = serializer.setup_eager_loading(self, queryset)
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK
         )
+
+    @transaction.atomic
+    def put(self, request, uuid=None):
+        """
+        Update
+        """
+        sp = get_object_or_404(ScorePoint, uuid=uuid)
+        self.check_object_permissions(request, sp)  # Validate permissions.
+        return Response(data={
+            'error': 'Programmer has this as a TODO item'
+        }, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    @transaction.atomic
+    def delete(self, request, uuid=None):
+        """
+        Delete
+        """
+        sp = get_object_or_404(ScorePoint, uuid=uuid)
+        self.check_object_permissions(request, sp)  # Validate permissions.
+
+        sp = ScorePoint.archive(
+            uuid,
+            request.user,
+            request.client_ip,
+            request.client_ip_is_routable
+        )
+        
+        serializer = ScorePointRetrieveSerializer(sp, many=False, context={'request': request,})
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
