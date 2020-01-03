@@ -12,11 +12,6 @@ from django.utils.translation import ugettext_lazy as _
 from shared_foundation.models import SharedUser
 
 
-# def get_expiry_date(days=2):
-#     """Returns the current date plus paramter number of days."""
-#     return timezone.now() + timedelta(days=days)
-
-
 class ScorePointManager(models.Manager):
     def delete_all(self):
         items = ScorePoint.objects.all()
@@ -94,6 +89,13 @@ class ScorePoint(models.Model):
         blank=True,
         null=True,
     )
+    description_other = models.CharField(
+        _("Description (Other)"),
+        help_text=_('The custom description override by the staff if the `Other` type was selected for this score point.'),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
     amount = models.PositiveSmallIntegerField(
         _("Amount"),
         help_text=_('The amount number awarded for this score point.'),
@@ -107,6 +109,12 @@ class ScorePoint(models.Model):
         default=False,
         blank=True,
         db_index=True
+    )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this score point.'),
+        blank=True,
+        related_name="score_points"
     )
 
     # SYSTEM FIELDS
@@ -186,14 +194,14 @@ class ScorePoint(models.Model):
 
     def get_description(self):
         if self.type_of == ScorePoint.TYPE_OF.OTHER:
-            return _("Score points awarded by staff.")
+            return self.description_other
         elif self.type_of == ScorePoint.TYPE_OF.DONATION:
             return _("Score awarded for donating to Neighbourhood Watch.")
         elif self.type_of == ScorePoint.TYPE_OF.DAILY_USAGE:
             return _("Score awarded using service in a day.")
 
     @classmethod
-    def grant(cls, user, type_of, type_of_other, amount, created_by, last_modified_by):
+    def award(cls, user, type_of, type_of_other, description_other, amount, created_by, last_modified_by):
         """
         Custom constructor used to create the object using `Pessimistic approach`
         method for handling locking and concurrency; furthermore, the user's
@@ -207,6 +215,7 @@ class ScorePoint(models.Model):
                 user=user,
                 type_of=type_of,
                 type_of_other=type_of_other,
+                description_other=description_other,
                 amount=amount,
                 created_by=created_by,
                 last_modified_by=last_modified_by

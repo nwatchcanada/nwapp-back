@@ -22,81 +22,22 @@ logger = logging.getLogger(__name__)
 
 
 class ScorePointListSerializer(serializers.Serializer):
-    type_of = serializers.IntegerField()
-    # organization_name = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="contact.organization_name",
-    # )
-    # organization_type_of = serializers.IntegerField(
-    #     required=False,
-    #     allow_null=True,
-    #     source="contact.organization_type_of",
-    # )
-    # first_name = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="contact.first_name",
-    # )
-    # last_name = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="contact.last_name",
-    # )
-    # primary_phone_e164 = E164PhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
-    # primary_phone_national = NationalPhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
-    # email = serializers.EmailField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="contact.email",
-    # )
-    # slug = serializers.SlugField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="user.slug",
-    # )
-    # street_address = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="address.street_address",
-    # )
-    # country = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="address.country",
-    # )
-    # region = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="address.region",
-    # )
-    # locality = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="address.locality",
-    # )
-    # postal_code = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     validators=[],
-    #     source="address.postal_code",
-    # )
-    # state = serializers.CharField(
-    #     read_only=True,
-    # )
+    user = serializers.SlugField(
+        read_only=True,
+        source="user.slug",
+    )
+    type_of = serializers.IntegerField(read_only=True,)
+    type_of_other = serializers.CharField(read_only=True,)
+    type_of_label = serializers.CharField(read_only=True, source="get_type_of_label")
+    description = serializers.CharField(read_only=True, source="get_description")
+    amount = serializers.IntegerField(read_only=True,)
+    created_at = serializers.DateTimeField(read_only=True,)
+    last_modified_at = serializers.DateTimeField(read_only=True,)
+    is_archived = serializers.BooleanField(read_only=True,)
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related(
-            'user', 'user__groups', 'created_by', 'last_modified_by'
+            'user', 'created_by', 'last_modified_by', 'tags',
         )
         return queryset

@@ -11,6 +11,7 @@ class ScorePointFilter(django_filters.FilterSet):
         # tuple-mapping retains order
         fields=(
             ('created_at', 'created_at'),
+            ('type_of', 'type_of'),
         ),
 
         # # labels do not need to retain order
@@ -22,5 +23,7 @@ class ScorePointFilter(django_filters.FilterSet):
     class Meta:
         model = ScorePoint
         fields = [
-            'user'
+            'user',
+            'is_archived',
+            'type_of',
         ]
