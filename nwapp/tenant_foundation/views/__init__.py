@@ -12,3 +12,6 @@ from tenant_foundation.views.meaning.retrieve_update_delete_views import Meaning
 
 from tenant_foundation.views.score_point.list_create_views import ScorePointListCreateAPIView
 from tenant_foundation.views.score_point.retrieve_update_delete_views import ScorePointRetrieveUpdateDestroyAPIView
+
+from tenant_foundation.views.badge.list_create_views import BadgeListCreateAPIView
+from tenant_foundation.views.badge.retrieve_update_delete_views import BadgeRetrieveUpdateDestroyAPIView

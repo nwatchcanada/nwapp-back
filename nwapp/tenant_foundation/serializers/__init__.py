@@ -13,3 +13,7 @@ from tenant_foundation.serializers.meaning.retrieve_update_serializers import Me
 from tenant_foundation.serializers.score_point.list_serializer import ScorePointListSerializer
 from tenant_foundation.serializers.score_point.create_serializer import ScorePointCreateSerializer
 from tenant_foundation.serializers.score_point.retrieve_serializer import ScorePointRetrieveSerializer
+
+from tenant_foundation.serializers.badge.list_serializer import BadgeListSerializer
+from tenant_foundation.serializers.badge.create_serializer import BadgeCreateSerializer
+from tenant_foundation.serializers.badge.retrieve_serializer import BadgeRetrieveSerializer
