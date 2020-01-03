@@ -51,7 +51,7 @@ class SharedLoginAPIView(APIView):
         # get a more longer lasting "access_token". This is done for security
         # purposes.
         aware_dt = timezone.now()
-        expires_dt = aware_dt + timezone.timedelta(seconds=10)
+        expires_dt = aware_dt + timezone.timedelta(days=1)
         access_token = AccessToken.objects.create(
             application=application,
             user=authenticated_user,
