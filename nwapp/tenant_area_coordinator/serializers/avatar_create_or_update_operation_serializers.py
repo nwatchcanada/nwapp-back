@@ -46,7 +46,7 @@ class AreaCoordinatorAvatarCreateOrUpdateOperationSerializer(serializers.ModelSe
     def validate_area_coordinator(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
         if not AreaCoordinator.objects.filter(user__slug=value).exists():
-            raise serializers.ValidationError("AreaCoordinator does not exist")
+            raise serializers.ValidationError("Area Coordinator does not exist")
         return value
 
     @transaction.atomic
@@ -68,8 +68,8 @@ class AreaCoordinatorAvatarCreateOrUpdateOperationSerializer(serializers.ModelSe
 
         # Create our private image upload if it was not done previously,
         # else we update the area_coordinator's avatar.
-        if area_coordinator.avatar_image == None or area_coordinator.avatar_image is None:
-            area_coordinator.avatar_image = PrivateImageUpload.objects.create(
+        if area_coordinator.user.member.avatar_image == None or area_coordinator.user.member.avatar_image is None:
+            area_coordinator.user.member.avatar_image = PrivateImageUpload.objects.create(
                 image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentFile`, Django handles all file uploading.
                 user = area_coordinator.user,
                 created_by = request.user,
@@ -79,25 +79,25 @@ class AreaCoordinatorAvatarCreateOrUpdateOperationSerializer(serializers.ModelSe
                 last_modified_from = request.client_ip,
                 last_modified_from_is_public = request.client_ip_is_routable,
             )
-            area_coordinator.last_modified_by = request.user
-            area_coordinator.last_modified_from = request.client_ip
-            area_coordinator.last_modified_from_is_public = request.client_ip_is_routable
-            area_coordinator.save()
+            area_coordinator.user.member.last_modified_by = request.user
+            area_coordinator.user.member.last_modified_from = request.client_ip
+            area_coordinator.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            area_coordinator.user.member.save()
             print("AreaCoordinatorAvatarCreateOrUpdateOperationSerializer --> create() --> CREATED IMAGE")
         else:
-            area_coordinator.avatar_image.image_file = content_file
-            area_coordinator.avatar_image.last_modified_by = request.user
-            area_coordinator.avatar_image.last_modified_from = request.client_ip
-            area_coordinator.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
-            area_coordinator.avatar_image.save()
-            area_coordinator.last_modified_by = request.user
-            area_coordinator.last_modified_from = request.client_ip
-            area_coordinator.last_modified_from_is_public = request.client_ip_is_routable
-            area_coordinator.save()
+            area_coordinator.user.member.avatar_image.image_file = content_file
+            area_coordinator.user.member.avatar_image.last_modified_by = request.user
+            area_coordinator.user.member.avatar_image.last_modified_from = request.client_ip
+            area_coordinator.user.member.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
+            area_coordinator.user.member.avatar_image.save()
+            area_coordinator.user.member.last_modified_by = request.user
+            area_coordinator.user.member.last_modified_from = request.client_ip
+            area_coordinator.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            area_coordinator.user.member.save()
             print("AreaCoordinatorAvatarCreateOrUpdateOperationSerializer --> create() --> UPDATED IMAGE")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        return validated_data
+        return area_coordinator.user.member.avatar_image

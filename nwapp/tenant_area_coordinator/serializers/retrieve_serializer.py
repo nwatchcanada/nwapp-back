@@ -125,4 +125,5 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
         try:
             return obj.user.member.avatar_image.image_file.url
         except Exception as e:
+            print("E", e)
             return None
