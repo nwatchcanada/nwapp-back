@@ -59,9 +59,9 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
 
         # Create or update our model.
         area_coordinator = AreaCoordinator.objects.update_or_create(
-            member=member,
+            user=member.user,
             defaults={
-                'member': member,
+                'user': member.user,
                 'has_signed_area_coordinator_agreement': True,
                 'area_coordinator_agreement': area_coordinator_agreement,
                 'area_coordinator_agreement_signed_on': timezone.now(),
@@ -75,6 +75,12 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
                 'confidentiality_agreement': confidentiality_agreement,
                 'confidentiality_agreement_signed_on': timezone.now(),
                 'police_check_date': police_check_date,
+                'created_by': request.user,
+                'created_from': request.client_ip,
+                'created_from_is_public': request.client_ip_is_routable,
+                'last_modified_by': request.user,
+                'last_modified_from': request.client_ip,
+                'last_modified_from_is_public': request.client_ip_is_routable,
             }
         )
 

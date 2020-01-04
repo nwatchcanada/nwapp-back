@@ -36,9 +36,7 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = Member.objects.filter(
-            user__groups__id=SharedGroup.GROUP_MEMBERSHIP.MEMBER
-        ).order_by('contact__last_name')
+        queryset = Member.objects.all().order_by('contact__last_name')
 
         # Fetch all the queries.
         s = self.get_serializer_class()
