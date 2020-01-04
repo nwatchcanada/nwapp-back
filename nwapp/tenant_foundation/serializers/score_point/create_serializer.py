@@ -32,13 +32,13 @@ class ScorePointCreateSerializer(serializers.Serializer):
         choices=ScorePoint.TYPE_OF_CHOICES,
         write_only=True,
     )
-    type_of_other = serializers.CharField(
+    type_of_other = serializers.CharField( #TODO: Required if ```type_of == 1```.
         required=False,
         allow_blank=True,
         allow_null=True,
         write_only=True,
     )
-    description_other = serializers.CharField(
+    description_other = serializers.CharField( #TODO: Required if ```type_of == 1```.
         required=False,
         allow_blank=True,
         allow_null=True,

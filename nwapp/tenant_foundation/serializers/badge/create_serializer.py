@@ -26,28 +26,36 @@ class BadgeCreateSerializer(serializers.Serializer):
         required=True,
         write_only=True,
     )
-    # type_of = serializers.ChoiceField(
-    #     required=True,
-    #     allow_null=False,
-    #     choices=Badge.TYPE_OF_CHOICES,
-    #     write_only=True,
-    # )
-    # type_of_other = serializers.CharField(
-    #     required=False,
-    #     allow_blank=True,
-    #     allow_null=True,
-    #     write_only=True,
-    # )
-    # description_other = serializers.CharField(
-    #     required=False,
-    #     allow_blank=True,
-    #     allow_null=True,
-    #     write_only=True,
-    # )
-    # amount = serializers.IntegerField(
-    #     required=True,
-    #     write_only=True,
-    # )
+    type_of = serializers.ChoiceField(
+        required=True,
+        allow_null=False,
+        choices=Badge.TYPE_OF_CHOICES,
+        write_only=True,
+    )
+    type_of_other = serializers.CharField( #TODO: Required if ```type_of == 1```.
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
+    description_other = serializers.CharField( #TODO: Required if ```type_of == 1```.
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
+    icon = serializers.CharField( #TODO: Required if ```type_of == 1```.
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
+    colour = serializers.CharField( #TODO: Required if ```type_of == 1```.
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
     # tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, write_only=True,)
 
     def validate_user(self, value):
@@ -74,31 +82,36 @@ class BadgeCreateSerializer(serializers.Serializer):
         """
         slug = validated_data.get('user')
         user = SharedUser.objects.get(slug=slug)
-        # request = self.context.get("request")
-        # type_of = validated_data.get('type_of')
-        # type_of_other = validated_data.get('type_of_other')
-        # description_other = validated_data.get('description_other')
-        # amount = validated_data.get('amount')
-        #
-        # badge = Badge.award(
-        #     user,
-        #     type_of,
-        #     type_of_other,
-        #     description_other,
-        #     amount,
-        #     request.user, # Note: created_by
-        #     request.user, # Note: last_modified_by
-        # )
-        # logger.info("Awarded score points to the user\'s account.")
-        #
-        # tags = validated_data.get('tags', None)
-        # if tags is not None:
-        #     if len(tags) > 0:
-        #         badge.tags.set(tags)
-        #         logger.info("Awarded score has tags attached to it.")
+        request = self.context.get("request")
+        type_of = validated_data.get('type_of')
+        type_of_other = validated_data.get('type_of_other', "")
+        description_other = validated_data.get('description_other', "")
+        icon = validated_data.get('icon', "")
+        colour = validated_data.get('colour', "")
 
-        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-            "error": "Terminating for debugging purposes only."
-        })
+        if type_of == Badge.TYPE_OF.SUPPORTER:
+            icon = "donate"
+            colour = "green"
+
+        badge = Badge.objects.create(
+            user=user,
+            type_of=type_of,
+            type_of_other=type_of_other,
+            description_other=description_other,
+            icon=icon,
+            colour=colour,
+        )
+
+        logger.info("Awarded score points to the user\'s account.")
+
+        tags = validated_data.get('tags', None)
+        if tags is not None:
+            if len(tags) > 0:
+                badge.tags.set(tags)
+                logger.info("Awarded score has tags attached to it.")
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
 
         return badge

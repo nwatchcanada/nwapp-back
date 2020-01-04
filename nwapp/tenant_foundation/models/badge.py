@@ -74,7 +74,7 @@ class Badge(models.Model):
 
     #  BUSINESS LOGIC FIELDS
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)#TODO: DELETE!!
     user = models.ForeignKey(
         SharedUser,
         help_text=_('The user whom owns these score point.'),
@@ -87,12 +87,19 @@ class Badge(models.Model):
         choices=TYPE_OF_CHOICES,
         db_index=True,
     )
-    type_other = models.CharField(
+    type_of_other = models.CharField(
         _("Type of (Other)"),
         max_length=63,
         help_text=_('The specific description of the type of score point this is.'),
         blank=True,
         null=True,
+    )
+    description_other = models.CharField(
+        _("Description (Other)"),
+        help_text=_('The custom description override by the staff if the `Other` type was selected for this badge.'),
+        max_length=255,
+        null=True,
+        blank=True,
     )
     icon = models.CharField(
         _("Icon"),
@@ -117,6 +124,12 @@ class Badge(models.Model):
         default=False,
         blank=True,
         db_index=True
+    )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this badge.'),
+        blank=True,
+        related_name="badges"
     )
 
     # SYSTEM FIELDS
@@ -175,7 +188,7 @@ class Badge(models.Model):
     """
 
     def __str__(self):
-        return str(self.text)
+        return "Badge UUID: " + str(self.uuid)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -193,5 +206,11 @@ class Badge(models.Model):
         if self.type_of == Badge.TYPE_OF.OTHER:
             return self.description_other
         elif self.type_of == Badge.TYPE_OF.SUPPORTER:
-            return _("Badge given to users whom generously supported Neighbourhood Watch with financial donations.")
-        return "TODO"
+            return _("Supporter")
+        return None
+
+    def get_description(self):
+        if self.type_of == Badge.TYPE_OF.OTHER:
+            return self.description_other
+        elif self.type_of == Badge.TYPE_OF.SUPPORTER:
+            return _("Badge given to users whom generously supported Neighbourhood Watch with financial donations")
