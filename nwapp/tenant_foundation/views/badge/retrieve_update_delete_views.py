@@ -54,12 +54,11 @@ class BadgeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         sp = get_object_or_404(Badge, uuid=uuid)
         self.check_object_permissions(request, sp)  # Validate permissions.
 
-        sp = Badge.archive(
-            uuid,
-            request.user,
-            request.client_ip,
-            request.client_ip_is_routable
-        )
+        sp.is_archived = True
+        sp.last_modified_by = request.user
+        sp.last_modified_from = request.client_ip
+        sp.last_modified_from_is_public = request.client_ip_is_routable
+        sp.save()
 
         serializer = BadgeRetrieveSerializer(sp, many=False, context={'request': request,})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
