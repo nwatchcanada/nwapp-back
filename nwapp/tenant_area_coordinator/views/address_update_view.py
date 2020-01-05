@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_foundation.models import AreaCoordinatorAddress
-from tenant_area_coordinator.permissions import CanRetrieveUpdateDestroyAreaCoordinatorAddressPermission
+from tenant_area_coordinator.permissions import CanRetrieveUpdateDestroyAreaCoordinatorNodePermission
 from tenant_area_coordinator.serializers import AreaCoordinatorRetrieveSerializer, AreaCoordinatorAddressUpdateSerializer
 
 
@@ -18,7 +18,7 @@ class AreaCoordinatorAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView)
         permissions.IsAuthenticated,
         SharedUserIsActivePermission,
         TenantPermission,
-        CanRetrieveUpdateDestroyAreaCoordinatorAddressPermission
+        CanRetrieveUpdateDestroyAreaCoordinatorNodePermission
     )
 
     @transaction.atomic
@@ -26,7 +26,7 @@ class AreaCoordinatorAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView)
         """
         Update
         """
-        object = get_object_or_404(AreaCoordinatorAddress, area_coordinator__user__slug=slug)
+        object = get_object_or_404(AreaCoordinatorAddress, member__user__slug=slug)
         self.check_object_permissions(request, object)  # Validate permissions.
         write_serializer = AreaCoordinatorAddressUpdateSerializer(
             object,
@@ -38,7 +38,7 @@ class AreaCoordinatorAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView)
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
         read_serializer = AreaCoordinatorRetrieveSerializer(
-            object.area_coordinator,
+            object.member,
             many=False,
             context={
                 'request': request,
