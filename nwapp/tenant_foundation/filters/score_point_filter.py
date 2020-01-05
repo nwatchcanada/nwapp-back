@@ -28,7 +28,6 @@ class ScorePointFilter(django_filters.FilterSet):
 
     user = django_filters.CharFilter(method='user_filtering')
 
-
     class Meta:
         model = ScorePoint
         fields = [
