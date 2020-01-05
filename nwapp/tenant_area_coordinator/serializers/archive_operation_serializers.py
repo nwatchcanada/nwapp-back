@@ -66,21 +66,21 @@ class AreaCoordinatorArchiveOperationSerializer(serializers.Serializer):
             comment=comment_obj,
         )
         # For debugging purposes only.
-        logger.info("AreaCoordinator comment created.")
+        logger.info("Area coordinator comment created.")
 
         #-------------------------#
         # Update area_coordinator object. #
         #-------------------------#
-        area_coordinator.state = state
-        area_coordinator.deactivation_reason = deactivation_reason
-        area_coordinator.deactivation_reason_other = deactivation_reason_other
-        area_coordinator.last_modified_by = request.user
-        area_coordinator.last_modified_from = request.client_ip
-        area_coordinator.last_modified_from_is_public = request.client_ip_is_routable
-        area_coordinator.save()
+        area_coordinator.user.member.state = state
+        area_coordinator.user.member.deactivation_reason = deactivation_reason
+        area_coordinator.user.member.deactivation_reason_other = deactivation_reason_other
+        area_coordinator.user.member.last_modified_by = request.user
+        area_coordinator.user.member.last_modified_from = request.client_ip
+        area_coordinator.user.member.last_modified_from_is_public = request.client_ip_is_routable
+        area_coordinator.user.member.save()
 
         # For debugging purposes only.
-        logger.info("AreaCoordinator updated state.")
+        logger.info("Area coordinator updated state.")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."

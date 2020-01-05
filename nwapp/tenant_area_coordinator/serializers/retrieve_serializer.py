@@ -33,7 +33,7 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
     type_of = serializers.IntegerField(source="user.member.type_of", read_only=True,)
     type_of_label = serializers.CharField(source="user.member.get_pretty_type_of", read_only=True,)
     avatar_url = serializers.SerializerMethodField()
-    state = serializers.CharField(read_only=True,)
+    state = serializers.CharField(source="user.member.state", read_only=True,)
 
     # ------ MEMBER CONTACT ------ #
 
