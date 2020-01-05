@@ -19,6 +19,7 @@ urlpatterns = ([
     path('', include('tenant_private_file_upload.urls')),
     path('', include('tenant_private_image_upload.urls')),
     path('', include('tenant_associate.urls')),
+    path('', include('tenant_staff.urls')),
     # path('', include('api.urls')),
 ])
 
@@ -35,6 +36,7 @@ urlpatterns += i18n_patterns(
     path('', include('tenant_private_file_upload.urls')),
     path('', include('tenant_private_image_upload.urls')),
     path('', include('tenant_associate.urls')),
+    path('', include('tenant_staff.urls')),
     # path('', include('api.urls')),
     prefix_default_language=True
 )
