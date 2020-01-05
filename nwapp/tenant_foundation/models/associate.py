@@ -53,8 +53,8 @@ class Associate(models.Model):
     class Meta:
         app_label = 'tenant_foundation'
         db_table = 'nwapp_associates'
-        verbose_name = _('Area Coordinator')
-        verbose_name_plural = _('Area Coordinators')
+        verbose_name = _('Associate')
+        verbose_name_plural = _('Associates')
         default_permissions = ()
         permissions = ()
 
@@ -87,9 +87,9 @@ class Associate(models.Model):
 
     # SYSTEM FIELDS
 
-    member = models.OneToOneField(
-        "Member",
-        help_text=_('The member whom this area coordinator was promoted from.'),
+    user = models.OneToOneField(
+        SharedUser,
+        help_text=_('The user whom is an associate.'),
         related_name="associate",
         on_delete=models.CASCADE,
         primary_key=True,
@@ -246,7 +246,7 @@ class Associate(models.Model):
         Override the `casting` function so we output the following string when
         an object gets casted to a string.
         '''
-        return str(self.member)
+        return str(self.user)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -261,10 +261,10 @@ class Associate(models.Model):
         super(Associate, self).save(*args, **kwargs)
 
     def get_full_name(self):
-        return self.member.user.get_full_name()
+        return self.user.get_full_name()
 
     def get_pretty_state(self):
-        return str(dict(Associate.STATE_CHOICES).get(self.state))
+        return str(dict(Associate.STATE_CHOICES).get(self.user.member.state))
 
     def invalidate(self, method_name): #TODO: IMPLEMENT
         """

@@ -23,3 +23,7 @@ from tenant_foundation.models.area_coordinator_metric import AreaCoordinatorMetr
 from tenant_foundation.models.area_coordinator_comment import AreaCoordinatorComment
 
 from tenant_foundation.models.associate import Associate
+from tenant_foundation.models.associate_address import AssociateAddress
+from tenant_foundation.models.associate_contact import AssociateContact
+from tenant_foundation.models.associate_metric import AssociateMetric
+from tenant_foundation.models.associate_comment import AssociateComment
