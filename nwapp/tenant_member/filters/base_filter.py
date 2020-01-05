@@ -15,6 +15,7 @@ class MemberFilter(django_filters.FilterSet):
             ('contact__last_name', 'last_name'),
             # ('telephone', 'telephone'),
             ('contact__email', 'email'),
+            ('user__groups', 'role_id'),
         ),
 
         # # labels do not need to retain order

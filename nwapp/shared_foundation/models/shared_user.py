@@ -528,6 +528,10 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
     def is_member(self):
         return self.groups.filter(id=SharedGroup.GROUP_MEMBERSHIP.MEMBER).exists()
 
+    @cached_property
+    def role_id(self):
+        return self.groups.order_by('-id').first().id
+
     def invalidate_all(self):
         self.invalidate("is_executive")
         self.invalidate("is_management")
@@ -535,3 +539,4 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         self.invalidate("is_associate")
         self.invalidate("is_area_coordinator")
         self.invalidate("is_member")
+        self.invalidate("role")

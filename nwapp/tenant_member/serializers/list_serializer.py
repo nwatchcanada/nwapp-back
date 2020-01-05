@@ -94,6 +94,10 @@ class MemberListSerializer(serializers.Serializer):
     state = serializers.CharField(
         read_only=True,
     )
+    role_id = serializers.IntegerField(
+        read_only=True,
+        source="user.role_id"
+    )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
