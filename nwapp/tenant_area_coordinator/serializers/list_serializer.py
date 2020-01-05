@@ -93,6 +93,7 @@ class AreaCoordinatorListSerializer(serializers.Serializer):
     )
     state = serializers.CharField(
         read_only=True,
+        source="user.member.state",
     )
 
     def setup_eager_loading(cls, queryset):
