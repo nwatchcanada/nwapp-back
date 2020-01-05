@@ -29,12 +29,12 @@ logger = logging.getLogger(__name__)
 class AreaCoordinatorUpdateSerializer(serializers.Serializer):
     # ------ MEMBER ------ #
 
-    type_of = serializers.IntegerField()
+    type_of = serializers.IntegerField(write_only=True,)
 
     # ------ MEMBER CONTACT ------ #
 
-    is_ok_to_email = serializers.IntegerField()
-    is_ok_to_text = serializers.IntegerField()
+    is_ok_to_email = serializers.IntegerField(write_only=True,)
+    is_ok_to_text = serializers.IntegerField(write_only=True,)
     organization_name = serializers.CharField(
         required=False,
         allow_blank=True,
@@ -42,30 +42,50 @@ class AreaCoordinatorUpdateSerializer(serializers.Serializer):
         validators=[
             UniqueValidator(queryset=AreaCoordinatorContact.objects.all()),
         ],
+        write_only=True,
     )
-    organization_type_of = serializers.IntegerField(required=False,allow_null=True,)
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
+    organization_type_of = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+        write_only=True,
+    )
+    first_name = serializers.CharField(write_only=True,)
+    last_name = serializers.CharField(write_only=True,)
     email = serializers.EmailField(
         validators=[
             UniqueValidator(queryset=SharedUser.objects.all()),
         ],
+        write_only=True,
     )
-    primary_phone = E164PhoneNumberField()
-    secondary_phone = E164PhoneNumberField(allow_null=True, required=False)
+    primary_phone = E164PhoneNumberField(write_only=True,)
+    secondary_phone = E164PhoneNumberField(
+        allow_null=True,
+        required=False,
+        write_only=True,
+    )
 
     # ------ MEMBER ADDRESS ------ #
 
-    country = serializers.CharField()
-    region = serializers.CharField()
-    locality = serializers.CharField()
-    street_number = serializers.CharField()
-    street_name =serializers.CharField()
-    apartment_unit = serializers.CharField()
-    street_type = serializers.CharField()
-    street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    street_direction = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    postal_code = serializers.CharField()
+    country = serializers.CharField(write_only=True,)
+    region = serializers.CharField(write_only=True,)
+    locality = serializers.CharField(write_only=True,)
+    street_number = serializers.CharField(write_only=True,)
+    street_name =serializers.CharField(write_only=True,)
+    apartment_unit = serializers.CharField(write_only=True,)
+    street_type = serializers.CharField(write_only=True,)
+    street_type_other = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        write_only=True,
+    )
+    street_direction = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        write_only=True,
+    )
+    postal_code = serializers.CharField(write_only=True,)
 
     # ------ MEMBER WATCH ------ #
 
@@ -73,41 +93,66 @@ class AreaCoordinatorUpdateSerializer(serializers.Serializer):
 
     # ------ MEMBER METRICS ------ #
 
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, required=False,)
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all(),
+        allow_null=True,
+        required=False,
+        write_only=True,
+    )
     how_did_you_hear = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
         allow_null=False,
-        queryset=HowHearAboutUsItem.objects.all()
+        queryset=HowHearAboutUsItem.objects.all(),
+        write_only=True,
     )
-    how_did_you_hear_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    how_did_you_hear_other = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        write_only=True,
+    )
     expectation = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
         allow_null=False,
-        queryset=ExpectationItem.objects.all()
+        queryset=ExpectationItem.objects.all(),
+        write_only=True,
     )
-    expectation_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    expectation_other = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        write_only=True,
+    )
     meaning = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
         allow_null=False,
-        queryset=MeaningItem.objects.all()
+        queryset=MeaningItem.objects.all(),
+        write_only=True,
     )
-    meaning_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
+    meaning_other = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        write_only=True,
+    )
     gender = serializers.CharField(
         required=True,
         allow_blank=False,
         allow_null=False,
+        write_only=True,
     )
-    willing_to_volunteer = serializers.IntegerField()
-    another_household_area_coordinator_registered = serializers.BooleanField()
-    year_of_birth = serializers.IntegerField()
-    total_household_count = serializers.IntegerField()
-    under_18_years_household_count = serializers.IntegerField()
-    organization_employee_count = serializers.IntegerField()
-    organization_founding_year = serializers.IntegerField()
-    organization_type_of = serializers.IntegerField()
+    willing_to_volunteer = serializers.IntegerField(write_only=True,)
+    another_household_area_coordinator_registered = serializers.BooleanField(write_only=True,)
+    year_of_birth = serializers.IntegerField(write_only=True,)
+    total_household_count = serializers.IntegerField(write_only=True,)
+    under_18_years_household_count = serializers.IntegerField(write_only=True,)
+    organization_employee_count = serializers.IntegerField(write_only=True,)
+    organization_founding_year = serializers.IntegerField(write_only=True,)
+    organization_type_of = serializers.IntegerField(write_only=True,)
 
     def update(self, instance, validated_data):
         return validated_data
@@ -261,3 +306,11 @@ class AreaCoordinatorUpdateSerializer(serializers.Serializer):
         #         logger.info("Attached tag to area_coordinator metric.")
         #
         # return area_coordinator
+
+        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+            "error": "Terminating for debugging purposes only."
+        })
+
+        logger.info("Updated area coordinator.")
+
+        return area_coordinator
