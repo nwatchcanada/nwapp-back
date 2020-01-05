@@ -17,3 +17,7 @@ from tenant_foundation.serializers.score_point.retrieve_serializer import ScoreP
 from tenant_foundation.serializers.badge.list_serializer import BadgeListSerializer
 from tenant_foundation.serializers.badge.create_serializer import BadgeCreateSerializer
 from tenant_foundation.serializers.badge.retrieve_serializer import BadgeRetrieveSerializer
+
+from tenant_foundation.serializers.award.list_serializer import AwardListSerializer
+from tenant_foundation.serializers.award.create_serializer import AwardCreateSerializer
+from tenant_foundation.serializers.award.retrieve_serializer import AwardRetrieveSerializer

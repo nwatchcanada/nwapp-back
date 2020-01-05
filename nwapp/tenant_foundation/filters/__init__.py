@@ -1,2 +1,3 @@
+from tenant_foundation.filters.award_filter import AwardFilter
 from tenant_foundation.filters.badge_filter import BadgeFilter
 from tenant_foundation.filters.score_point_filter import ScorePointFilter

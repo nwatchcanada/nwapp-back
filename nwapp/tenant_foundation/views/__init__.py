@@ -15,3 +15,6 @@ from tenant_foundation.views.score_point.retrieve_update_delete_views import Sco
 
 from tenant_foundation.views.badge.list_create_views import BadgeListCreateAPIView
 from tenant_foundation.views.badge.retrieve_update_delete_views import BadgeRetrieveUpdateDestroyAPIView
+
+from tenant_foundation.views.award.list_create_views import AwardListCreateAPIView
+from tenant_foundation.views.award.retrieve_update_delete_views import AwardRetrieveUpdateDestroyAPIView

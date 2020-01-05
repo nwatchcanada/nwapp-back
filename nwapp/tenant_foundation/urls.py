@@ -16,6 +16,6 @@ urlpatterns = (
     path('api/v1/score-point/<uuid>', views.ScorePointRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_score_point_retrieve_update_delete_api_endpoint'),
     path('api/v1/badges', views.BadgeListCreateAPIView.as_view(), name='nwapp_badge_list_create_api_endpoint'),
     path('api/v1/badge/<uuid>', views.BadgeRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_badge_retrieve_update_delete_api_endpoint'),
-    # path('api/v1/awards', views.AwardListCreateAPIView.as_view(), name='nwapp_award_list_create_api_endpoint'),
-    # path('api/v1/award/<uuid>', views.AwardRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_award_retrieve_update_delete_api_endpoint'),
+    path('api/v1/awards', views.AwardListCreateAPIView.as_view(), name='nwapp_award_list_create_api_endpoint'),
+    path('api/v1/award/<uuid>', views.AwardRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_award_retrieve_update_delete_api_endpoint'),
 )
