@@ -27,3 +27,9 @@ from tenant_foundation.models.associate_address import AssociateAddress
 from tenant_foundation.models.associate_contact import AssociateContact
 from tenant_foundation.models.associate_metric import AssociateMetric
 from tenant_foundation.models.associate_comment import AssociateComment
+
+from tenant_foundation.models.staff import Staff
+from tenant_foundation.models.staff_address import StaffAddress
+from tenant_foundation.models.staff_contact import StaffContact
+from tenant_foundation.models.staff_metric import StaffMetric
+from tenant_foundation.models.staff_comment import StaffComment

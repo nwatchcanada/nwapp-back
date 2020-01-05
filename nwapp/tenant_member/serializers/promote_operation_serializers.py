@@ -157,6 +157,10 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         # Extract the data we are processing.
         role_id = validated_data.get('role_id')
 
+        #TODO: MANAGEMENT STAFF
+        #TODO: FRONTLINE STAFF
+        #TODO: ASSOCIATE
+
         # Create the object based on the role assigned.
         if role_id == SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR:
             return self.create_area_coordinator(validated_data)
