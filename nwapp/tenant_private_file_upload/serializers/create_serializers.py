@@ -24,6 +24,7 @@ from tenant_foundation.models import (
     Tag,
     Comment,
     MemberComment,
+    AreaCoordinatorComment,
 )
 
 
@@ -134,6 +135,12 @@ class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
                 comment=comment,
             )
             print("Created comment for member")
+        elif user.is_area_coordinator:
+            AreaCoordinatorComment.objects.create(
+                area_coordinator=user.area_coordinator,
+                comment=comment,
+            )
+            print("Created comment for area coordinator")
         else:
             raise serializers.ValidationError({
                 "error": "Programmer did not write the code for this yet.",
