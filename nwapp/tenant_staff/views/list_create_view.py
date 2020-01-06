@@ -36,7 +36,9 @@ class StaffListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = Staff.objects.all().order_by('contact__last_name')
+        queryset = Staff.objects.filter(
+            user__groups__id=SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR
+        ).order_by('-id')
 
         # Fetch all the queries.
         s = self.get_serializer_class()

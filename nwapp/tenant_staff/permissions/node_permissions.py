@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import permissions
 
 
-class CanListCreateStaffMetricPermission(permissions.BasePermission):
+class CanListCreateStaffNodePermission(permissions.BasePermission):
     message = _('You do not have permission to access this API-endpoint.')
 
     def has_permission(self, request, view):
@@ -22,7 +22,7 @@ class CanListCreateStaffMetricPermission(permissions.BasePermission):
         return False
 
 
-class CanRetrieveUpdateDestroyStaffMetricPermission(permissions.BasePermission):
+class CanRetrieveUpdateDestroyStaffNodePermission(permissions.BasePermission):
     message = _('You do not have permission to access this API-endpoint.')
 
     def has_object_permission(self, request, view, obj):
@@ -31,7 +31,7 @@ class CanRetrieveUpdateDestroyStaffMetricPermission(permissions.BasePermission):
         # --- RETRIEVE ---
         if "GET" in request.method:
             # OWNERSHIP BASED
-            if request.user == obj.staff.user:
+            if request.user == obj.member.user:
                 return True
 
             # PERMISSION BASED
@@ -40,7 +40,7 @@ class CanRetrieveUpdateDestroyStaffMetricPermission(permissions.BasePermission):
         # ---UPDATE ---
         if "PUT" in request.method:
             # OWNERSHIP BASED
-            if request.user == obj.staff.user:
+            if request.user == obj.member.user:
                 return True
 
             # PERMISSION BASED

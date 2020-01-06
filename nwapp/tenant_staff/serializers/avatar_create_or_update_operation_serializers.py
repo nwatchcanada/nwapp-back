@@ -46,7 +46,7 @@ class StaffAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer):
     def validate_staff(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
         if not Staff.objects.filter(user__slug=value).exists():
-            raise serializers.ValidationError("Staff does not exist")
+            raise serializers.ValidationError("Area Coordinator does not exist")
         return value
 
     @transaction.atomic
@@ -68,8 +68,8 @@ class StaffAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer):
 
         # Create our private image upload if it was not done previously,
         # else we update the staff's avatar.
-        if staff.avatar_image == None or staff.avatar_image is None:
-            staff.avatar_image = PrivateImageUpload.objects.create(
+        if staff.user.member.avatar_image == None or staff.user.member.avatar_image is None:
+            staff.user.member.avatar_image = PrivateImageUpload.objects.create(
                 image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentFile`, Django handles all file uploading.
                 user = staff.user,
                 created_by = request.user,
@@ -79,25 +79,25 @@ class StaffAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializer):
                 last_modified_from = request.client_ip,
                 last_modified_from_is_public = request.client_ip_is_routable,
             )
-            staff.last_modified_by = request.user
-            staff.last_modified_from = request.client_ip
-            staff.last_modified_from_is_public = request.client_ip_is_routable
-            staff.save()
+            staff.user.member.last_modified_by = request.user
+            staff.user.member.last_modified_from = request.client_ip
+            staff.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            staff.user.member.save()
             print("StaffAvatarCreateOrUpdateOperationSerializer --> create() --> CREATED IMAGE")
         else:
-            staff.avatar_image.image_file = content_file
-            staff.avatar_image.last_modified_by = request.user
-            staff.avatar_image.last_modified_from = request.client_ip
-            staff.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
-            staff.avatar_image.save()
-            staff.last_modified_by = request.user
-            staff.last_modified_from = request.client_ip
-            staff.last_modified_from_is_public = request.client_ip_is_routable
-            staff.save()
+            staff.user.member.avatar_image.image_file = content_file
+            staff.user.member.avatar_image.last_modified_by = request.user
+            staff.user.member.avatar_image.last_modified_from = request.client_ip
+            staff.user.member.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
+            staff.user.member.avatar_image.save()
+            staff.user.member.last_modified_by = request.user
+            staff.user.member.last_modified_from = request.client_ip
+            staff.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            staff.user.member.save()
             print("StaffAvatarCreateOrUpdateOperationSerializer --> create() --> UPDATED IMAGE")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        return validated_data
+        return staff.user.member.avatar_image

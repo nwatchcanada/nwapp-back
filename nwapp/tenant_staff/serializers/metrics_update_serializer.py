@@ -18,10 +18,10 @@ from shared_foundation.drf.fields import E164PhoneNumberField
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    Staff, StaffMetric, StaffAddress, StaffMetric,
+    Member, Staff, StaffMetric, StaffAddress, StaffMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
-from tenant_staff.tasks import process_staff_with_slug_func
+from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class StaffMetricsUpdateSerializer(serializers.Serializer):
         allow_null=False,
     )
     willing_to_volunteer = serializers.IntegerField()
-    another_household_staff_registered = serializers.BooleanField()
+    another_household_member_registered = serializers.BooleanField()
     year_of_birth = serializers.IntegerField()
     total_household_count = serializers.IntegerField(required=False, allow_null=True,)
     under_18_years_household_count = serializers.IntegerField(required=False, allow_null=True,)
@@ -82,9 +82,9 @@ class StaffMetricsUpdateSerializer(serializers.Serializer):
         # DEVELOPERS NOTE:
         # (1) Modified household statistics dependent on whether the household
         #     staff was registered or not.
-        another_household_staff_registered = validated_data.get('another_household_staff_registered')
-        instance.another_household_staff_registered = another_household_staff_registered
-        if another_household_staff_registered:
+        another_household_member_registered = validated_data.get('another_household_member_registered')
+        instance.another_household_member_registered = another_household_member_registered
+        if another_household_member_registered:
             instance.total_household_count = None
             instance.under_18_years_household_count = None
         else:
@@ -94,7 +94,7 @@ class StaffMetricsUpdateSerializer(serializers.Serializer):
         # DEVELOPERS NOTE:
         # (1) Non-business staffs cannot have the following fields set,
         #     therefore we need to remove the data if the user submits them.
-        if instance.staff.type_of != Staff.MEMBER_TYPE_OF.BUSINESS:
+        if instance.member.type_of != Member.MEMBER_TYPE_OF.BUSINESS:
             organization_employee_count = None
             organization_founding_year = None
         else:
@@ -115,9 +115,9 @@ class StaffMetricsUpdateSerializer(serializers.Serializer):
         staff object.
         '''
         django_rq.enqueue(
-            process_staff_with_slug_func,
+            process_member_with_slug_func,
             request.tenant.schema_name,
-            instance.staff.user.slug
+            instance.member.user.slug
         )
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!

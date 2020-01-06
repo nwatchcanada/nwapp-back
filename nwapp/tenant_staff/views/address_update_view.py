@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_foundation.models import StaffAddress
-from tenant_staff.permissions import CanRetrieveUpdateDestroyStaffAddressPermission
+from tenant_staff.permissions import CanRetrieveUpdateDestroyStaffNodePermission
 from tenant_staff.serializers import StaffRetrieveSerializer, StaffAddressUpdateSerializer
 
 
@@ -18,7 +18,7 @@ class StaffAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticated,
         SharedUserIsActivePermission,
         TenantPermission,
-        CanRetrieveUpdateDestroyStaffAddressPermission
+        CanRetrieveUpdateDestroyStaffNodePermission
     )
 
     @transaction.atomic
@@ -26,7 +26,7 @@ class StaffAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         """
         Update
         """
-        object = get_object_or_404(StaffAddress, staff__user__slug=slug)
+        object = get_object_or_404(StaffAddress, member__user__slug=slug)
         self.check_object_permissions(request, object)  # Validate permissions.
         write_serializer = StaffAddressUpdateSerializer(
             object,
@@ -38,7 +38,7 @@ class StaffAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
         read_serializer = StaffRetrieveSerializer(
-            object.staff,
+            object.member,
             many=False,
             context={
                 'request': request,

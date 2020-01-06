@@ -66,21 +66,21 @@ class StaffArchiveOperationSerializer(serializers.Serializer):
             comment=comment_obj,
         )
         # For debugging purposes only.
-        logger.info("Staff comment created.")
+        logger.info("Area coordinator comment created.")
 
         #-------------------------#
         # Update staff object. #
         #-------------------------#
-        staff.state = state
-        staff.deactivation_reason = deactivation_reason
-        staff.deactivation_reason_other = deactivation_reason_other
-        staff.last_modified_by = request.user
-        staff.last_modified_from = request.client_ip
-        staff.last_modified_from_is_public = request.client_ip_is_routable
-        staff.save()
+        staff.user.member.state = state
+        staff.user.member.deactivation_reason = deactivation_reason
+        staff.user.member.deactivation_reason_other = deactivation_reason_other
+        staff.user.member.last_modified_by = request.user
+        staff.user.member.last_modified_from = request.client_ip
+        staff.user.member.last_modified_from_is_public = request.client_ip_is_routable
+        staff.user.member.save()
 
         # For debugging purposes only.
-        logger.info("Staff updated state.")
+        logger.info("Area coordinator updated state.")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."

@@ -21,7 +21,7 @@ from tenant_foundation.models import (
     Comment,
     Staff,
     StaffComment,
-    AreaCoordinator,
+    Staff,
     Staff
 )
 
@@ -32,18 +32,18 @@ logger = logging.getLogger(__name__)
 class StaffPromoteOperationSerializer(serializers.Serializer):
     staff = serializers.SlugField(write_only=True, required=True)
     role_id = serializers.IntegerField(write_only=True, required=True,)
-    area_coordinator_agreement = serializers.BooleanField(write_only=True, required=True,)
+    staff_agreement = serializers.BooleanField(write_only=True, required=True,)
     conflict_of_interest_agreement = serializers.BooleanField(write_only=True, required=True,)
     code_of_conduct_agreement = serializers.BooleanField(write_only=True, required=True,)
     confidentiality_agreement = serializers.BooleanField(write_only=True, required=True,)
     staff_agreement = serializers.BooleanField(write_only=True, required=True,)
     police_check_date = serializers.DateField(write_only=True, required=True,)
 
-    def create_area_coordinator(self, validated_data):
+    def create_staff(self, validated_data):
         slug = validated_data.get('staff')
         staff = Staff.objects.select_for_update().get(user__slug=slug)
         request = self.context.get('request')
-        area_coordinator_agreement = validated_data.get('area_coordinator_agreement')
+        staff_agreement = validated_data.get('staff_agreement')
         conflict_of_interest_agreement = validated_data.get('conflict_of_interest_agreement')
         code_of_conduct_agreement = validated_data.get('code_of_conduct_agreement')
         confidentiality_agreement = validated_data.get('confidentiality_agreement')
@@ -52,19 +52,19 @@ class StaffPromoteOperationSerializer(serializers.Serializer):
         logger.info("Beginning promotion...")
 
         # Get the text agreement which will be signed.
-        area_coordinator_agreement = render_to_string('account/area_coordinator_agreement/2019_05_01.txt', {})
+        staff_agreement = render_to_string('account/staff_agreement/2019_05_01.txt', {})
         conflict_of_interest_agreement = render_to_string('account/conflict_of_interest_agreement/2019_05_01.txt', {})
         code_of_conduct_agreement = render_to_string('account/code_of_conduct_agreement/2019_05_01.txt', {})
         confidentiality_agreement = render_to_string('account/confidentiality_agreement/2019_05_01.txt', {})
 
         # Create or update our model.
-        area_coordinator = AreaCoordinator.objects.update_or_create(
-            user=staff.user,
+        staff = Staff.objects.update_or_create(
+            staff=staff,
             defaults={
-                'user': staff.user,
-                'has_signed_area_coordinator_agreement': True,
-                'area_coordinator_agreement': area_coordinator_agreement,
-                'area_coordinator_agreement_signed_on': timezone.now(),
+                'staff': staff,
+                'has_signed_staff_agreement': True,
+                'staff_agreement': staff_agreement,
+                'staff_agreement_signed_on': timezone.now(),
                 'has_signed_conflict_of_interest_agreement': True,
                 'conflict_of_interest_agreement': conflict_of_interest_agreement,
                 'conflict_of_interest_agreement_signed_on': timezone.now(),
@@ -75,12 +75,6 @@ class StaffPromoteOperationSerializer(serializers.Serializer):
                 'confidentiality_agreement': confidentiality_agreement,
                 'confidentiality_agreement_signed_on': timezone.now(),
                 'police_check_date': police_check_date,
-                'created_by': request.user,
-                'created_from': request.client_ip,
-                'created_from_is_public': request.client_ip_is_routable,
-                'last_modified_by': request.user,
-                'last_modified_from': request.client_ip,
-                'last_modified_from_is_public': request.client_ip_is_routable,
             }
         )
 
@@ -159,6 +153,6 @@ class StaffPromoteOperationSerializer(serializers.Serializer):
 
         # Create the object based on the role assigned.
         if role_id == SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR:
-            return self.create_area_coordinator(validated_data)
+            return self.create_staff(validated_data)
         else:
             return self.create_staff(validated_data)
