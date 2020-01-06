@@ -213,7 +213,7 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
 
         logger.info("Promoted to staff")
 
-        return staff
+        return member
 
     @transaction.atomic
     def create(self, validated_data):
