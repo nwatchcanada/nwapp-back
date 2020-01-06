@@ -18,10 +18,16 @@ from shared_foundation.drf.fields import E164PhoneNumberField
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    Associate, AssociateContact, AssociateAddress, AssociateMetric,
-    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
+    Member, MemberContact,
+    Associate,
+    AssociateContact,
+    AssociateAddress,
+    AssociateMetric,
+    Tag, HowHearAboutUsItem,
+    ExpectationItem,
+    MeaningItem
 )
-from tenant_associate.tasks import process_associate_with_slug_func
+from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -62,7 +68,7 @@ class AssociateContactUpdateSerializer(serializers.Serializer):
         """
         request = self.context.get('request')
         type_of = request.data.get('type_of')
-        if type_of == Associate.MEMBER_TYPE_OF.BUSINESS:
+        if type_of == Member.MEMBER_TYPE_OF.BUSINESS:
             if value == None or value == "":
                 raise serializers.ValidationError(_('Please fill this field in.'))
         return value
@@ -72,6 +78,9 @@ class AssociateContactUpdateSerializer(serializers.Serializer):
         Override the `update` function to add extra functinality.
         """
         request = self.context.get('request')
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
         instance.is_ok_to_email = validated_data.get('is_ok_to_email', instance.is_ok_to_email)
         instance.is_ok_to_text = validated_data.get('is_ok_to_text', instance.is_ok_to_text)
         instance.organization_name = validated_data.get('organization_name', instance.organization_name)
@@ -85,9 +94,9 @@ class AssociateContactUpdateSerializer(serializers.Serializer):
         # # DEVELOPERS NOTE:
         # (1) Non-business associates cannot have the following fields set,
         #     therefore we need to remove the data if the user submits them.
-        if instance.associate.type_of != Associate.MEMBER_TYPE_OF.BUSINESS:
+        if instance.member.type_of != Member.MEMBER_TYPE_OF.BUSINESS:
             instance.organization_name = None
-            instance.organization_type_of = AssociateContact.MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED
+            instance.organization_type_of = MemberContact.MEMBER_ORGANIZATION_TYPE_OF.UNSPECIFIED
 
         instance.save()
         logger.info("Updated associate contact.")
@@ -97,9 +106,9 @@ class AssociateContactUpdateSerializer(serializers.Serializer):
         associate object.
         '''
         django_rq.enqueue(
-            process_associate_with_slug_func,
+            process_member_with_slug_func,
             request.tenant.schema_name,
-            instance.associate.user.slug
+            instance.member.user.slug
         )
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!

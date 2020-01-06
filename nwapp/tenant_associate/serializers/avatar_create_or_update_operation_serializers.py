@@ -46,7 +46,7 @@ class AssociateAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializ
     def validate_associate(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
         if not Associate.objects.filter(user__slug=value).exists():
-            raise serializers.ValidationError("Associate does not exist")
+            raise serializers.ValidationError("Area Coordinator does not exist")
         return value
 
     @transaction.atomic
@@ -68,8 +68,8 @@ class AssociateAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializ
 
         # Create our private image upload if it was not done previously,
         # else we update the associate's avatar.
-        if associate.avatar_image == None or associate.avatar_image is None:
-            associate.avatar_image = PrivateImageUpload.objects.create(
+        if associate.user.member.avatar_image == None or associate.user.member.avatar_image is None:
+            associate.user.member.avatar_image = PrivateImageUpload.objects.create(
                 image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentFile`, Django handles all file uploading.
                 user = associate.user,
                 created_by = request.user,
@@ -79,25 +79,25 @@ class AssociateAvatarCreateOrUpdateOperationSerializer(serializers.ModelSerializ
                 last_modified_from = request.client_ip,
                 last_modified_from_is_public = request.client_ip_is_routable,
             )
-            associate.last_modified_by = request.user
-            associate.last_modified_from = request.client_ip
-            associate.last_modified_from_is_public = request.client_ip_is_routable
-            associate.save()
+            associate.user.member.last_modified_by = request.user
+            associate.user.member.last_modified_from = request.client_ip
+            associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            associate.user.member.save()
             print("AssociateAvatarCreateOrUpdateOperationSerializer --> create() --> CREATED IMAGE")
         else:
-            associate.avatar_image.image_file = content_file
-            associate.avatar_image.last_modified_by = request.user
-            associate.avatar_image.last_modified_from = request.client_ip
-            associate.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
-            associate.avatar_image.save()
-            associate.last_modified_by = request.user
-            associate.last_modified_from = request.client_ip
-            associate.last_modified_from_is_public = request.client_ip_is_routable
-            associate.save()
+            associate.user.member.avatar_image.image_file = content_file
+            associate.user.member.avatar_image.last_modified_by = request.user
+            associate.user.member.avatar_image.last_modified_from = request.client_ip
+            associate.user.member.avatar_image.last_modified_from_is_public = request.client_ip_is_routable
+            associate.user.member.avatar_image.save()
+            associate.user.member.last_modified_by = request.user
+            associate.user.member.last_modified_from = request.client_ip
+            associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            associate.user.member.save()
             print("AssociateAvatarCreateOrUpdateOperationSerializer --> create() --> UPDATED IMAGE")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        return validated_data
+        return associate.user.member.avatar_image

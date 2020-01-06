@@ -21,7 +21,7 @@ from tenant_foundation.models import (
     Associate, AssociateContact, AssociateAddress, AssociateMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
-from tenant_associate.tasks import process_associate_with_slug_func
+from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -29,15 +29,15 @@ logger = logging.getLogger(__name__)
 
 class AssociateAddressUpdateSerializer(serializers.Serializer):
     # ------ MEMBER ADDRESS ------ #
-    country = serializers.CharField()
-    region = serializers.CharField()
-    locality = serializers.CharField()
-    street_number = serializers.CharField()
-    street_name =serializers.CharField()
-    apartment_unit = serializers.CharField()
-    street_type = serializers.ChoiceField(choices=AssociateAddress.STREET_TYPE_CHOICES,)
-    street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    street_direction = serializers.ChoiceField(choices=AssociateAddress.STREET_DIRECTION_CHOICES,)
+    country = serializers.CharField(write_only=True,)
+    region = serializers.CharField(write_only=True,)
+    locality = serializers.CharField(write_only=True,)
+    street_number = serializers.CharField(write_only=True,)
+    street_name =serializers.CharField(write_only=True,)
+    apartment_unit = serializers.CharField(write_only=True,)
+    street_type = serializers.ChoiceField(choices=AssociateAddress.STREET_TYPE_CHOICES,write_only=True,)
+    street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,write_only=True,)
+    street_direction = serializers.ChoiceField(choices=AssociateAddress.STREET_DIRECTION_CHOICES,write_only=True,)
     postal_code = serializers.CharField()
 
     def update(self, instance, validated_data):
@@ -64,9 +64,9 @@ class AssociateAddressUpdateSerializer(serializers.Serializer):
         associate object.
         '''
         django_rq.enqueue(
-            process_associate_with_slug_func,
+            process_member_with_slug_func,
             request.tenant.schema_name,
-            instance.associate.user.slug
+            instance.member.user.slug
         )
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!

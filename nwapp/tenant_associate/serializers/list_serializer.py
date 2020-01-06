@@ -23,86 +23,88 @@ logger = logging.getLogger(__name__)
 
 
 class AssociateListSerializer(serializers.Serializer):
-    type_of = serializers.IntegerField()
+    type_of = serializers.IntegerField(source="user.member.type_of", read_only=True,)
     organization_name = serializers.CharField(
-        required=True,
         allow_blank=False,
         validators=[],
-        source="contact.organization_name",
+        source="user.member.contact.organization_name",
+        read_only=True,
     )
     organization_type_of = serializers.IntegerField(
-        required=False,
+        read_only=True,
         allow_null=True,
-        source="contact.organization_type_of",
+        source="user.member.contact.organization_type_of",
     )
     first_name = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="contact.first_name",
+        source="user.member.contact.first_name",
     )
     last_name = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="contact.last_name",
+        source="user.member.contact.last_name",
     )
-    primary_phone_e164 = E164PhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
-    primary_phone_national = NationalPhoneNumberField(allow_null=False, required=True,source="contact.primary_phone",)
+    primary_phone_e164 = E164PhoneNumberField(allow_null=False, read_only=True,source="user.member.contact.primary_phone",)
+    primary_phone_national = NationalPhoneNumberField(allow_null=False, read_only=True,source="user.member.contact.primary_phone",)
     email = serializers.EmailField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="contact.email",
+        source="user.member.contact.email",
     )
     slug = serializers.SlugField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
         source="user.slug",
     )
     street_address = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="address.street_address",
+        source="user.member.address.street_address",
     )
     country = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="address.country",
+        source="user.member.address.country",
     )
     region = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="address.region",
+        source="user.member.address.region",
     )
     locality = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="address.locality",
+        source="user.member.address.locality",
     )
     postal_code = serializers.CharField(
-        required=True,
+        read_only=True,
         allow_blank=False,
         validators=[],
-        source="address.postal_code",
+        source="user.member.address.postal_code",
     )
     state = serializers.CharField(
         read_only=True,
-    )
-    role_id = serializers.IntegerField(
-        read_only=True,
-        source="user.role_id"
+        source="user.member.state",
     )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related(
-            'user', 'user__groups', 'contact', 'address', 'metric',
-            'created_by', 'last_modified_by'
+            'user',
+            'user__groups',
+            'user__member__contact',
+            'user__member__address',
+            'user__member__metric',
+            'created_by',
+            'last_modified_by'
         )
         return queryset

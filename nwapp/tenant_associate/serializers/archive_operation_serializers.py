@@ -66,21 +66,21 @@ class AssociateArchiveOperationSerializer(serializers.Serializer):
             comment=comment_obj,
         )
         # For debugging purposes only.
-        logger.info("Associate comment created.")
+        logger.info("Area coordinator comment created.")
 
         #-------------------------#
         # Update associate object. #
         #-------------------------#
-        associate.state = state
-        associate.deactivation_reason = deactivation_reason
-        associate.deactivation_reason_other = deactivation_reason_other
-        associate.last_modified_by = request.user
-        associate.last_modified_from = request.client_ip
-        associate.last_modified_from_is_public = request.client_ip_is_routable
-        associate.save()
+        associate.user.member.state = state
+        associate.user.member.deactivation_reason = deactivation_reason
+        associate.user.member.deactivation_reason_other = deactivation_reason_other
+        associate.user.member.last_modified_by = request.user
+        associate.user.member.last_modified_from = request.client_ip
+        associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
+        associate.user.member.save()
 
         # For debugging purposes only.
-        logger.info("Associate updated state.")
+        logger.info("Area coordinator updated state.")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."

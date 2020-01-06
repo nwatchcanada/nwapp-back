@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_foundation.models import AssociateAddress
-from tenant_associate.permissions import CanRetrieveUpdateDestroyAssociateAddressPermission
+from tenant_associate.permissions import CanRetrieveUpdateDestroyAssociateNodePermission
 from tenant_associate.serializers import AssociateRetrieveSerializer, AssociateAddressUpdateSerializer
 
 
@@ -18,7 +18,7 @@ class AssociateAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticated,
         SharedUserIsActivePermission,
         TenantPermission,
-        CanRetrieveUpdateDestroyAssociateAddressPermission
+        CanRetrieveUpdateDestroyAssociateNodePermission
     )
 
     @transaction.atomic
@@ -26,7 +26,7 @@ class AssociateAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         """
         Update
         """
-        object = get_object_or_404(AssociateAddress, associate__user__slug=slug)
+        object = get_object_or_404(AssociateAddress, member__user__slug=slug)
         self.check_object_permissions(request, object)  # Validate permissions.
         write_serializer = AssociateAddressUpdateSerializer(
             object,
@@ -38,7 +38,7 @@ class AssociateAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
         read_serializer = AssociateRetrieveSerializer(
-            object.associate,
+            object.member,
             many=False,
             context={
                 'request': request,

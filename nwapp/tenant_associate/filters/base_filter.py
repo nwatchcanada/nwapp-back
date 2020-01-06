@@ -11,11 +11,10 @@ class AssociateFilter(django_filters.FilterSet):
         # tuple-mapping retains order
         fields=(
             ('id', 'id'),
-            ('contact__first_name', 'first_name'),
-            ('contact__last_name', 'last_name'),
+            ('user__member__contact__first_name', 'first_name'),
+            ('user__member__contact__last_name', 'last_name'),
             # ('telephone', 'telephone'),
-            ('contact__email', 'email'),
-            ('user__groups', 'role_id'),
+            ('user__member__contact__email', 'email'),
         ),
 
         # # labels do not need to retain order
@@ -25,28 +24,28 @@ class AssociateFilter(django_filters.FilterSet):
     )
 
     def keyword_filtering(self, queryset, name, value):
-        return Associate.objects.search(value).order_by('contact__last_name')
+        return Associate.objects.search(value).order_by('user__member__contact__last_name')
 
     search = django_filters.CharFilter(method='keyword_filtering')
 
     def first_name_filtering(self, queryset, name, value):
         return queryset.filter(
-            Q(contact__first_name__icontains=value) |
-            Q(contact__first_name__istartswith=value) |
-            Q(contact__first_name__iendswith=value) |
-            Q(contact__first_name__exact=value) |
-            Q(contact__first_name__icontains=value)
+            Q(user__member__contact__first_name__icontains=value) |
+            Q(user__member__contact__first_name__istartswith=value) |
+            Q(user__member__contact__first_name__iendswith=value) |
+            Q(user__member__contact__first_name__exact=value) |
+            Q(user__member__contact__first_name__icontains=value)
         )
 
     first_name = django_filters.CharFilter(method='first_name_filtering')
 
     def last_name_filtering(self, queryset, name, value):
         return queryset.filter(
-            Q(contact__last_name__icontains=value) |
-            Q(contact__last_name__istartswith=value) |
-            Q(contact__last_name__iendswith=value) |
-            Q(contact__last_name__exact=value) |
-            Q(contact__last_name__icontains=value)
+            Q(user__member__contact__last_name__icontains=value) |
+            Q(user__member__contact__last_name__istartswith=value) |
+            Q(user__member__contact__last_name__iendswith=value) |
+            Q(user__member__contact__last_name__exact=value) |
+            Q(user__member__contact__last_name__icontains=value)
         )
 
     last_name = django_filters.CharFilter(method='last_name_filtering')
@@ -125,7 +124,7 @@ class AssociateFilter(django_filters.FilterSet):
         # our filtered results.
         queryset = queryset.filter(
             Q(user__email=value)|
-            Q(contact__email=value)
+            Q(user__member__contact__email=value)
         )
         return queryset
 
@@ -133,8 +132,8 @@ class AssociateFilter(django_filters.FilterSet):
 
     def telephonel_filtering(self, queryset, name, value):
         return queryset.filter(
-            Q(contact__primary_phone=value)|
-            Q(contact__secondary_phone=value))
+            Q(user__member__contact__primary_phone=value)|
+            Q(user__member__contact__secondary_phone=value))
 
     telephone = django_filters.CharFilter(method='telephonel_filtering')
 

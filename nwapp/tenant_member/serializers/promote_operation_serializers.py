@@ -130,7 +130,7 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
 
         # Create or update our model.
         associate, created = Associate.objects.update_or_create(
-            user=user,
+            user=member.user,
             defaults={
                 'user': member.user,
                 'has_signed_conflict_of_interest_agreement': True,
