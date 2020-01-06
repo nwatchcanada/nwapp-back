@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import phonenumbers
+import logging
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
@@ -25,7 +25,12 @@ from tenant_foundation.models import (
     Comment,
     MemberComment,
     AreaCoordinatorComment,
+    AssociateComment,
+    StaffComment
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
@@ -110,7 +115,7 @@ class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
                 private_file.tags.set(tags)
 
         # For debugging purposes only.
-        print("Created private file #", private_file)
+        logger.info("Created private file #"+str(private_file.id))
 
         #-----------------------------
         # Create our `Comment` object.
@@ -134,13 +139,25 @@ class PrivateFileUploadCreateSerializer(serializers.ModelSerializer):
                 member=user.member,
                 comment=comment,
             )
-            print("Created comment for member")
+            logger.info("Created comment for member")
         elif user.is_area_coordinator:
             AreaCoordinatorComment.objects.create(
                 area_coordinator=user.area_coordinator,
                 comment=comment,
             )
-            print("Created comment for area coordinator")
+            logger.info("Created comment for area coordinator")
+        elif user.is_associate:
+            AssociateComment.objects.create(
+                associate=user.associate,
+                comment=comment,
+            )
+            logger.info("Created comment for associate")
+        elif user.is_staff:
+            StaffComment.objects.create(
+                staff=user.staff,
+                comment=comment,
+            )
+            logger.info("Created comment for staff")
         else:
             raise serializers.ValidationError({
                 "error": "Programmer did not write the code for this yet.",
