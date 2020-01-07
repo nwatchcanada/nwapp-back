@@ -81,7 +81,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
         queryset=HowHearAboutUsItem.objects.all()
     )
     how_did_you_hear_other = serializers.CharField(source="metric.how_did_you_hear_other", required=False, allow_null=True, allow_blank=True,)
-    how_did_you_hear_label = serializers.CharField(source="metric.how_did_you_hear.text")
+    how_did_you_hear_label = serializers.CharField(source="metric.how_did_you_hear.text", allow_null=True, write_only=True,)
     expectation = serializers.PrimaryKeyRelatedField(
         source="metric.expectation",
         many=False,
@@ -90,7 +90,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
         queryset=ExpectationItem.objects.all()
     )
     expectation_other = serializers.CharField(source="metric.expectation_other", required=False, allow_null=True, allow_blank=True,)
-    expectation_label = serializers.CharField(source="metric.expectation.text")
+    expectation_label = serializers.CharField(source="metric.expectation.text", allow_null=True, write_only=True,)
     meaning = serializers.PrimaryKeyRelatedField(
         source="metric.meaning",
         many=False,
@@ -99,7 +99,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
         queryset=MeaningItem.objects.all()
     )
     meaning_other = serializers.CharField(source="metric.meaning_other", required=False, allow_null=True, allow_blank=True,)
-    meaning_label = serializers.CharField(source="metric.meaning.text")
+    meaning_label = serializers.CharField(source="metric.meaning.text", allow_null=True, write_only=True,)
     gender = serializers.IntegerField(source="metric.gender",)
     gender_label = serializers.CharField(source="metric.get_pretty_gender",)
     willing_to_volunteer = serializers.IntegerField(source="metric.willing_to_volunteer",)
@@ -113,8 +113,8 @@ class MemberRetrieveSerializer(serializers.Serializer):
 
     # ------ AUDITING ------ #
 
-    created_by = serializers.CharField(source="created_by.get_full_name")
-    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name")
+    created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, write_only=True,)
+    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, write_only=True,)
 
     # ------ FUNCTIONS ------ #
 
