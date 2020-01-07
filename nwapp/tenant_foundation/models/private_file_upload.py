@@ -188,8 +188,13 @@ class PrivateFileUpload(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
-        if self.slug == None or self.slug == "":
-            self.slug = self.user.slug + "-" + get_referral_code(16)
+        # The following code will generate a unique slug and if the slug
+        # is not unique in the database, then continue to try generating
+        # a unique slug until it is found.
+        slug = self.user.slug
+        while PrivateFileUpload.objects.filter(slug=slug).exists():
+            slug = self.user.slug+"-"+get_referral_code(16)
+        self.slug = slug
 
         search_text = str(self.slug)
         if self.title:

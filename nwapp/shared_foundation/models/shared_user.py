@@ -410,10 +410,13 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         '''
 
         if self.slug == None or self.slug == "":
-            #TOOD: IMPLEMENT IN FUTURE:
-            #TODO: HANDLE THE CASE WHEN EDITING IS BEING MADE.
-            #TODO: HANDLE CASE IF FIRST/LAST NAMES ARE NOT UNIQUE.
-            self.slug = slugify(self.get_full_name())+"-"+get_referral_code(4)
+            # The following code will generate a unique slug and if the slug
+            # is not unique in the database, then continue to try generating
+            # a unique slug until it is found.
+            slug = slugify(self.get_full_name())
+            while SharedUser.objects.filter(slug=slug).exists():
+                slug = slugify(self.get_full_name())+"-"+get_referral_code(4)
+            self.slug = slug
 
         if self.tos_agreement == None or self.tos_agreement == None:
             # Open up the current "terms of agreement" file and extract the text

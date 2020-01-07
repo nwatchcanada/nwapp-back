@@ -20,6 +20,18 @@ class MemberCommentFilter(django_filters.FilterSet):
         # }
     )
 
+    def member_filtering(self, queryset, name, value):
+        return queryset.filter(member__user__slug=value)
+        # return queryset.filter(
+        #     Q(contact__last_name__icontains=value) |
+        #     Q(contact__last_name__istartswith=value) |
+        #     Q(contact__last_name__iendswith=value) |
+        #     Q(contact__last_name__exact=value) |
+        #     Q(contact__last_name__icontains=value)
+        # )
+
+    member = django_filters.CharFilter(method='member_filtering')
+
     class Meta:
         model = MemberComment
         fields = [

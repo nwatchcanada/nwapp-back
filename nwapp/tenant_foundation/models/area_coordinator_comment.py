@@ -99,7 +99,13 @@ class AreaCoordinatorComment(models.Model):
         '''
 
         if self.slug == None or self.slug == "":
-            self.slug = self.area_coordinator.user.slug+"-"+get_referral_code(8)
+            # The following code will generate a unique slug and if the slug
+            # is not unique in the database, then continue to try generating
+            # a unique slug until it is found.
+            slug = self.area_coordinator.user.slug
+            while AreaCoordinatorComment.objects.filter(slug=slug).exists():
+                slug = self.area_coordinator.user.slug+"-"+get_referral_code(4)
+            self.slug = slug
 
         '''
         Finally call the parent function which handles saving so we can carry

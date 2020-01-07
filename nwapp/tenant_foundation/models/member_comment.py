@@ -98,8 +98,13 @@ class MemberComment(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
-        if self.slug == None or self.slug == "":
-            self.slug = self.member.user.slug+"-"+get_referral_code(8)
+        # The following code will generate a unique slug and if the slug
+        # is not unique in the database, then continue to try generating
+        # a unique slug until it is found.
+        slug = self.member.user.slug
+        while MemberComment.objects.filter(slug=slug).exists():
+            slug = self.member.user.slug+"-"+get_referral_code(4)
+        self.slug = slug
 
         '''
         Finally call the parent function which handles saving so we can carry
