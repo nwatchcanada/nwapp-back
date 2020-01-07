@@ -52,6 +52,16 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
     staff_agreement = serializers.BooleanField(write_only=True, required=True,)
     police_check_date = serializers.DateField(write_only=True, required=True,)
 
+    def validate(self, dirty_data):
+        """
+        Override the validation code to add additional functionionality.
+        """
+        slug = dirty_data.get('member')
+        member = Member.objects.select_for_update().get(user__slug=slug)
+        if member.user.role_id != SharedGroup.GROUP_MEMBERSHIP.MEMBER:
+            raise serializers.ValidationError(_("You cannot promote because this user is not a member!"))
+        return data
+
     def create_area_coordinator(self, validated_data):
         slug = validated_data.get('member')
         member = Member.objects.select_for_update().get(user__slug=slug)
