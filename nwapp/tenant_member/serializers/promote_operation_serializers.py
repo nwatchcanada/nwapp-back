@@ -60,7 +60,7 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         member = Member.objects.select_for_update().get(user__slug=slug)
         if member.user.role_id != SharedGroup.GROUP_MEMBERSHIP.MEMBER:
             raise serializers.ValidationError(_("You cannot promote because this user is not a member!"))
-        return data
+        return dirty_data
 
     def create_area_coordinator(self, validated_data):
         slug = validated_data.get('member')

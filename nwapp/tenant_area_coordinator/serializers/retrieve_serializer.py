@@ -31,7 +31,7 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
 
     slug = serializers.SlugField(source="user.slug", read_only=True,)
     type_of = serializers.IntegerField(source="user.member.type_of", read_only=True,)
-    type_of_label = serializers.CharField(source="user.member.get_pretty_type_of", read_only=True,)
+    type_of_label = serializers.CharField(source="user.member.get_pretty_type_of", read_only=True, allow_null=True,)
     avatar_url = serializers.SerializerMethodField()
     state = serializers.CharField(source="user.member.state", read_only=True,)
 
@@ -39,10 +39,10 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
 
     is_ok_to_email = serializers.IntegerField(source="user.member.contact.is_ok_to_email", read_only=True,)
     is_ok_to_text = serializers.IntegerField(source="user.member.contact.is_ok_to_text", read_only=True,)
-    organization_name = serializers.CharField(source="user.member.contact.organization_name", read_only=True,)
+    organization_name = serializers.CharField(source="user.member.contact.organization_name", read_only=True, allow_null=True,)
     organization_type_of = serializers.IntegerField(source="user.member.contact.organization_type_of", read_only=True,)
-    first_name = serializers.CharField(source="user.member.contact.first_name", read_only=True,)
-    last_name = serializers.CharField(source="user.member.contact.last_name", read_only=True,)
+    first_name = serializers.CharField(source="user.member.contact.first_name", read_only=True, allow_null=True,)
+    last_name = serializers.CharField(source="user.member.contact.last_name", read_only=True, allow_null=True,)
     full_name = serializers.SerializerMethodField()
     email = serializers.EmailField(source="user.member.contact.email", read_only=True,)
     primary_phone_e164 = E164PhoneNumberField(source="user.member.contact.primary_phone", read_only=True,)
@@ -79,7 +79,7 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
         allow_null=False,
     )
     how_did_you_hear_other = serializers.CharField(source="user.member.metric.how_did_you_hear_other", allow_null=True, allow_blank=True, read_only=True,)
-    how_did_you_hear_label = serializers.CharField(source="user.member.metric.how_did_you_hear.text", read_only=True,)
+    how_did_you_hear_label = serializers.CharField(source="user.member.metric.how_did_you_hear.text", read_only=True, allow_null=True,)
     expectation = serializers.PrimaryKeyRelatedField(
         source="user.member.metric.expectation",
         many=False,
@@ -87,7 +87,7 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
         allow_null=False,
     )
     expectation_other = serializers.CharField(source="user.member.metric.expectation_other", allow_null=True, allow_blank=True, read_only=True,)
-    expectation_label = serializers.CharField(source="user.member.metric.expectation.text")
+    expectation_label = serializers.CharField(source="user.member.metric.expectation.text", read_only=True, allow_null=True,)
     meaning = serializers.PrimaryKeyRelatedField(
         source="user.member.metric.meaning",
         many=False,
@@ -95,11 +95,11 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
         allow_null=False,
     )
     meaning_other = serializers.CharField(source="user.member.metric.meaning_other", allow_null=True, allow_blank=True, read_only=True,)
-    meaning_label = serializers.CharField(source="user.member.metric.meaning.text", read_only=True,)
+    meaning_label = serializers.CharField(source="user.member.metric.meaning.text", read_only=True, allow_null=True,)
     gender = serializers.IntegerField(source="user.member.metric.gender", read_only=True,)
-    gender_label = serializers.CharField(source="user.member.metric.get_pretty_gender", read_only=True,)
+    gender_label = serializers.CharField(source="user.member.metric.get_pretty_gender", read_only=True, allow_null=True,)
     willing_to_volunteer = serializers.IntegerField(source="user.member.metric.willing_to_volunteer", read_only=True,)
-    willing_to_volunteer_label = serializers.CharField(source="user.member.metric.get_pretty_willing_to_volunteer", read_only=True,)
+    willing_to_volunteer_label = serializers.CharField(source="user.member.metric.get_pretty_willing_to_volunteer", read_only=True, allow_null=True,)
     another_household_member_registered = serializers.BooleanField(source="user.member.metric.another_household_member_registered", read_only=True,)
     year_of_birth = serializers.IntegerField(source="user.member.metric.year_of_birth", read_only=True,)
     total_household_count = serializers.IntegerField(source="user.member.metric.total_household_count", read_only=True,)
