@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import transaction
+from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -37,7 +38,8 @@ class StaffListCreateAPIView(generics.ListCreateAPIView):
         """
         # Fetch all the queries.
         queryset = Staff.objects.filter(
-            user__groups__id=SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR
+            Q(user__groups__id=SharedGroup.GROUP_MEMBERSHIP.MANAGER)|
+            Q(user__groups__id=SharedGroup.GROUP_MEMBERSHIP.FRONTLINE_STAFF)
         ).order_by('-id')
 
         # Fetch all the queries.
