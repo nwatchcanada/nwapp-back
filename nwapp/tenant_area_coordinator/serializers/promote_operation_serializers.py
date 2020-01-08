@@ -145,8 +145,8 @@ class AreaCoordinatorPromoteOperationSerializer(serializers.Serializer):
                 'confidentiality_agreement': confidentiality_agreement,
                 'confidentiality_agreement_signed_on': timezone.now(),
                 'has_signed_staff_agreement': True,
-                # 'staff_agreement': staff_agreement,
-                # 'staff_agreement_signed_on': timezone.now(),
+                'staff_agreement': staff_agreement,
+                'staff_agreement_signed_on': timezone.now(),
                 'police_check_date': police_check_date,
             }
         )
