@@ -90,6 +90,6 @@ class StaffPromoteOperationSerializer(serializers.Serializer):
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        logger.info("Promoted to staff")
+        logger.info("Promoted staff")
 
         return staff
