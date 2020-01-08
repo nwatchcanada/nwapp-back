@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 class StaffListSerializer(serializers.Serializer):
     type_of = serializers.IntegerField(source="user.member.type_of", read_only=True,)
+    role_id = serializers.IntegerField(source="user.role_id", read_only=True,)
     organization_name = serializers.CharField(
         allow_blank=False,
         validators=[],
