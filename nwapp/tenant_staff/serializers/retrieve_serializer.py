@@ -34,6 +34,7 @@ class StaffRetrieveSerializer(serializers.Serializer):
     type_of_label = serializers.CharField(source="user.member.get_pretty_type_of", read_only=True, allow_null=True,)
     avatar_url = serializers.SerializerMethodField()
     state = serializers.CharField(source="user.member.state", read_only=True,)
+    role_id = serializers.IntegerField(source="user.role_id")
 
     # ------ MEMBER CONTACT ------ #
 
