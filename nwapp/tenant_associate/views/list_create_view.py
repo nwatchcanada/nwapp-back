@@ -37,7 +37,7 @@ class AssociateListCreateAPIView(generics.ListCreateAPIView):
         """
         # Fetch all the queries.
         queryset = Associate.objects.filter(
-            user__groups__id=SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR
+            user__groups__id=SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE
         ).order_by('-id')
 
         # Fetch all the queries.
