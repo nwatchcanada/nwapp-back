@@ -63,9 +63,13 @@ class StaffDemoteOperationSerializer(serializers.Serializer):
         slug = validated_data.get('staff')
         staff = Staff.objects.select_for_update().get(user__slug=slug)
         request = self.context.get('request')
-        role_id = validated_data.get('role_id')
-        reason = validated_data.get('reason')
+        role_id = int(validated_data.get('role_id'))
+        reason = int(validated_data.get('reason'))
         reason_other = validated_data.get('reason_other')
+
+        # For debugging purposes only.
+        logger.info(slug, role_id, reason, reason_other)
+        print(slug, role_id, reason, reason_other)
 
         staff.demotion_reason = reason
         staff.demotion_reason_other = reason_other

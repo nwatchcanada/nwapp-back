@@ -39,7 +39,7 @@ class AssociateRetrieveSerializer(serializers.Serializer):
 
     is_ok_to_email = serializers.IntegerField(source="user.member.contact.is_ok_to_email", read_only=True,)
     is_ok_to_text = serializers.IntegerField(source="user.member.contact.is_ok_to_text", read_only=True,)
-    organization_name = serializers.CharField(source="user.member.contact.organization_name", read_only=True,)
+    organization_name = serializers.CharField(source="user.member.contact.organization_name", read_only=True, allow_blank=True,)
     organization_type_of = serializers.IntegerField(source="user.member.contact.organization_type_of", read_only=True,)
     first_name = serializers.CharField(source="user.member.contact.first_name", read_only=True,)
     last_name = serializers.CharField(source="user.member.contact.last_name", read_only=True,)
@@ -79,7 +79,7 @@ class AssociateRetrieveSerializer(serializers.Serializer):
         allow_null=False,
     )
     how_did_you_hear_other = serializers.CharField(source="user.member.metric.how_did_you_hear_other", allow_null=True, allow_blank=True, read_only=True,)
-    how_did_you_hear_label = serializers.CharField(source="user.member.metric.how_did_you_hear.text", read_only=True,)
+    how_did_you_hear_label = serializers.CharField(source="user.member.metric.how_did_you_hear.text", read_only=True, allow_blank=True, allow_null=True,)
     expectation = serializers.PrimaryKeyRelatedField(
         source="user.member.metric.expectation",
         many=False,
@@ -87,7 +87,7 @@ class AssociateRetrieveSerializer(serializers.Serializer):
         allow_null=False,
     )
     expectation_other = serializers.CharField(source="user.member.metric.expectation_other", allow_null=True, allow_blank=True, read_only=True,)
-    expectation_label = serializers.CharField(source="user.member.metric.expectation.text")
+    expectation_label = serializers.CharField(source="user.member.metric.expectation.text", read_only=True, allow_null=True, allow_blank=True, )
     meaning = serializers.PrimaryKeyRelatedField(
         source="user.member.metric.meaning",
         many=False,
@@ -95,7 +95,7 @@ class AssociateRetrieveSerializer(serializers.Serializer):
         allow_null=False,
     )
     meaning_other = serializers.CharField(source="user.member.metric.meaning_other", allow_null=True, allow_blank=True, read_only=True,)
-    meaning_label = serializers.CharField(source="user.member.metric.meaning.text", read_only=True,)
+    meaning_label = serializers.CharField(source="user.member.metric.meaning.text", read_only=True, allow_null=True, allow_blank=True,)
     gender = serializers.IntegerField(source="user.member.metric.gender", read_only=True,)
     gender_label = serializers.CharField(source="user.member.metric.get_pretty_gender", read_only=True,)
     willing_to_volunteer = serializers.IntegerField(source="user.member.metric.willing_to_volunteer", read_only=True,)

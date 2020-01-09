@@ -10,7 +10,6 @@ class AssociateFilter(django_filters.FilterSet):
     o = django_filters.OrderingFilter(
         # tuple-mapping retains order
         fields=(
-            ('id', 'id'),
             ('user__member__contact__first_name', 'first_name'),
             ('user__member__contact__last_name', 'last_name'),
             # ('telephone', 'telephone'),

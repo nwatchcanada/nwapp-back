@@ -497,8 +497,10 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
                 del self.is_area_coordinator
             if method_name == 'is_member':
                 del self.is_member
+            if method_name == 'role_id':
+                del self.role_id
             else:
-                raise Exception("Method name not found.")
+                raise Exception("SharedUser --> invalidate --> Method name not found.")
         except AttributeError:
             pass
 
@@ -542,4 +544,4 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         self.invalidate("is_associate")
         self.invalidate("is_area_coordinator")
         self.invalidate("is_member")
-        self.invalidate("role")
+        self.invalidate("role_id")

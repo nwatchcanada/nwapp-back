@@ -38,7 +38,7 @@ class AssociateListCreateAPIView(generics.ListCreateAPIView):
         # Fetch all the queries.
         queryset = Associate.objects.filter(
             user__groups__id=SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE
-        ).order_by('-id')
+        ).order_by('-created_at')
 
         # Fetch all the queries.
         s = self.get_serializer_class()
