@@ -45,6 +45,24 @@ class StaffDemoteOperationSerializer(serializers.Serializer):
         allow_null=True,
         allow_blank=True,
     )
+    role_id = serializers.ChoiceField(
+        write_only=True,
+        required=True,
+        choices=(
+            # (SharedGroup.GROUP_MEMBERSHIP., _('Management')),
+            (SharedGroup.GROUP_MEMBERSHIP.FRONTLINE_STAFF, _('Frontline')),
+            (SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE, _('Associate')),
+            (SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR, _('Area Coordinator')),
+            (SharedGroup.GROUP_MEMBERSHIP.MEMBER, _('Member')),
+        )
+    )
+    area_coordinator_agreement = serializers.BooleanField(write_only=True, required=True,)
+    conflict_of_interest_agreement = serializers.BooleanField(write_only=True, required=True,)
+    code_of_conduct_agreement = serializers.BooleanField(write_only=True, required=True,)
+    confidentiality_agreement = serializers.BooleanField(write_only=True, required=True,)
+    associate_agreement = serializers.BooleanField(write_only=True, required=True,)
+    staff_agreement = serializers.BooleanField(write_only=True, required=True,)
+    police_check_date = serializers.DateField(write_only=True, required=True,)
 
     def validate(self, dirty_data):
         """
@@ -68,6 +86,11 @@ class StaffDemoteOperationSerializer(serializers.Serializer):
         role_id = int(validated_data.get('role_id'))
         reason = int(validated_data.get('reason'))
         reason_other = validated_data.get('reason_other')
+        area_coordinator_agreement = validated_data.get('area_coordinator_agreement')
+        conflict_of_interest_agreement = validated_data.get('conflict_of_interest_agreement')
+        code_of_conduct_agreement = validated_data.get('code_of_conduct_agreement')
+        confidentiality_agreement = validated_data.get('confidentiality_agreement')
+        police_check_date = validated_data.get('police_check_date')
 
         #---------------------------
         # Reason for demotion.
@@ -132,7 +155,7 @@ class StaffDemoteOperationSerializer(serializers.Serializer):
                     'has_signed_confidentiality_agreement': True,
                     'confidentiality_agreement': confidentiality_agreement,
                     'confidentiality_agreement_signed_on': timezone.now(),
-                    # 'police_check_date': police_check_date,
+                    'police_check_date': police_check_date,
                     'created_by': request.user,
                     'created_from': request.client_ip,
                     'created_from_is_public': request.client_ip_is_routable,
@@ -159,7 +182,7 @@ class StaffDemoteOperationSerializer(serializers.Serializer):
                     'has_signed_associate_agreement': True,
                     'associate_agreement': associate_agreement,
                     'associate_agreement_signed_on': timezone.now(),
-                    # 'police_check_date': police_check_date,
+                    'police_check_date': police_check_date,
                 }
             )
         elif role_id == SharedGroup.GROUP_MEMBERSHIP.MEMBER:
