@@ -62,7 +62,7 @@ class Staff(models.Model):
     CONSTANTS
     '''
 
-    class STATE:
+    class DEMOTION_REASON:
         OTHER_REASON = 1
         SOME_REASON = 2
         ANOTHER_REASON = 3
@@ -72,9 +72,9 @@ class Staff(models.Model):
     '''
 
     DEMOTION_REASON_CHOICES = (
-        (STATE.SOME_REASON, _('Some reason')),
-        (STATE.ANOTHER_REASON, _('Another reason')),
-        (STATE.OTHER_REASON, _('Other (Please specify)')),
+        (DEMOTION_REASON.SOME_REASON, _('Some reason')),
+        (DEMOTION_REASON.ANOTHER_REASON, _('Another reason')),
+        (DEMOTION_REASON.OTHER_REASON, _('Other (Please specify)')),
     )
 
     '''
