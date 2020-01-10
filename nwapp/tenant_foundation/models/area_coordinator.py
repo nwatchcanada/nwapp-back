@@ -66,6 +66,11 @@ class AreaCoordinator(models.Model):
         ACTIVE = 'active'
         INACTIVE = 'inactive'
 
+    class DEMOTION_REASON:
+        OTHER_REASON = 1
+        SOME_REASON = 2
+        ANOTHER_REASON = 3
+
     '''
     CHOICES
     '''
@@ -73,6 +78,12 @@ class AreaCoordinator(models.Model):
     STATE_CHOICES = (
         (STATE.ACTIVE, _('Active')),
         (STATE.INACTIVE, _('Inactive')),
+    )
+
+    DEMOTION_REASON_CHOICES = (
+        (DEMOTION_REASON.SOME_REASON, _('Some reason')),
+        (DEMOTION_REASON.ANOTHER_REASON, _('Another reason')),
+        (DEMOTION_REASON.OTHER_REASON, _('Other (Please specify)')),
     )
 
     '''
@@ -176,6 +187,20 @@ class AreaCoordinator(models.Model):
     police_check_date = models.DateField(
         _('Police check date'),
         help_text=_('The date when the police check was taken on.'),
+        blank=True,
+        null=True,
+    )
+
+    demotion_reason = models.PositiveSmallIntegerField(
+        _("Demotion Reason"),
+        help_text=_('The reason for the demotion.'),
+        choices=DEMOTION_REASON_CHOICES,
+        null=True,
+        blank=True,
+    )
+    demotion_reason_other = models.TextField(
+        _("Demotion Reason (Other)"),
+        help_text=_('The other reason for the demotion.'),
         blank=True,
         null=True,
     )
