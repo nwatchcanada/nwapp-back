@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
 from tenant_foundation.model_resources import seed_members
+from tenant_member.tasks import process_member_with_slug_func
 
 
 class Command(BaseCommand):
@@ -43,6 +44,10 @@ class Command(BaseCommand):
         connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
         members = seed_members(organization, length)
+
+        # Iterate through all the randomly generated members
+        for member in members:
+            process_member_with_slug_func(schema_name, member.user.slug)
 
         # For debugging purposes.
         self.stdout.write(

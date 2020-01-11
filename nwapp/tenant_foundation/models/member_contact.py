@@ -234,7 +234,7 @@ class MemberContact(models.Model):
         text += ", " + str(self.last_name)
         text += ", " + str(self.email)
         if self.primary_phone:
-            primary_phone = phonenumbers.parse(self.primary_phone, None)
+            primary_phone = phonenumbers.parse(self.primary_phone, "CA")
             national_numb = phonenumbers.format_number(primary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
             international_numb = phonenumbers.format_number(primary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
             e164_numb = phonenumbers.format_number(primary_phone, phonenumbers.PhoneNumberFormat.E164)
@@ -242,7 +242,7 @@ class MemberContact(models.Model):
             text += ", " + str(international_numb)
             text += ", " + str(e164_numb)
         if self.secondary_phone:
-            secondary_phone = phonenumbers.parse(self.secondary_phone, None)
+            secondary_phone = phonenumbers.parse(self.secondary_phone, "CA")
             national_numb = phonenumbers.format_number(secondary_phone, phonenumbers.PhoneNumberFormat.NATIONAL)
             international_numb = phonenumbers.format_number(secondary_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
             e164_numb = phonenumbers.format_number(secondary_phone, phonenumbers.PhoneNumberFormat.E164)
