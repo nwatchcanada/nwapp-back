@@ -100,20 +100,20 @@ class MemberFilter(django_filters.FilterSet):
     #
     # state = django_filters.NumberFilter(method='state_filtering')
     #
-    # def skill_sets_filtering(self, queryset, name, value):
-    #     pks_string = value
-    #     pks_arr = pks_string.split(",")
-    #     if pks_arr != ['']:
-    #         queryset = queryset.filter(
-    #             skill_sets__in=pks_arr,
-    #             owner__is_active=True
-    #         )
-    #         queryset = queryset.order_by('last_name', 'given_name').distinct()
-    #
-    #     return queryset
-    #
-    # skill_sets = django_filters.CharFilter(method='skill_sets_filtering')
-    #
+    def role_ids_filtering(self, queryset, name, value):
+        pks_string = value
+        pks_arr = pks_string.split(",")
+        if pks_arr != ['']:
+            queryset = queryset.filter(
+                user__groups__in=pks_arr,
+                user__is_active=True
+            )
+            queryset = queryset.order_by('user__last_name', 'user__first_name').distinct()
+
+        return queryset
+
+    role_ids = django_filters.CharFilter(method='role_ids_filtering')
+
     def email_filtering(self, queryset, name, value):
         # DEVELOPERS NOTE:
         # `Django REST Framework` appears to replace the plus character ("+")
@@ -146,4 +146,5 @@ class MemberFilter(django_filters.FilterSet):
             'last_name',
             'email',
             'telephone',
+            'role_ids',
         ]
