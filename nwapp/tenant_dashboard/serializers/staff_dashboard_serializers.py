@@ -27,5 +27,6 @@ class StaffDashboardSerializer(serializers.BaseSerializer):
             'active_members_count': active_members_count,
             'active_watches_count': active_watches_count,
             'active_associates_count': active_associates_count,
-            'active_tasks_count': active_tasks_count
+            'active_tasks_count': active_tasks_count,
+            'latest_tasks': [], #TODO: IMPLEMENT
         }
