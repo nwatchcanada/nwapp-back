@@ -293,7 +293,6 @@ class SharedOrganization(TenantMixin):
 
         #TODO: Pay off technical debit by finding out how to handle other countries.
         else:
-            print("SharedOrganization | country_code | COUNTRY NOT SPECIFIED")
             return "CA"
 
 
