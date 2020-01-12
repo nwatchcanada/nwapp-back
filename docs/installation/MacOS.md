@@ -80,6 +80,12 @@ python manage.py migrate_schemas --executor=multiprocessing; \
 python manage.py init_app; \
 python manage.py setup_oauth2; \
 python manage.py create_shared_user "bart@mikasoftware.com" "123password" "Bart" "Mika";
+python manage.py collectstatic
+```
+
+Optional commands if you want your own tenant data pre-made:
+
+```bash
 python manage.py create_shared_organization london \
        "Neighbourhood Watch London" \
        "NWatch App" \
@@ -96,7 +102,6 @@ python manage.py create_shared_organization london \
        "N6J4X4" \
        "America/Toronto";
 python manage.py create_random_member "london" 30000;
-python manage.py collectstatic
 ```
 
 # 6. Host File Setup
