@@ -24,11 +24,11 @@ class AreaCoordinatorManager(models.Manager):
     def partial_text_search(self, keyword):
         """Function performs partial text search of various textfields."""
         return AreaCoordinator.objects.filter(
-            Q(indexed_text__icontains=keyword) |
-            Q(indexed_text__istartswith=keyword) |
-            Q(indexed_text__iendswith=keyword) |
-            Q(indexed_text__exact=keyword) |
-            Q(indexed_text__icontains=keyword)
+            Q(user__member__indexed_text__icontains=keyword) |
+            Q(user__member__indexed_text__istartswith=keyword) |
+            Q(user__member__indexed_text__iendswith=keyword) |
+            Q(user__member__indexed_text__exact=keyword) |
+            Q(user__member__indexed_text__icontains=keyword)
         )
 
     def full_text_search(self, keyword):
@@ -37,7 +37,7 @@ class AreaCoordinatorManager(models.Manager):
         # which comes with Django to utilize the 'full text search' feature.
         # For more details please read:
         # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
-        return AreaCoordinator.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
+        return AreaCoordinator.objects.annotate(search=SearchVector('user__member__indexed_text'),).filter(search=keyword)
 
 
 class AreaCoordinator(models.Model):
@@ -249,18 +249,6 @@ class AreaCoordinator(models.Model):
         default=False,
         blank=True
     )
-
-    # # SEARCHABLE FIELDS
-    #
-    # indexed_text = models.CharField(
-    #     _("Indexed Text"),
-    #     max_length=1023,
-    #     help_text=_('The searchable content text used by the keyword searcher function.'),
-    #     blank=True,
-    #     null=True,
-    #     db_index=True,
-    #     unique=True
-    # )
 
     """
     MODEL FUNCTIONS
