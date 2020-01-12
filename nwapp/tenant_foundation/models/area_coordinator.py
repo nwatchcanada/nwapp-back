@@ -259,7 +259,7 @@ class AreaCoordinator(models.Model):
         Override the `casting` function so we output the following string when
         an object gets casted to a string.
         '''
-        return str(self.member)
+        return self.user.get_full_name()
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -274,7 +274,7 @@ class AreaCoordinator(models.Model):
         super(AreaCoordinator, self).save(*args, **kwargs)
 
     def get_full_name(self):
-        return self.member.user.get_full_name()
+        return self.user.get_full_name()
 
     def get_pretty_state(self):
         return str(dict(AreaCoordinator.STATE_CHOICES).get(self.state))

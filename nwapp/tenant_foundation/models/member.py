@@ -237,7 +237,7 @@ class Member(models.Model):
         Override the `casting` function so we output the following string when
         an object gets casted to a string.
         '''
-        return str(self.user)
+        return self.user.get_full_name()
 
     @transaction.atomic
     def save(self, *args, **kwargs):
