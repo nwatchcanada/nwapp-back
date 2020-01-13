@@ -1,3 +1,5 @@
+
+from tenant_foundation.models.district import District
 from tenant_foundation.models.comment import Comment
 from tenant_foundation.models.expectation_item import ExpectationItem
 from tenant_foundation.models.meaning_item import MeaningItem
