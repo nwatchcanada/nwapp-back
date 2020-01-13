@@ -21,3 +21,7 @@ from tenant_foundation.serializers.badge.retrieve_serializer import BadgeRetriev
 from tenant_foundation.serializers.award.list_serializer import AwardListSerializer
 from tenant_foundation.serializers.award.create_serializer import AwardCreateSerializer
 from tenant_foundation.serializers.award.retrieve_serializer import AwardRetrieveSerializer
+
+from tenant_foundation.serializers.district.list_serializer import DistrictListSerializer
+from tenant_foundation.serializers.district.create_serializer import DistrictCreateSerializer
+from tenant_foundation.serializers.district.retrieve_serializer import DistrictRetrieveSerializer

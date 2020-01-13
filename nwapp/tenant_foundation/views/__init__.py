@@ -18,3 +18,6 @@ from tenant_foundation.views.badge.retrieve_update_delete_views import BadgeRetr
 
 from tenant_foundation.views.award.list_create_views import AwardListCreateAPIView
 from tenant_foundation.views.award.retrieve_update_delete_views import AwardRetrieveUpdateDestroyAPIView
+
+from tenant_foundation.views.district.list_create_views import DistrictListCreateAPIView
+from tenant_foundation.views.district.retrieve_update_delete_views import DistrictRetrieveUpdateDestroyAPIView
