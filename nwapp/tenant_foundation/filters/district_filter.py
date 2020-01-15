@@ -12,7 +12,6 @@ class DistrictFilter(django_filters.FilterSet):
         fields=(
             ('created_at', 'created_at'),
             ('type_of', 'type_of'),
-            ('user', 'user'),
         ),
 
         # # labels do not need to retain order
@@ -21,18 +20,17 @@ class DistrictFilter(django_filters.FilterSet):
         # }
     )
 
-    def user_filtering(self, queryset, name, value):
-        return queryset.filter(
-            Q(user__slug=value)
-        )
-
-    user = django_filters.CharFilter(method='user_filtering')
+    # def user_filtering(self, queryset, name, value):
+    #     return queryset.filter(
+    #         Q(user__slug=value)
+    #     )
+    #
+    # user = django_filters.CharFilter(method='user_filtering')
 
     class Meta:
         model = District
         fields = [
-            'user',
             'is_archived',
             'type_of',
-            'user'
+            'slug'
         ]

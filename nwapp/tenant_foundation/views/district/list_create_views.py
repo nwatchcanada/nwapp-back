@@ -56,8 +56,8 @@ class DistrictListCreateAPIView(generics.ListCreateAPIView):
         """
         post_serializer = DistrictCreateSerializer(
             data=request.data,
-            context={'request': request,
-        });
+            context={'request': request,}
+        );
         post_serializer.is_valid(raise_exception=True)
         member = post_serializer.save()
         retrieve_serializer = DistrictRetrieveSerializer(member, many=False)
