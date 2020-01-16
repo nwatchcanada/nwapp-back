@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 
 
 class DistrictListSerializer(serializers.Serializer):
+    is_archived = serializers.BooleanField(
+        allow_null=True,
+        read_only=True,
+    )
     type_of = serializers.ChoiceField(
         allow_null=False,
         choices=District.TYPE_OF_CHOICES,
