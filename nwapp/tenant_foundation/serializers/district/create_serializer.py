@@ -15,90 +15,84 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from shared_foundation.models import SharedUser
-from tenant_foundation.models import District, Tag
+from tenant_foundation.models import District
 
 
 logger = logging.getLogger(__name__)
 
 
 class DistrictCreateSerializer(serializers.Serializer):
-    user = serializers.SlugField(
-        required=True,
-        write_only=True,
-    )
     type_of = serializers.ChoiceField(
         required=True,
         allow_null=False,
         choices=District.TYPE_OF_CHOICES,
         write_only=True,
     )
-    type_of_other = serializers.CharField( #TODO: Required if ```type_of == 1```.
+    name = serializers.CharField(
         required=False,
         allow_blank=True,
         allow_null=True,
         write_only=True,
     )
-    description_other = serializers.CharField( #TODO: Required if ```type_of == 1```.
+    description = serializers.CharField(
         required=False,
         allow_blank=True,
         allow_null=True,
         write_only=True,
     )
-    amount = serializers.IntegerField(
-        required=True,
+    counselor_name = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
         write_only=True,
     )
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, write_only=True,)
-
-    def validate_user(self, value):
-        #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
-        if not SharedUser.objects.filter(slug=value).exists():
-            raise serializers.ValidationError("User does not exist")
-        return value
-
-    # def validate_organization_name(self, value):
-    #     """
-    #     Custom validation to handle case of user selecting an organization type
-    #     of member but then forgetting to fill in the `organization_name` field.
-    #     """
-    #     request = self.context.get('request')
-    #     type_of = request.data.get('type_of')
-    #     if type_of == District.MEMBER_TYPE_OF.BUSINESS:
-    #         if value == None or value == "":
-    #             raise serializers.ValidationError(_('Please fill this field in.'))
-    #     return value
+    counselor_email = serializers.EmailField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
+    counselor_phone = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
+    website_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        write_only=True,
+    )
+    # logo_image
 
     def create(self, validated_data):
         """
         Override the `create` function to add extra functinality.
         """
-        slug = validated_data.get('user')
-        user = SharedUser.objects.get(slug=slug)
         request = self.context.get("request")
         type_of = validated_data.get('type_of')
-        type_of_other = validated_data.get('type_of_other')
-        description_other = validated_data.get('description_other')
-        amount = validated_data.get('amount')
+        description = validated_data.get('description')
+        name = validated_data.get('name')
+        counselor_name = validated_data.get('counselor_name')
+        counselor_email = validated_data.get('counselor_email')
+        counselor_phone = validated_data.get('counselor_phone')
+        website_url = validated_data.get('website_url')
 
-        score_point = District.award(
-            user,
-            type_of,
-            type_of_other,
-            description_other,
-            amount,
-            request.user, # Note: created_by
-            request.user, # Note: last_modified_by
+        district = District.objects.create(
+            type_of=type_of,
+            description=description,
+            name=name,
+            counselor_name=counselor_name,
+            counselor_email=counselor_email,
+            counselor_phone=counselor_phone,
+            website_url=website_url,
         )
-        logger.info("Awarded score points to the user\'s account.")
 
-        tags = validated_data.get('tags', None)
-        if tags is not None:
-            if len(tags) > 0:
-                score_point.tags.set(tags)
-                logger.info("Awarded score has tags attached to it.")
+        logger.info("New district was been created.")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        return score_point
+        return district

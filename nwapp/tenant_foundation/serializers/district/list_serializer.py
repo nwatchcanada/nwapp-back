@@ -22,23 +22,53 @@ logger = logging.getLogger(__name__)
 
 
 class DistrictListSerializer(serializers.Serializer):
-    user = serializers.SlugField(
+    type_of = serializers.ChoiceField(
+        allow_null=False,
+        choices=District.TYPE_OF_CHOICES,
         read_only=True,
-        source="user.slug",
     )
-    type_of = serializers.IntegerField(read_only=True,)
-    type_of_other = serializers.CharField(read_only=True,)
-    type_of_label = serializers.CharField(read_only=True, source="get_type_of_label")
-    description = serializers.CharField(read_only=True, source="get_description")
-    amount = serializers.IntegerField(read_only=True,)
-    created_at = serializers.DateTimeField(read_only=True,)
-    last_modified_at = serializers.DateTimeField(read_only=True,)
-    is_archived = serializers.BooleanField(read_only=True,)
-    uuid = serializers.UUIDField(read_only=True,)
+    name = serializers.CharField(
+        allow_blank=True,
+        allow_null=True,
+        read_only=True,
+    )
+    description = serializers.CharField(
+        allow_blank=True,
+        allow_null=True,
+        read_only=True,
+    )
+    counselor_name = serializers.CharField(
+        allow_blank=True,
+        allow_null=True,
+        read_only=True,
+    )
+    counselor_email = serializers.EmailField(
+        allow_blank=True,
+        allow_null=True,
+        read_only=True,
+    )
+    counselor_phone = serializers.CharField(
+        allow_blank=True,
+        allow_null=True,
+        read_only=True,
+    )
+    website_url = serializers.URLField(
+        allow_blank=True,
+        allow_null=True,
+        read_only=True,
+    )
+    created_at = serializers.DateTimeField(
+        allow_null=True,
+        read_only=True,
+    )
+    last_modified_at = serializers.DateTimeField(
+        allow_null=True,
+        read_only=True,
+    )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related(
-            'user', 'created_by', 'last_modified_by', 'tags',
+            'created_by', 'last_modified_by',
         )
         return queryset

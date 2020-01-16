@@ -195,7 +195,7 @@ class District(models.Model):
     """
 
     def __str__(self):
-        return "District UUID: " + str(self.uuid)
+        return str(self.slug)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
