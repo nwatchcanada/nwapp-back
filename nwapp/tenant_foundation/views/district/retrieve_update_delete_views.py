@@ -22,11 +22,11 @@ class DistrictRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     )
 
     @transaction.atomic
-    def get(self, request, uuid=None):
+    def get(self, request, slug=None):
         """
         Retrieve
         """
-        sp = get_object_or_404(District, uuid=uuid)
+        sp = get_object_or_404(District, slug=slug)
         self.check_object_permissions(request, sp)  # Validate permissions.
         serializer = DistrictRetrieveSerializer(sp, many=False, context={'request': request,})
         # queryset = serializer.setup_eager_loading(self, queryset)
@@ -36,30 +36,29 @@ class DistrictRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
         )
 
     @transaction.atomic
-    def put(self, request, uuid=None):
+    def put(self, request, slug=None):
         """
         Update
         """
-        sp = get_object_or_404(District, uuid=uuid)
+        sp = get_object_or_404(District, slug=slug)
         self.check_object_permissions(request, sp)  # Validate permissions.
         return Response(data={
             'error': 'Programmer has this as a TODO item'
         }, status=status.HTTP_501_NOT_IMPLEMENTED)
 
     @transaction.atomic
-    def delete(self, request, uuid=None):
+    def delete(self, request, slug=None):
         """
         Delete
         """
-        sp = get_object_or_404(District, uuid=uuid)
-        self.check_object_permissions(request, sp)  # Validate permissions.
+        district = get_object_or_404(District, slug=slug)
+        self.check_object_permissions(request, district)  # Validate permissions.
 
-        sp = District.archive(
-            uuid,
-            request.user,
-            request.client_ip,
-            request.client_ip_is_routable
-        )
+        district.is_archived = not district.is_archived
+        district.last_modified_by = request.user
+        district.last_modified_from = request.client_ip
+        district.last_modified_from_is_public = request.client_ip_is_routable
+        district.save()
 
-        serializer = DistrictRetrieveSerializer(sp, many=False, context={'request': request,})
+        serializer = DistrictRetrieveSerializer(district, many=False, context={'request': request,})
         return Response(data=serializer.data, status=status.HTTP_200_OK)

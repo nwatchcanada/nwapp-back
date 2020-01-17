@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import uuid
 import pytz
 from datetime import date, datetime, timedelta
 from django.conf import settings

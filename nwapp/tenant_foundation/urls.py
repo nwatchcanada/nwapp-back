@@ -19,5 +19,5 @@ urlpatterns = (
     path('api/v1/awards', views.AwardListCreateAPIView.as_view(), name='nwapp_award_list_create_api_endpoint'),
     path('api/v1/award/<uuid>', views.AwardRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_award_retrieve_update_delete_api_endpoint'),
     path('api/v1/districts', views.DistrictListCreateAPIView.as_view(), name='nwapp_district_list_create_api_endpoint'),
-    path('api/v1/district/<uuid>', views.DistrictRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_district_retrieve_update_delete_api_endpoint'),
+    path('api/v1/district/<slug>', views.DistrictRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_district_retrieve_update_delete_api_endpoint'),
 )
