@@ -210,3 +210,6 @@ class District(models.Model):
         out the saving operation by Django in our ORM.
         '''
         super(District, self).save(*args, **kwargs)
+
+    def get_type_of_label(self):
+        return str(dict(District.TYPE_OF_CHOICES).get(self.type_of))
