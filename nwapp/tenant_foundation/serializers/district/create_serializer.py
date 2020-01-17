@@ -118,6 +118,7 @@ class DistrictCreateSerializer(serializers.Serializer):
                 last_modified_from = request.client_ip,
                 last_modified_from_is_public = request.client_ip_is_routable,
             )
+            print("Private file created") #TODO: Remove `print` when ready.
         except Exception as e:
             private_file = None
 

@@ -31,7 +31,13 @@ class DistrictRetrieveSerializer(serializers.Serializer):
     counselor_email = serializers.EmailField(read_only=True,)
     counselor_phone = serializers.CharField(read_only=True,)
     website_url = serializers.URLField(read_only=True,)
-    # logo_image = serializers.SerializerMethodField()
-    # logo_image = models.ForeignKey(
-    #     "PrivateImageUpload",
     is_archived = serializers.BooleanField(read_only=True,)
+    logo_image = serializers.SerializerMethodField()
+
+    def get_logo_image(self, obj):
+        try:
+            print(obj.logo_image)
+            return str(obj.logo_image.image_file)
+        except Exception as e:
+            print("DistrictRetrieveSerializer | get_logo_image")
+            return None
