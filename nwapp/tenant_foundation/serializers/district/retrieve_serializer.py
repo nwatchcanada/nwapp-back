@@ -32,13 +32,7 @@ class DistrictRetrieveSerializer(serializers.Serializer):
     counselor_phone = serializers.CharField(read_only=True,)
     website_url = serializers.URLField(read_only=True,)
     is_archived = serializers.BooleanField(read_only=True,)
-    logo_image = serializers.ImageField(source="logo_image.image_file")
-
-    # def get_logo_image(self, obj):
-    #     try:
-    #         print(obj.logo_image)
-    #         return str(obj.logo_image.image_file)
-    #     except Exception as e:
-    #         print("DistrictRetrieveSerializer | get_logo_image")
-    #         print(e)
-    #         return None
+    logo_image = serializers.ImageField(
+        source="logo_image.image_file",
+        allow_null=True,
+    )
