@@ -106,11 +106,9 @@ class DistrictCreateSerializer(serializers.Serializer):
 
             # Create our file.
             private_file = PrivateImageUpload.objects.create(
-                title = "District Business Logo",
-                description = "-",
                 is_archived = False,
-                # user = user,
-                data_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentImage`, Django handles all file uploading.
+                user = request.user,
+                image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentImage`, Django handles all file uploading.
                 created_by = request.user,
                 created_from = request.client_ip,
                 created_from_is_public = request.client_ip_is_routable,
@@ -118,8 +116,9 @@ class DistrictCreateSerializer(serializers.Serializer):
                 last_modified_from = request.client_ip,
                 last_modified_from_is_public = request.client_ip_is_routable,
             )
-            print("Private file created") #TODO: Remove `print` when ready.
+            logger.info("Private file was been created.")
         except Exception as e:
+            print(e)
             private_file = None
 
         # Create the district.
@@ -135,6 +134,9 @@ class DistrictCreateSerializer(serializers.Serializer):
         )
 
         logger.info("New district was been created.")
+
+        # print(private_file)
+        # print("\n")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
