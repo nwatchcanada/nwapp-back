@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
@@ -12,6 +13,9 @@ from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 
 from tenant_foundation.models import Tag
+
+
+logger = logging.getLogger(__name__)
 
 
 class TagRetrieveUpdateDestroySerializer(serializers.ModelSerializer):

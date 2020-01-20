@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from ipware import get_client_ip
 import django_filters
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -31,29 +32,36 @@ class TagRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         # CanRetrieveUpdateDestroyTagPermission
     )
 
+    @transaction.atomic
     def get(self, request, pk=None):
         """
         Retrieve
         """
         tag = get_object_or_404(Tag, pk=pk)
         self.check_object_permissions(request, tag)  # Validate permissions.
-        serializer = TagRetrieveUpdateDestroySerializer(tag, many=False)
+        serializer = TagRetrieveUpdateDestroySerializer(tag, many=False, context={
+            'request': request,
+        })
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK
         )
 
+    @transaction.atomic
     def put(self, request, pk=None):
         """
         Update
         """
         tag = get_object_or_404(Tag, pk=pk)
         self.check_object_permissions(request, tag)  # Validate permissions.
-        serializer = TagRetrieveUpdateDestroySerializer(tag, data=request.data)
+        serializer = TagRetrieveUpdateDestroySerializer(tag, data=request.data, context={
+            'request': request,
+        })
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @transaction.atomic
     def delete(self, request, pk=None):
         """
         Delete
