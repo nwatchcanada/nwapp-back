@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
@@ -13,6 +14,9 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from tenant_foundation.models import HowHearAboutUsItem
+
+
+logger = logging.getLogger(__name__)
 
 
 class HowHearAboutUsItemListCreateSerializer(serializers.ModelSerializer):
@@ -38,4 +42,37 @@ class HowHearAboutUsItemListCreateSerializer(serializers.ModelSerializer):
             'is_for_staff',
             'is_for_partner',
             'is_archived',
+            'created_at',
+            'created_by',
+            'last_modified_at',
+            'last_modified_by'
         )
+
+    def create(self, validated_data):
+        """
+        Override the `create` function to add extra functinality.
+        """
+        request = self.context.get("request")
+        text = validated_data.get('text')
+
+        # Create the district.
+        tag = Tag.objects.create(
+            text=text,
+            created_by = request.user,
+            created_from = request.client_ip,
+            created_from_is_public = request.client_ip_is_routable,
+            last_modified_by = request.user,
+            last_modified_from = request.client_ip,
+            last_modified_from_is_public = request.client_ip_is_routable,
+        )
+
+        logger.info("New tag was been created.")
+
+        # print(private_file)
+        # print("\n")
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
+        return tag

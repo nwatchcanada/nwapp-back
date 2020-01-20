@@ -40,7 +40,9 @@ class HowHearAboutUsItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDest
         """
         hhi = get_object_or_404(HowHearAboutUsItem, pk=pk)
         self.check_object_permissions(request, hhi)  # Validate permissions.
-        serializer = HowHearAboutUsItemRetrieveUpdateDestroySerializer(hhi, many=False)
+        serializer = HowHearAboutUsItemRetrieveUpdateDestroySerializer(hhi, many=False, context={
+            'request': request,
+        })
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK
@@ -52,7 +54,9 @@ class HowHearAboutUsItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDest
         """
         hhi = get_object_or_404(HowHearAboutUsItem, pk=pk)
         self.check_object_permissions(request, hhi)  # Validate permissions.
-        serializer = HowHearAboutUsItemRetrieveUpdateDestroySerializer(hhi, data=request.data)
+        serializer = HowHearAboutUsItemRetrieveUpdateDestroySerializer(hhi, data=request.data, context={
+            'request': request,
+        })
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

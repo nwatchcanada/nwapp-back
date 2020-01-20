@@ -27,6 +27,13 @@ class HowHearAboutUsItemRetrieveUpdateDestroySerializer(serializers.ModelSeriali
             )
         ],
     )
+
+    # ------ AUDITING ------ #
+    created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
+    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
+    last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+
     class Meta:
         model = HowHearAboutUsItem
         fields = (
@@ -38,4 +45,8 @@ class HowHearAboutUsItemRetrieveUpdateDestroySerializer(serializers.ModelSeriali
             'is_for_staff',
             'is_for_partner',
             'is_archived',
+            'created_at',
+            'created_by',
+            'last_modified_at',
+            'last_modified_by'
         )
