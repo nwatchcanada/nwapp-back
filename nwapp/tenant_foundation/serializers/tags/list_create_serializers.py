@@ -15,6 +15,7 @@ from tenant_foundation.models import Tag
 
 
 class TagListCreateSerializer(serializers.ModelSerializer):
+
     text = serializers.CharField(
         required=True,
         allow_blank=False,
@@ -22,6 +23,11 @@ class TagListCreateSerializer(serializers.ModelSerializer):
         validators=[]
     )
     is_archived = serializers.BooleanField(read_only=True)
+
+    # ------ AUDITING ------ #
+    created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+
     class Meta:
         model = Tag
         fields = (
@@ -29,4 +35,6 @@ class TagListCreateSerializer(serializers.ModelSerializer):
             'text',
             'description',
             'is_archived',
+            'created_at',
+            'last_modified_at'
         )

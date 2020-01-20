@@ -15,6 +15,7 @@ from tenant_foundation.models import Tag
 
 
 class TagRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
+
     text = serializers.CharField(
         required=True,
         allow_blank=False,
@@ -22,6 +23,13 @@ class TagRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
         validators=[]
     )
     is_archived = serializers.BooleanField(read_only=True)
+
+    # ------ AUDITING ------ #
+    created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
+    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
+    last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+
     class Meta:
         model = Tag
         fields = (
@@ -29,4 +37,8 @@ class TagRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
             'text',
             'description',
             'is_archived',
+            'created_at',
+            'created_by',
+            'last_modified_by',
+            'last_modified_at'
         )
