@@ -9,6 +9,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from shared_foundation.models import SharedUser
 
 # def get_expiry_date(days=2):
 #     """Returns the current date plus paramter number of days."""
@@ -66,6 +67,51 @@ class Tag(models.Model):
         default=False,
         blank=True,
         db_index=True
+    )
+
+    # AUDITING FIELDS
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_by = models.ForeignKey(
+        SharedUser,
+        help_text=_('The user whom created this object.'),
+        related_name="created_tags",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    created_from = models.GenericIPAddressField(
+        _("Created from"),
+        help_text=_('The IP address of the creator.'),
+        blank=True,
+        null=True
+    )
+    created_from_is_public = models.BooleanField(
+        _("Is the IP "),
+        help_text=_('Is creator a public IP and is routable.'),
+        default=False,
+        blank=True
+    )
+    last_modified_at = models.DateTimeField(auto_now=True)
+    last_modified_by = models.ForeignKey(
+        SharedUser,
+        help_text=_('The user whom modified this object last.'),
+        related_name="last_modified_tags",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    last_modified_from = models.GenericIPAddressField(
+        _("Last modified from"),
+        help_text=_('The IP address of the modifier.'),
+        blank=True,
+        null=True
+    )
+    last_modified_from_is_public = models.BooleanField(
+        _("Is the IP "),
+        help_text=_('Is modifier a public IP and is routable.'),
+        default=False,
+        blank=True
     )
 
     """

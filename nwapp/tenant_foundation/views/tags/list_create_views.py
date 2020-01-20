@@ -10,12 +10,12 @@ from rest_framework import authentication, viewsets, permissions, status
 from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
-# from tenant_api.filters.tag import TagFilter
 from shared_foundation.drf.pagination import StandardResultsSetPagination
 # from tenant_api.permissions.tag import (
 #    CanListCreateTagPermission,
 #    CanRetrieveUpdateDestroyTagPermission
 # )
+from tenant_foundation.filters import TagFilter
 from tenant_foundation.serializers import TagListCreateSerializer, TagRetrieveUpdateDestroySerializer
 from tenant_foundation.models import Tag
 
@@ -39,9 +39,9 @@ class TagListCreateAPIView(generics.ListCreateAPIView):
         # Fetch all the queries.
         queryset = Tag.objects.all().order_by('text')
 
-        # # The following code will use the 'django-filter'
-        # filter = TagFilter(self.request.GET, queryset=queryset)
-        # queryset = filter.qs
+        # The following code will use the 'django-filter'
+        filter = TagFilter(self.request.GET, queryset=queryset)
+        queryset = filter.qs
 
         # Return our filtered list.
         return queryset
