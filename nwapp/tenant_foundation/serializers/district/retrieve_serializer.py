@@ -36,3 +36,9 @@ class DistrictRetrieveSerializer(serializers.Serializer):
         source="logo_image.image_file",
         allow_null=True,
     )
+
+    # ------ AUDITING ------ #
+    created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
+    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
+    last_modified__at = serializers.DateTimeField(read_only=True, allow_null=False,)

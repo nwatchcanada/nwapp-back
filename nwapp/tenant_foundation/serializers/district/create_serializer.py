@@ -131,6 +131,12 @@ class DistrictCreateSerializer(serializers.Serializer):
             counselor_phone=counselor_phone,
             website_url=website_url,
             logo_image=private_file,
+            created_by = request.user,
+            created_from = request.client_ip,
+            created_from_is_public = request.client_ip_is_routable,
+            last_modified_by = request.user,
+            last_modified_from = request.client_ip,
+            last_modified_from_is_public = request.client_ip_is_routable,
         )
 
         logger.info("New district was been created.")
