@@ -39,7 +39,6 @@ class AnnouncementRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'text',
-            'description',
             'is_archived',
             'created_at',
             'created_by',

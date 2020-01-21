@@ -42,7 +42,6 @@ class AnnouncementListCreateSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'text',
-            'description',
             'is_archived',
             'created_at',
             'last_modified_at'
@@ -53,12 +52,10 @@ class AnnouncementListCreateSerializer(serializers.ModelSerializer):
         Override the `create` function to add extra functinality.
         """
         request = self.context.get("request")
-        description = validated_data.get('description')
         text = validated_data.get('text')
 
         # Create the district.
         tag = Announcement.objects.create(
-            description=description,
             text=text,
             created_by = request.user,
             created_from = request.client_ip,
