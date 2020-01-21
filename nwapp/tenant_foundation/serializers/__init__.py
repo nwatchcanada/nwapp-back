@@ -25,3 +25,4 @@ from tenant_foundation.serializers.award.retrieve_serializer import AwardRetriev
 from tenant_foundation.serializers.district.list_serializer import DistrictListSerializer
 from tenant_foundation.serializers.district.create_serializer import DistrictCreateSerializer
 from tenant_foundation.serializers.district.retrieve_serializer import DistrictRetrieveSerializer
+from tenant_foundation.serializers.district.update_serializer import DistrictUpdateSerializer
