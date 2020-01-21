@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import django_filters
 from ipware import get_client_ip
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -48,6 +49,7 @@ class HowHearAboutUsItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDest
             status=status.HTTP_200_OK
         )
 
+    @transaction.atomic
     def put(self, request, pk=None):
         """
         Update
@@ -61,6 +63,7 @@ class HowHearAboutUsItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDest
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @transaction.atomic
     def delete(self, request, pk=None):
         """
         Delete

@@ -56,7 +56,7 @@ class HowHearAboutUsItemListCreateSerializer(serializers.ModelSerializer):
         text = validated_data.get('text')
 
         # Create the district.
-        tag = Tag.objects.create(
+        how_hear = HowHearAboutUsItem.objects.create(
             text=text,
             created_by = request.user,
             created_from = request.client_ip,
@@ -66,7 +66,7 @@ class HowHearAboutUsItemListCreateSerializer(serializers.ModelSerializer):
             last_modified_from_is_public = request.client_ip_is_routable,
         )
 
-        logger.info("New tag was been created.")
+        logger.info("New how hear was been created.")
 
         # print(private_file)
         # print("\n")
@@ -75,4 +75,4 @@ class HowHearAboutUsItemListCreateSerializer(serializers.ModelSerializer):
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        return tag
+        return how_hear
