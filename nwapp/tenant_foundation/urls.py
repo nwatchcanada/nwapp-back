@@ -22,4 +22,6 @@ urlpatterns = (
     path('api/v1/district/<slug>', views.DistrictRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_district_retrieve_update_delete_api_endpoint'),
     path('api/v1/announcements', views.AnnouncementListCreateAPIView.as_view(), name='nwapp_announcement_list_create_api_endpoint'),
     path('api/v1/announcement/<slug>', views.AnnouncementRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_announcement_retrieve_update_delete_api_endpoint'),
+    path('api/v1/resource-items', views.ResourceItemListCreateAPIView.as_view(), name='nwapp_resource_item_list_create_api_endpoint'),
+    path('api/v1/resource-item/<slug>', views.ResourceItemRetrieveUpdateDestroyAPIView.as_view(), name='nwapp_resource_item_retrieve_update_delete_api_endpoint'),
 )

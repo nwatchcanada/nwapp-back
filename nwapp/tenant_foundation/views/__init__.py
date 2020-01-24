@@ -24,3 +24,6 @@ from tenant_foundation.views.district.retrieve_update_delete_views import Distri
 
 from tenant_foundation.views.announcements.list_create_views import AnnouncementListCreateAPIView
 from tenant_foundation.views.announcements.retrieve_update_delete_views import AnnouncementRetrieveUpdateDestroyAPIView
+
+from tenant_foundation.views.resource_item.list_create_views import ResourceItemListCreateAPIView
+from tenant_foundation.views.resource_item.retrieve_update_delete_views import ResourceItemRetrieveUpdateDestroyAPIView

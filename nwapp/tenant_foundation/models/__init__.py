@@ -9,6 +9,7 @@ from tenant_foundation.models.score_point import ScorePoint
 from tenant_foundation.models.award import Award
 from tenant_foundation.models.badge import Badge
 from tenant_foundation.models.announcement import Announcement
+from tenant_foundation.models.resource_item import ResourceItem
 
 from tenant_foundation.models.member import Member
 from tenant_foundation.models.member_address import MemberAddress
