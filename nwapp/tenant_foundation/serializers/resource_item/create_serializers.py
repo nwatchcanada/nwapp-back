@@ -89,7 +89,7 @@ class ResourceItemCreateSerializer(serializers.Serializer):
             private_file = PrivateFileUpload.objects.create(
                 is_archived = False,
                 user = request.user,
-                image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentImage`, Django handles all file uploading.
+                data_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentImage`, Django handles all file uploading.
                 created_by = request.user,
                 created_from = request.client_ip,
                 created_from_is_public = request.client_ip_is_routable,
