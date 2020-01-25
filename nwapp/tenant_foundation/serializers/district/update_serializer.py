@@ -14,6 +14,7 @@ from rest_framework.validators import UniqueValidator
 
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
+from shared_foundation.utils import get_content_file_from_base64_string
 from shared_foundation.models import SharedUser
 from tenant_foundation.models import District
 
