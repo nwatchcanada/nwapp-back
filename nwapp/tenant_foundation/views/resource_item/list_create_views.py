@@ -17,12 +17,16 @@ from shared_foundation.drf.pagination import StandardResultsSetPagination
 #    CanRetrieveUpdateDestroyResourceItemPermission
 # )
 from tenant_foundation.filters import ResourceItemFilter
-from tenant_foundation.serializers import ResourceItemListCreateSerializer, ResourceItemRetrieveUpdateDestroySerializer
+from tenant_foundation.serializers import (
+    ResourceItemListSerializer,
+    ResourceItemCreateSerializer,
+    ResourceItemRetrieveUpdateDestroySerializer
+)
 from tenant_foundation.models import ResourceItem
 
 
 class ResourceItemListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = ResourceItemListCreateSerializer
+    serializer_class = ResourceItemListSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
@@ -38,7 +42,7 @@ class ResourceItemListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = ResourceItem.objects.all().order_by('text')
+        queryset = ResourceItem.objects.all().order_by('name')
 
         # The following code will use the 'django-filter'
         filter = ResourceItemFilter(self.request.GET, queryset=queryset)
@@ -52,9 +56,13 @@ class ResourceItemListCreateAPIView(generics.ListCreateAPIView):
         """
         Create
         """
-        serializer = ResourceItemListCreateSerializer(data=request.data, context={
+        serializer = ResourceItemCreateSerializer(data=request.data, context={
             'request': request,
         })
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        object = serializer.save()
+        serializer = ResourceItemRetrieveUpdateDestroySerializer(object, many=False, context={
+            'request': request,
+        })
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)

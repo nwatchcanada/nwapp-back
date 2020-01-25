@@ -11,7 +11,7 @@ class ResourceItemFilter(django_filters.FilterSet):
         # tuple-mapping retains order
         fields=(
             ('created_at', 'created_at'),
-            ('text', 'text'),
+            ('name', 'name'),
         ),
 
         # # labels do not need to retain order
@@ -31,6 +31,5 @@ class ResourceItemFilter(django_filters.FilterSet):
         model = District
         fields = [
             'is_archived',
-            # 'text',
-            'slug'
+            'name'
         ]

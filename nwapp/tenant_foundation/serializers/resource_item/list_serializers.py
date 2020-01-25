@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.http import urlquote
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
+from rest_framework.validators import UniqueValidator
 
 from tenant_foundation.models import ResourceItem
 
@@ -18,17 +19,19 @@ from tenant_foundation.models import ResourceItem
 logger = logging.getLogger(__name__)
 
 
-class ResourceItemRetrieveUpdateDestroySerializer(serializers.Serializer):
-    category = serializers.IntegerField()
-    type_of = serializers.IntegerField()
-    name = serializers.CharField()
+class ResourceItemListSerializer(serializers.Serializer):
+    category = serializers.IntegerField(read_only=True,)
+    type_of = serializers.IntegerField(read_only=True,)
+    name = serializers.CharField(
+        read_only=True,
+        allow_blank=False,
+        allow_null=False,
+    )
     uuid = serializers.UUIDField(
         read_only=True,
     )
-    is_archived = serializers.BooleanField()
+    is_archived = serializers.BooleanField(read_only=True)
 
     # ------ AUDITING ------ #
     created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
-    created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
-    last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
     last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
