@@ -28,6 +28,13 @@ class ResourceItemRetrieveUpdateDestroySerializer(serializers.Serializer):
     description = serializers.CharField()
     external_url = serializers.URLField()
     embed_code = serializers.CharField()
+    image_url = serializers.ImageField(
+        read_only=True,
+        max_length=None,
+        use_url=True,
+        source="image.image_file",
+        allow_null=True,
+    )
     is_archived = serializers.BooleanField()
 
     # ------ AUDITING ------ #
