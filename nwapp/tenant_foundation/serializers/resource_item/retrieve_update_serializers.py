@@ -19,12 +19,15 @@ logger = logging.getLogger(__name__)
 
 
 class ResourceItemRetrieveUpdateDestroySerializer(serializers.Serializer):
+    slug = serializers.SlugField(read_only=True,)
     category = serializers.IntegerField()
+    category_label = serializers.CharField(read_only=True, source="get_category_label",)
     type_of = serializers.IntegerField()
+    type_of_label = serializers.CharField(read_only=True, source="get_type_of_label",)
     name = serializers.CharField()
-    uuid = serializers.UUIDField(
-        read_only=True,
-    )
+    description = serializers.CharField()
+    external_url = serializers.URLField()
+    embed_code = serializers.CharField()
     is_archived = serializers.BooleanField()
 
     # ------ AUDITING ------ #

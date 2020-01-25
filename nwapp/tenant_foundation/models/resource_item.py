@@ -7,10 +7,12 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
+from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedUser
+from shared_foundation.utils.string import get_referral_code
 
 # def get_expiry_date(days=2):
 #     """Returns the current date plus paramter number of days."""
@@ -157,11 +159,13 @@ class ResourceItem(models.Model):
 
     # AUDITING FIELDS
 
-    uuid = models.UUIDField(
-        _("UUID"),
-        help_text=_('The unique identifier we want to release to the public to identify this resource item.'),
-        default=uuid.uuid4,
-        editable=False
+    slug = models.SlugField(
+        _("Slug"),
+        help_text=_('The unique identifier used externally.'),
+        null=False,
+        unique=True,
+        db_index=True,
+        max_length=255,
     )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
@@ -218,9 +222,23 @@ class ResourceItem(models.Model):
         '''
         Override the `save` function to support extra functionality of our model.
         '''
+        # The following code will generate a unique slug and if the slug
+        # is not unique in the database, then continue to try generating
+        # a unique slug until it is found.
+        if self.slug == "" or self.slug == None:
+            slug = slugify(self.name)
+            while ResourceItem.objects.filter(slug=slug).exists():
+                slug = slugify(self.name)+"-"+get_referral_code(4)
+            self.slug = slug
 
         '''
         Finally call the parent function which handles saving so we can carry
         out the saving operation by Django in our ORM.
         '''
         super(ResourceItem, self).save(*args, **kwargs)
+
+    def get_type_of_label(self):
+        return str(dict(ResourceItem.TYPE_OF_CHOICES).get(self.type_of))
+
+    def get_category_label(self):
+        return str(dict(ResourceItem.CATEGORY_CHOICES).get(self.category))

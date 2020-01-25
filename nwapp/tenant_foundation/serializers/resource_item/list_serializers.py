@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class ResourceItemListSerializer(serializers.Serializer):
+    slug = serializers.SlugField(read_only=True,)
     category = serializers.IntegerField(read_only=True,)
     type_of = serializers.IntegerField(read_only=True,)
     name = serializers.CharField(
