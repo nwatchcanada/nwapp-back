@@ -23,7 +23,14 @@ logger = logging.getLogger(__name__)
 class ResourceItemCreateSerializer(serializers.Serializer):
     category = serializers.IntegerField(write_only=True,)
     type_of = serializers.IntegerField(write_only=True,)
-    name = serializers.CharField(write_only=True,)
+    name = serializers.CharField(
+        write_only=True,
+        validators=[
+            UniqueValidator(
+                queryset=ResourceItem.objects.all(),
+            )
+        ],
+    )
     external_url = serializers.URLField(write_only=True, allow_null=True, allow_blank=True,)
     embed_code = serializers.CharField(write_only=True, allow_null=True, allow_blank=True,)
     description = serializers.CharField(write_only=True, allow_null=True, allow_blank=True,)
@@ -41,7 +48,7 @@ class ResourceItemCreateSerializer(serializers.Serializer):
         required=False,
     )
 
-    def create_image(self, validated_data):
+    def create_image(self, request, validated_data):
         try:
             # Extract our upload file data
             content = validated_data.get('upload_content')
@@ -69,7 +76,7 @@ class ResourceItemCreateSerializer(serializers.Serializer):
             private_file = None
             return None
 
-    def create_file(self, validated_data):
+    def create_file(self, request, validated_data):
         try:
             # Extract our upload file data
             content = validated_data.get('upload_content')
@@ -130,10 +137,10 @@ class ResourceItemCreateSerializer(serializers.Serializer):
 
         # Attach the file upload.
         if type_of == ResourceItem.TYPE_OF.IMAGE_RESOURCE_TYPE_OF:
-            resource_item.image = self.create_image(validated_data)
+            resource_item.image = self.create_image(request, validated_data)
             resource_item.save()
         elif type_of == ResourceItem.TYPE_OF.FILE_RESOURCE_TYPE_OF:
-            resource_item.file = self.create_file(validated_data)
+            resource_item.file = self.create_file(request, validated_data)
             resource_item.save()
 
         # print(private_file)
