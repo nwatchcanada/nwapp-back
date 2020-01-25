@@ -112,9 +112,9 @@ class ResourceItem(models.Model):
         db_index=True,
         unique=True
     )
-    website_url = models.URLField(
-        _("Website URL"),
-        help_text=_('The external website link of this district.'),
+    external_url = models.URLField(
+        _("External URL"),
+        help_text=_('The external website link of this resource item.'),
         max_length=255,
         null=True,
         blank=True,
