@@ -43,12 +43,12 @@ class ResourceItemRetrieveUpdateDestroySerializer(serializers.Serializer):
     upload_content = serializers.CharField(
         write_only=True,
         allow_null=False,
-        required=False,
+        required=True,
     )
     upload_filename = serializers.CharField(
         write_only=True,
         allow_null=False,
-        required=False,
+        required=True,
     )
 
     # ------ AUDITING ------ #
@@ -74,34 +74,34 @@ class ResourceItemRetrieveUpdateDestroySerializer(serializers.Serializer):
         instance.save()
         logger.info("New district was been updated.")
 
-        # try:
-        #     # Extract our upload file data
-        #     content = validated_data.get('upload_content', None)
-        #     filename = validated_data.get('upload_filename', None)
-        #
-        #     if content and filename:
-        #         if settings.DEBUG:
-        #             filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
-        #         content_file = get_content_file_from_base64_string(content, filename) # REACT-DJANGO UPLOAD | STEP 3 OF 4: Convert to `ContentFile` type.
-        #
-        #         # Create our file.
-        #         private_file = PrivateImageUpload.objects.create(
-        #             is_archived = False,
-        #             user = request.user,
-        #             image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentImage`, Django handles all file uploading.
-        #             created_by = request.user,
-        #             created_from = request.client_ip,
-        #             created_from_is_public = request.client_ip_is_routable,
-        #             last_modified_by = request.user,
-        #             last_modified_from = request.client_ip,
-        #             last_modified_from_is_public = request.client_ip_is_routable,
-        #         )
-        #         logger.info("Private file was been created.")
-        #         instance.logo_image = private_file
-        #         instance.save()
-        # except Exception as e:
-        #     print(e)
-        #     private_file = None
+        try:
+            # Extract our upload file data
+            content = validated_data.get('upload_content', None)
+            filename = validated_data.get('upload_filename', None)
+
+            if content and filename:
+                if settings.DEBUG:
+                    filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
+                content_file = get_content_file_from_base64_string(content, filename) # REACT-DJANGO UPLOAD | STEP 3 OF 4: Convert to `ContentFile` type.
+
+                # Create our file.
+                private_file = PrivateImageUpload.objects.create(
+                    is_archived = False,
+                    user = request.user,
+                    image_file = content_file, # REACT-DJANGO UPLOAD | STEP 4 OF 4: When you attack a `ContentImage`, Django handles all file uploading.
+                    created_by = request.user,
+                    created_from = request.client_ip,
+                    created_from_is_public = request.client_ip_is_routable,
+                    last_modified_by = request.user,
+                    last_modified_from = request.client_ip,
+                    last_modified_from_is_public = request.client_ip_is_routable,
+                )
+                logger.info("Private file was been created.")
+                instance.image = private_file
+                instance.save()
+        except Exception as e:
+            print(e)
+            private_file = None
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
