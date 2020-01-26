@@ -64,6 +64,7 @@ class ResourceItemRetrieveUpdateDestroySerializer(serializers.Serializer):
         instance.description = validated_data.get('description')
         instance.name = validated_data.get('name')
         instance.external_url = validated_data.get('external_url')
+        instance.embed_code = validated_data.get('embed_code')
         instance.created_by = request.user
         instance.created_from = request.client_ip
         instance.created_from_is_public = request.client_ip_is_routable
