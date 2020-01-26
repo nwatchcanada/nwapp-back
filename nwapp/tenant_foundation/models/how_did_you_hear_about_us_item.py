@@ -6,10 +6,12 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
+from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedUser
+from shared_foundation.utils.string import get_referral_code
 
 
 class HowHearAboutUsItemManager(models.Manager):
@@ -91,6 +93,14 @@ class HowHearAboutUsItem(models.Model):
 
     # AUDITING
 
+    slug = models.SlugField(
+        _("Slug"),
+        help_text=_('The unique identifier used externally.'),
+        max_length=255,
+        null=False,
+        unique=True,
+        db_index=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
         SharedUser,
@@ -150,8 +160,14 @@ class HowHearAboutUsItem(models.Model):
         '''
         If we are creating a new model, then we will automatically increment the `id`.
         '''
-        if self.id == 0 or self.id == None:
-            self.id = HowHearAboutUsItem.objects.count() + 1
+        # The following code will generate a unique slug and if the slug
+        # is not unique in the database, then continue to try generating
+        # a unique slug until it is found.
+        if self.slug == "" or self.slug == None:
+            slug = slugify(self.text)
+            while HowHearAboutUsItem.objects.filter(slug=slug).exists():
+                slug = slugify(self.text)+"-"+get_referral_code(16)
+            self.slug = slug
 
         '''
         Finally call the parent function which handles saving so we can carry
