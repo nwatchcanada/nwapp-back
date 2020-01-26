@@ -69,7 +69,7 @@ class ResourceItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPI
         client_ip, is_routable = get_client_ip(self.request)
         tag = get_object_or_404(ResourceItem, slug=slug)
         self.check_object_permissions(request, tag)  # Validate permissions.
-        tag.is_archived = True
+        tag.is_archived = not tag.is_archived
         tag.last_modified_by = request.user
         tag.last_modified_from = client_ip
         tag.last_modified_from_is_public = is_routable
