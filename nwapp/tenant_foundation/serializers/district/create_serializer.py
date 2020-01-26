@@ -74,12 +74,14 @@ class DistrictCreateSerializer(serializers.Serializer):
     # for accepting our file uploads.
     upload_content = serializers.CharField(
         write_only=True,
-        allow_null=False,
+        allow_null=True,
+        allow_blank=True,
         required=False,
     )
     upload_filename = serializers.CharField(
         write_only=True,
-        allow_null=False,
+        allow_null=True,
+        allow_blank=True,
         required=False,
     )
 
