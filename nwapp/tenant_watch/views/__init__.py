@@ -1,11 +1,6 @@
-# from tenant_watch.views.list_create_view import WatchListCreateAPIView
+from tenant_watch.views.list_create_view import WatchListCreateAPIView
 # from tenant_watch.views.retrieve_update_destroy_view import WatchRetrieveUpdateDestroyAPIView
 # from tenant_watch.views.retrieve_view import WatchRetrieveAPIView
-# from tenant_watch.views.address_update_view import WatchAddressUpdateAPIView
-# from tenant_watch.views.contact_update_view import WatchContactUpdateAPIView
-# from tenant_watch.views.metric_update_view import WatchMetricUpdateAPIView
 # from tenant_watch.views.comment_views import WatchCommentListCreateAPIView
 # from tenant_watch.views.file_upload_view import WatchFileUploadListCreateAPIView
-# from tenant_watch.views.avatar_create_or_update_operation_views import WatchAvatarCreateOrUpdateOperationAPIView
 # from tenant_watch.views.archive_operation_views import WatchArchiveOperationAPIView
-# from tenant_watch.views.promote_operation_views import WatchPromoteOperationAPIView

@@ -37,3 +37,6 @@ from tenant_foundation.models.staff_address import StaffAddress
 from tenant_foundation.models.staff_contact import StaffContact
 from tenant_foundation.models.staff_metric import StaffMetric
 from tenant_foundation.models.staff_comment import StaffComment
+
+from tenant_foundation.models.watch import Watch
+from tenant_foundation.models.watch_comment import WatchComment
