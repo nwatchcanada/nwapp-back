@@ -26,7 +26,7 @@ class WatchRetrieveAPIView(generics.RetrieveAPIView):
         """
         Retrieve
         """
-        order = get_object_or_404(Watch, user__slug=slug)
+        order = get_object_or_404(Watch, slug=slug)
         self.check_object_permissions(request, order)  # Validate permissions.
         serializer = WatchRetrieveSerializer(order, many=False, context={'request': request,})
         # queryset = serializer.setup_eager_loading(self, queryset)

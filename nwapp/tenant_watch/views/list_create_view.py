@@ -56,8 +56,8 @@ class WatchListCreateAPIView(generics.ListCreateAPIView):
         """
         post_serializer = WatchCreateSerializer(
             data=request.data,
-            context={'request': request,
-        });
+            context={'request': request,}
+        );
         post_serializer.is_valid(raise_exception=True)
         watch = post_serializer.save()
         retrieve_serializer = WatchRetrieveSerializer(watch, many=False)

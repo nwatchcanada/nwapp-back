@@ -23,7 +23,7 @@ class WatchCommentListSerializer(serializers.Serializer):
     slug = serializers.SlugField(read_only=True,)
     watch = serializers.SlugField(
         read_only=True,
-        source="watch.user.slug",
+        source="watch.slug",
     )
     watch_full_name = serializers.SerializerMethodField()
     text = serializers.CharField(source="comment.text", read_only=True,)
@@ -68,7 +68,7 @@ class WatchCommentListSerializer(serializers.Serializer):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related(
             'watch',
-            'watch__user',
+            'watch',
             'comment'
         )
         return queryset
@@ -87,7 +87,7 @@ class WatchCommentCreateSerializer(serializers.Serializer):
         )
 
     def validate_watch(self, value):
-        does_exist = Watch.objects.filter(user__slug=value).exists()
+        does_exist = Watch.objects.filter(slug=value).exists()
         if does_exist:
             return value
         else:
@@ -105,7 +105,7 @@ class WatchCommentCreateSerializer(serializers.Serializer):
         #-----------------------------
         slug = validated_data.get('watch', None)
         text = validated_data.get('text', None)
-        watch = Watch.objects.get(user__slug=slug)
+        watch = Watch.objects.get(slug=slug)
 
         comment = Comment.objects.create(
             created_by = request.user,

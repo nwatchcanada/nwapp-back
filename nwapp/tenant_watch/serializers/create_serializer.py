@@ -120,7 +120,7 @@ class WatchCreateSerializer(serializers.Serializer):
                 watch.tags.set(tags)
                 logger.info("Attached tag to watch.")
 
-        # Iterate.
+        # Iterate through all the street addresses and process.
         for data in street_membership:
             s = StreetAddressRangeCreateSerializer(
                 data=data,
@@ -144,8 +144,8 @@ class WatchCreateSerializer(serializers.Serializer):
     #         watch.user.slug
     #     )
     #
-        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-            "error": "Terminating for debugging purposes only."
-        })
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
 
         return watch

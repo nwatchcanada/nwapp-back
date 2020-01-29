@@ -42,7 +42,7 @@ class WatchArchiveOperationSerializer(serializers.Serializer):
         # Get validated POST & context data #
         #-----------------------------------#
         slug = validated_data.get('watch')
-        watch = Watch.objects.select_for_update().get(user__slug=slug)
+        watch = Watch.objects.select_for_update().get(slug=slug)
         request = self.context.get('request')
         state = validated_data.get('state')
         deactivation_reason = validated_data.get('deactivation_reason', None)
