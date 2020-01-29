@@ -11,7 +11,7 @@ from rest_framework import exceptions, serializers
 from shared_foundation.models import SharedOrganization
 
 from tenant_foundation.models import (
-    Member, AreaCoordinator, Associate
+    Member, AreaCoordinator, Associate, Watch
 )
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class StaffDashboardSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
         active_members_count = Member.objects.filter(state=Member.MEMBER_STATE.ACTIVE).count()
-        active_watches_count = 0 #TODO: IMPLEMENT
+        active_watches_count = Watch.objects.filter(is_archived=False).count()
         active_associates_count = Associate.objects.filter(user__member__state=Member.MEMBER_STATE.ACTIVE).count()
         active_tasks_count = 0 #TODO: IMPLEMENT
         return {

@@ -28,6 +28,10 @@ class WatchListSerializer(serializers.Serializer):
         required=True,
         allow_blank=False,
     )
+    district_type_of = serializers.IntegerField(
+        required=True,
+        source="district.type_of"
+    )
     district_name = serializers.CharField(
         required=True,
         allow_blank=False,
