@@ -23,113 +23,40 @@ from tenant_watch.tasks import process_watch_with_slug_func
 
 logger = logging.getLogger(__name__)
 
+# associate: localStorage.getItem('nwapp-watch-associate'),
+# district: localStorage.getItem('nwapp-watch-district'),
+# districtOption: localStorageGetObjectItem('nwapp-watch-districtOption'),
+# streetMembership: localStorageGetArrayItem('nwapp-watch-streetMembership'),
+
 
 class WatchCreateSerializer(serializers.Serializer):
-    # ------ MEMBER ------ #
 
     type_of = serializers.IntegerField()
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all(),
+        allow_null=True,
+        required=False,
+    )
+    name = serializers.CharField()
+    description = serializers.CharField()
 
-    # # ------ MEMBER CONTACT ------ #
-    #
-    # is_ok_to_email = serializers.BooleanField()
-    # is_ok_to_text = serializers.BooleanField()
-    # organization_name = serializers.CharField(
-    #     required=False,
-    #     allow_blank=True,
-    #     allow_null=True,
-    #     validators=[
-    #         UniqueValidator(queryset=WatchContact.objects.all()),
-    #     ],
-    # )
-    # organization_type_of = serializers.ChoiceField(
-    #     required=False,
-    #     allow_null=True,
-    #     choices=WatchContact.MEMBER_ORGANIZATION_TYPE_OF_CHOICES,
-    # )
-    # first_name = serializers.CharField()
-    # last_name = serializers.CharField()
-    # email = serializers.EmailField(
-    #     validators=[
-    #         UniqueValidator(queryset=SharedUser.objects.all()),
-    #     ],
-    # )
-    # primary_phone = E164PhoneNumberField()
-    # secondary_phone = E164PhoneNumberField(allow_null=True, required=False)
-    #
-    # # ------ MEMBER ADDRESS ------ #
-    #
-    # country = serializers.CharField()
-    # region = serializers.CharField()
-    # locality = serializers.CharField()
-    # street_number = serializers.CharField()
-    # street_name =serializers.CharField()
-    # apartment_unit = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    # street_type = serializers.ChoiceField(choices=WatchAddress.STREET_TYPE_CHOICES,)
-    # street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    # street_direction = serializers.ChoiceField(choices=WatchAddress.STREET_DIRECTION_CHOICES,)
-    # postal_code = serializers.CharField()
-    #
-    # # ------ MEMBER WATCH ------ #
-    #
-    # #TODO: IMPLEMENT FIELDS.
-    #
-    # # ------ MEMBER METRICS ------ #
-    #
-    # tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all(), allow_null=True, required=False,)
-    # how_did_you_hear = serializers.PrimaryKeyRelatedField(
-    #     many=False,
-    #     required=True,
-    #     allow_null=False,
-    #     queryset=HowHearAboutUsItem.objects.all()
-    # )
-    # how_did_you_hear_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    # expectation = serializers.PrimaryKeyRelatedField(
-    #     many=False,
-    #     required=True,
-    #     allow_null=False,
-    #     queryset=ExpectationItem.objects.all()
-    # )
-    # expectation_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    # meaning = serializers.PrimaryKeyRelatedField(
-    #     many=False,
-    #     required=True,
-    #     allow_null=False,
-    #     queryset=MeaningItem.objects.all()
-    # )
-    # meaning_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
-    # gender = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     allow_null=False,
-    # )
-    # willing_to_volunteer = serializers.IntegerField()
-    # another_household_watch_registered = serializers.BooleanField()
-    # year_of_birth = serializers.IntegerField()
-    # total_household_count = serializers.IntegerField(required=False,)
-    # under_18_years_household_count = serializers.IntegerField(required=False,)
-    # organization_employee_count = serializers.IntegerField(required=False,)
-    # organization_founding_year = serializers.IntegerField(required=False,)
-    # organization_type_of = serializers.IntegerField(required=False,)
-    #
-    # def validate_organization_name(self, value):
-    #     """
-    #     Custom validation to handle case of user selecting an organization type
-    #     of watch but then forgetting to fill in the `organization_name` field.
-    #     """
-    #     request = self.context.get('request')
-    #     type_of = request.data.get('type_of')
-    #     if type_of == Watch.MEMBER_TYPE_OF.BUSINESS:
-    #         if value == None or value == "":
-    #             raise serializers.ValidationError(_('Please fill this field in.'))
-    #     return value
-    #
-    # def create(self, validated_data):
-    #     """
-    #     Override the `create` function to add extra functinality.
-    #     """
-    #     request = self.context.get('request')
-    #
-    #     # ------ MEMBER ------ #
+    def create(self, validated_data):
+        """
+        Override the `create` function to add extra functinality.
+        """
+        request = self.context.get('request')
+        name = validated_data.get('name')
+        description = validated_data.get('description')
+
+        # # Attached our tags.
+        # tags = validated_data.get('tags', None)
+        # if tags is not None:
+        #     if len(tags) > 0:
+        #         member_metric.tags.set(tags)
+        #         logger.info("Attached tag to member metric.")
+
+        # ------ MEMBER ------ #
     #
     #     type_of = validated_data.get('type_of')
     #     first_name = validated_data.get('first_name')

@@ -49,10 +49,10 @@ class Watch(models.Model):
     MODEL FIELDS
     '''
 
-    text = models.CharField(
-        _("Text"),
-        max_length=31,
-        help_text=_('The text content of this watch.'),
+    name = models.CharField(
+        _("Name"),
+        max_length=63,
+        help_text=_('The name of this watch.'),
         db_index=True,
         unique=True
     )
@@ -69,6 +69,18 @@ class Watch(models.Model):
         default=False,
         blank=True,
         db_index=True
+    )
+    district = models.ForeignKey(
+        "District",
+        help_text=_('The district whom this watch belongs to.'),
+        related_name="watches",
+        on_delete=models.CASCADE,
+    )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this watch.'),
+        blank=True,
+        related_name="watches"
     )
 
     # AUDITING FIELDS
@@ -129,7 +141,7 @@ class Watch(models.Model):
     """
 
     def __str__(self):
-        return str(self.text)
+        return str(self.name)
 
     @transaction.atomic
     def save(self, *args, **kwargs):

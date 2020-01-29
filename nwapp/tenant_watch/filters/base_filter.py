@@ -141,7 +141,7 @@ class WatchFilter(django_filters.FilterSet):
     class Meta:
         model = Watch
         fields = [
-            'text',
+            'name',
             # 'search',
             # 'first_name',
             # 'last_name',
