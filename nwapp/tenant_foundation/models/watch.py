@@ -40,6 +40,25 @@ class Watch(models.Model):
         permissions = ()
 
     '''
+    CONSTANTS
+    '''
+
+    class TYPE_OF:
+        RESIDENTIAL = 1
+        BUSINESS = 2
+        COMMUNITY_CARES = 3
+
+    '''
+    CHOICES
+    '''
+
+    TYPE_OF_CHOICES = (
+        (TYPE_OF.BUSINESS, _('Business')),
+        (TYPE_OF.RESIDENTIAL, _('Residential')),
+        (TYPE_OF.COMMUNITY_CARES, _('Community Cares')),
+    )
+
+    '''
     OBJECT MANAGERS
     '''
 
@@ -49,6 +68,12 @@ class Watch(models.Model):
     MODEL FIELDS
     '''
 
+    type_of = models.PositiveSmallIntegerField(
+        _("Type of"),
+        help_text=_('The type of watch this is.'),
+        choices=TYPE_OF_CHOICES,
+        db_index=True,
+    )
     name = models.CharField(
         _("Name"),
         max_length=63,
@@ -63,13 +88,6 @@ class Watch(models.Model):
         null=True,
         default='',
     )
-    is_archived = models.BooleanField(
-        _("Is Archived"),
-        help_text=_('Indicates whether watch was archived.'),
-        default=False,
-        blank=True,
-        db_index=True
-    )
     district = models.ForeignKey(
         "District",
         help_text=_('The district whom this watch belongs to.'),
@@ -81,6 +99,13 @@ class Watch(models.Model):
         help_text=_('The tags associated with this watch.'),
         blank=True,
         related_name="watches"
+    )
+    is_archived = models.BooleanField(
+        _("Is Archived"),
+        help_text=_('Indicates whether watch was archived.'),
+        default=False,
+        blank=True,
+        db_index=True
     )
 
     # AUDITING FIELDS
@@ -156,9 +181,9 @@ class Watch(models.Model):
         # is not unique in the database, then continue to try generating
         # a unique slug until it is found.
         if self.slug == "" or self.slug == None:
-            slug = slugify(self.text)
+            slug = slugify(self.name)
             while Watch.objects.filter(slug=slug).exists():
-                slug = slugify(self.text)+"-"+get_referral_code(16)
+                slug = slugify(self.name)+"-"+get_referral_code(16)
             self.slug = slug
 
         '''

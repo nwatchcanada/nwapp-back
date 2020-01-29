@@ -40,3 +40,5 @@ from tenant_foundation.models.staff_comment import StaffComment
 
 from tenant_foundation.models.watch import Watch
 from tenant_foundation.models.watch_comment import WatchComment
+
+from tenant_foundation.models.street_address_range import StreetAddressRange
