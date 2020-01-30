@@ -32,6 +32,7 @@ class StreetAddressRangeSerializer(serializers.Serializer):
     street_type_other = serializers.CharField()
     street_type_label = serializers.CharField(source="get_street_type_label",)
     street_direction = serializers.IntegerField()
+    street_direction_label = serializers.CharField(source="get_street_direction_label",)
     is_archived = serializers.BooleanField()
 
 

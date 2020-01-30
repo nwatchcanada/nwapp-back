@@ -238,3 +238,6 @@ class StreetAddressRange(models.Model):
 
     def get_street_type_label(self):
         return str(dict(StreetAddressRange.STREET_TYPE_CHOICES).get(self.street_type))
+
+    def get_street_direction_label(self):
+        return str(dict(StreetAddressRange.STREET_DIRECTION_CHOICES).get(self.street_direction))
