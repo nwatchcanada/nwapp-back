@@ -214,17 +214,27 @@ class StreetAddressRange(models.Model):
         '''
         If we are creating a new model, then we will automatically increment the `id`.
         '''
-        # # The following code will generate a unique slug and if the slug
-        # # is not unique in the database, then continue to try generating
-        # # a unique slug until it is found.
-        # if self.slug == "" or self.slug == None:
-        #     slug = slugify(self.text)
-        #     while StreetAddressRange.objects.filter(slug=slug).exists():
-        #         slug = slugify(self.text)+"-"+get_referral_code(16)
-        #     self.slug = slug
+        # The following code will generate a unique slug and if the slug
+        # is not unique in the database, then continue to try generating
+        # a unique slug until it is found.
+        if self.slug == "" or self.slug == None:
+            text = str(self.street_number_start)+"-to-"
+            text += str(self.street_number_end)+"-"
+            text += str(self.street_name)+"-"
+            text += str(self.street_type)+"-"
+            if self.street_type_other:
+                text += str(self.street_type_other)+"-"
+            text += str(self.street_direction)
+            slug = slugify(text)
+            while StreetAddressRange.objects.filter(slug=slug).exists():
+                slug = slugify(text)+"-"+get_referral_code(16)
+            self.slug = slug
 
         '''
         Finally call the parent function which handles saving so we can carry
         out the saving operation by Django in our ORM.
         '''
         super(StreetAddressRange, self).save(*args, **kwargs)
+
+    def get_street_type_label(self):
+        return str(dict(StreetAddressRange.STREET_TYPE_CHOICES).get(self.street_type))
