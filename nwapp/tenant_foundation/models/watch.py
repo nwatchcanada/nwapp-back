@@ -191,3 +191,6 @@ class Watch(models.Model):
         out the saving operation by Django in our ORM.
         '''
         super(Watch, self).save(*args, **kwargs)
+
+    def get_type_of_label(self):
+        return str(dict(Watch.TYPE_OF_CHOICES).get(self.type_of))

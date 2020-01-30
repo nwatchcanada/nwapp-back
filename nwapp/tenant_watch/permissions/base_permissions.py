@@ -31,17 +31,18 @@ class CanRetrieveUpdateDestroyWatchPermission(permissions.BasePermission):
         # --- RETRIEVE ---
         if "GET" in request.method:
             # OWNERSHIP BASED
-            if request.user == obj.user:
-                return True
+            # if request.user == obj.user:
+            #     return True
+            return True
 
             # PERMISSION BASED
             return request.user.is_executive or request.user.is_management or request.user.is_frontline
 
         # ---UPDATE ---
         if "PUT" in request.method:
-            # OWNERSHIP BASED
-            if request.user == obj.user:
-                return True
+            # # OWNERSHIP BASED
+            # if request.user == obj.user:
+            #     return True
 
             # PERMISSION BASED
             return request.user.is_executive or request.user.is_management or request.user.is_frontline

@@ -1,5 +1,5 @@
 from tenant_watch.views.list_create_view import WatchListCreateAPIView
-# from tenant_watch.views.retrieve_update_destroy_view import WatchRetrieveUpdateDestroyAPIView
+from tenant_watch.views.retrieve_update_destroy_view import WatchRetrieveUpdateDestroyAPIView
 # from tenant_watch.views.retrieve_view import WatchRetrieveAPIView
 # from tenant_watch.views.comment_views import WatchCommentListCreateAPIView
 # from tenant_watch.views.file_upload_view import WatchFileUploadListCreateAPIView
