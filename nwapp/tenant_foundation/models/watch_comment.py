@@ -101,9 +101,9 @@ class WatchComment(models.Model):
         # The following code will generate a unique slug and if the slug
         # is not unique in the database, then continue to try generating
         # a unique slug until it is found.
-        slug = self.watch.user.slug
+        slug = self.watch.slug
         while WatchComment.objects.filter(slug=slug).exists():
-            slug = self.watch.user.slug+"-"+get_referral_code(4)
+            slug = self.watch.slug+"-"+get_referral_code(4)
         self.slug = slug
 
         '''

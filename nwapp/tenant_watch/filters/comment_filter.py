@@ -21,7 +21,7 @@ class WatchCommentFilter(django_filters.FilterSet):
     )
 
     def watch_filtering(self, queryset, name, value):
-        return queryset.filter(watch__user__slug=value)
+        return queryset.filter(watch__slug=value)
         # return queryset.filter(
         #     Q(contact__last_name__icontains=value) |
         #     Q(contact__last_name__istartswith=value) |
