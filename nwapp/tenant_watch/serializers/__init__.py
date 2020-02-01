@@ -1,4 +1,5 @@
 from tenant_watch.serializers.street_membership_serializers import (
+    StreetAddressRangeRetrieveSerializer,
     StreetAddressRangeCreateSerializer,
     StreetAddressRangeUpdateSerializer
 )

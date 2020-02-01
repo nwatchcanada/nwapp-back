@@ -212,7 +212,16 @@ class StreetAddressRange(models.Model):
     """
 
     def __str__(self):
-        return str(self.slug)
+        """
+        Override the default string conversion function to output a custom
+        string output by the object.
+        """
+        actual_street_type = self.get_street_type_label()
+        street_address = self.street_name + " " + actual_street_type
+        if self.street_direction:
+            street_address += " " + str(self.street_direction)
+        street_address += " from " + str(self.street_number_start) + " to " + str(self.street_number_end)
+        return street_address
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -246,7 +255,7 @@ class StreetAddressRange(models.Model):
         super(StreetAddressRange, self).save(*args, **kwargs)
 
     def get_street_type_label(self):
-        return str(dict(StreetAddressRange.STREET_TYPE_CHOICES).get(self.street_type))
+        return self.street_type_other if self.street_type == StreetAddressRange.STREET_TYPE.OTHER else str(dict(StreetAddressRange.STREET_TYPE_CHOICES).get(self.street_type))
 
     def get_street_direction_label(self):
         return str(dict(StreetAddressRange.STREET_DIRECTION_CHOICES).get(self.street_direction))

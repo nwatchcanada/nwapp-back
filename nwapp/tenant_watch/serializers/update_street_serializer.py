@@ -65,7 +65,7 @@ class WatchStreetMembershipUpdateSerializer(serializers.Serializer):
             missing_object.last_modified_from=request.client_ip
             missing_object.last_modified_from_is_public=request.client_ip_is_routable
             missing_object.save()
-            print("ARCHIVED")
+            # print("ARCHIVED")
             logger.info("Archived watch street membership.")
 
         # DEVELOPERS NOTES:

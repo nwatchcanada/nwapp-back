@@ -24,7 +24,22 @@ from tenant_watch.tasks import process_watch_with_slug_func
 logger = logging.getLogger(__name__)
 
 
+class StreetAddressRangeRetrieveSerializer(serializers.Serializer):
+    street_address = serializers.CharField(source="__str__", read_only=True,)
+    slug = serializers.SlugField()
+    street_number_start = serializers.IntegerField()
+    street_number_end = serializers.IntegerField()
+    street_name = serializers.CharField()
+    street_type = serializers.IntegerField()
+    street_type_other = serializers.CharField()
+    street_type_label = serializers.CharField(source="get_street_type_label",)
+    street_direction = serializers.IntegerField()
+    street_direction_label = serializers.CharField(source="get_street_direction_label",)
+    is_archived = serializers.BooleanField()
+
+
 class StreetAddressRangeCreateSerializer(serializers.Serializer):
+    street_address = serializers.CharField(source="__str__", read_only=True,)
     street_number_start = serializers.IntegerField()
     street_number_end = serializers.IntegerField()
     street_name = serializers.CharField()
@@ -78,6 +93,7 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
 
 
 class StreetAddressRangeUpdateSerializer(serializers.Serializer):
+    street_address = serializers.CharField(source="__str__", read_only=True,)
     street_number_start = serializers.IntegerField(write_only=True,)
     street_number_end = serializers.IntegerField(write_only=True,)
     street_name = serializers.CharField(write_only=True,)

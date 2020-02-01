@@ -18,22 +18,10 @@ from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import Watch, Tag, StreetAddressRange
 from tenant_foundation.serializers import TagListCreateSerializer
+from tenant_watch.serializers.street_membership_serializers import StreetAddressRangeRetrieveSerializer
 
 
 logger = logging.getLogger(__name__)
-
-
-class StreetAddressRangeSerializer(serializers.Serializer):
-    slug = serializers.SlugField()
-    street_number_start = serializers.IntegerField()
-    street_number_end = serializers.IntegerField()
-    street_name = serializers.CharField()
-    street_type = serializers.IntegerField()
-    street_type_other = serializers.CharField()
-    street_type_label = serializers.CharField(source="get_street_type_label",)
-    street_direction = serializers.IntegerField()
-    street_direction_label = serializers.CharField(source="get_street_direction_label",)
-    is_archived = serializers.BooleanField()
 
 
 class WatchRetrieveSerializer(serializers.Serializer):
@@ -47,7 +35,7 @@ class WatchRetrieveSerializer(serializers.Serializer):
     district_name = serializers.CharField(source="district.name")
     tags = TagListCreateSerializer(many=True,)
     is_archived = serializers.BooleanField()
-    # street_membership = StreetAddressRangeSerializer(many=True, source="street_address_ranges",)
+    # street_membership = StreetAddressRangeRetrieveSerializer(many=True, source="street_address_ranges",)
     street_membership = serializers.SerializerMethodField()
 
     def get_street_membership(self, watch_obj):
@@ -57,7 +45,7 @@ class WatchRetrieveSerializer(serializers.Serializer):
         """
         try:
             active_street_address_ranges = watch_obj.street_address_ranges.filter(is_archived=False)
-            s = StreetAddressRangeSerializer(
+            s = StreetAddressRangeRetrieveSerializer(
                 active_street_address_ranges,
                 many=True,
             )
