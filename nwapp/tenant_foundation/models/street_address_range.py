@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
+from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -23,6 +24,15 @@ class StreetAddressRangeManager(models.Manager):
         items = StreetAddressRange.objects.all()
         for item in items.all():
             item.delete()
+
+    def filterMissing(self, search_query, target_query):
+        """
+        Purpose of function is to find all the objects which are missing in the
+        `target_query` that the exist in the `search_query`.
+        """
+        target_query_pks = target_query.values_list('pk', flat=True)
+        return StreetAddressRange.objects.filter(~Q(search_query__in=target_query_pks))
+
 
 
 class StreetAddressRange(models.Model):
@@ -240,3 +250,30 @@ class StreetAddressRange(models.Model):
 
     def get_street_direction_label(self):
         return str(dict(StreetAddressRange.STREET_DIRECTION_CHOICES).get(self.street_direction))
+
+    @staticmethod
+    def slugs_from_data(data):
+        """
+        Purpose of this function is to iterate through the dictionary object
+        (which generally came from an API endpoint) and extract all the primary
+        keys if there is any.
+        """
+        slugs_arr = []
+        for datum in data:
+            slug = datum.get("slug", None)
+            if slug:
+                slugs_arr.append(slug)
+        return slugs_arr
+
+    @staticmethod
+    def missing_slugs(search_slugs, target_slugs):
+        """
+        Utility function used to return array of slug strings for the
+        objects which are missing from the `target_slugs` array of slug strings
+        that did not exist in the `search_slugs` array of slug strings.
+        """
+        missing_slugs_arr = []
+        for target_slug in target_slugs:
+            if str(target_slug) not in search_slugs:
+                missing_slugs_arr.append(target_slug)
+        return missing_slugs_arr

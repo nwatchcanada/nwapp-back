@@ -47,4 +47,21 @@ class WatchRetrieveSerializer(serializers.Serializer):
     district_name = serializers.CharField(source="district.name")
     tags = TagListCreateSerializer(many=True,)
     is_archived = serializers.BooleanField()
-    street_membership = StreetAddressRangeSerializer(many=True, source="street_address_ranges",)
+    # street_membership = StreetAddressRangeSerializer(many=True, source="street_address_ranges",)
+    street_membership = serializers.SerializerMethodField()
+
+    def get_street_membership(self, watch_obj):
+        """
+        Override the `street_membership` field to include filtering for
+        non-archived records.
+        """
+        try:
+            active_street_address_ranges = watch_obj.street_address_ranges.filter(is_archived=False)
+            s = StreetAddressRangeSerializer(
+                active_street_address_ranges,
+                many=True,
+            )
+            return s.data
+        except Exception as e:
+            print(e)
+            return []

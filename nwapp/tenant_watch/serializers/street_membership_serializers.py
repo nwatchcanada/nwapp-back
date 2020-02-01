@@ -116,4 +116,4 @@ class StreetAddressRangeUpdateSerializer(serializers.Serializer):
         instance.last_modified_from=request.client_ip
         instance.last_modified_from_is_public=request.client_ip_is_routable
         instance.save()
-        return obj
+        return instance

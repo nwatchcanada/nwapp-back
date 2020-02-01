@@ -41,13 +41,43 @@ class WatchStreetMembershipUpdateSerializer(serializers.Serializer):
         # # For debugging purposes only.
         # print(street_membership)
 
+        # DEVELOPERS NOTE:
+        # (1) ARCHIVED ANY RECORDS WHICH NEED TO BE DELETED.
+        #
+        # The following code will find all the objects which have not been
+        # included by the user from the API, thus indicating we are to 'delete'
+        # those records.
+        target_slugs = instance.street_address_ranges.filter(
+            is_archived=False
+        ).values_list('slug', flat=True)
+        search_slugs = StreetAddressRange.slugs_from_data(street_membership)
+        # print("SEARCH SLUGS", search_slugs)
+        # print("TARGET SLUGS", target_slugs)
+        missing_slugs = StreetAddressRange.missing_slugs(search_slugs, target_slugs)
+        # print("MISSING SLUGS", missing_slugs)
+        missing_objects = StreetAddressRange.objects.filter(slug__in=missing_slugs)
+
+        # Iterate through all the missing objects and set their status to be
+        # archived so we cannot use them again.
+        for missing_object in missing_objects.all():
+            missing_object.is_archived = True
+            missing_object.last_modified_by=request.user
+            missing_object.last_modified_from=request.client_ip
+            missing_object.last_modified_from_is_public=request.client_ip_is_routable
+            missing_object.save()
+            print("ARCHIVED")
+            logger.info("Archived watch street membership.")
+
+        # DEVELOPERS NOTES:
+        # (1) WE WILL NOW EITHER CREATE OR UPDATE OUR STREET RANGES.
+        #
         # Iterate through all the street addresses and process.
         for data in street_membership:
             try:
                 street_membership_slug = data['slug']
                 obj = StreetAddressRange.objects.get(slug=street_membership_slug)
                 s = StreetAddressRangeUpdateSerializer(
-                    obj=obj,
+                    obj,
                     data=data,
                     context={
                         'request': request,
@@ -57,8 +87,10 @@ class WatchStreetMembershipUpdateSerializer(serializers.Serializer):
                 );
                 s.is_valid(raise_exception=True)
                 s.save()
+                # print("UPDATED STREET RANGE")
+                logger.info("Updated watch street membership.")
             except Exception as e:
-                # print(e)
+                # print("\n\n\n", e, "\n\n\n")
                 s = StreetAddressRangeCreateSerializer(
                     data=data,
                     context={
@@ -69,17 +101,11 @@ class WatchStreetMembershipUpdateSerializer(serializers.Serializer):
                 );
                 s.is_valid(raise_exception=True)
                 s.save()
-
-        #TODO: IMPLEMENT DELETING ITEMS NOT INCLUDED IN THE ARRAY.
-        #TODO: MAKE SURE NOT TO DELETE BUT TO SET THE "IS_ARCHIVED" TO BE TRUE INSTEAD OF DELETE.
-
-        # # For debugging purposes only.
-        # for object in StreetAddressRange.objects.all():
-        #     object.delete()
+                # print("CREATED STREET RANGE")
+                logger.info("Created watch street membership.")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
         # })
 
-        logger.info("Updated watch street membership.")
         return instance
