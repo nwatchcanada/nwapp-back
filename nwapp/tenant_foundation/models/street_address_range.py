@@ -110,7 +110,6 @@ class StreetAddressRange(models.Model):
         max_length=63,
         help_text=_('The name of the street.'),
         db_index=True,
-        unique=True
     )
     street_type = models.PositiveSmallIntegerField(
         _("Street Type"),

@@ -1,3 +1,7 @@
+from tenant_watch.serializers.street_membership_serializers import (
+    StreetAddressRangeCreateSerializer,
+    StreetAddressRangeUpdateSerializer
+)
 from tenant_watch.serializers.create_serializer import WatchCreateSerializer
 from tenant_watch.serializers.list_serializer import WatchListSerializer
 from tenant_watch.serializers.retrieve_serializer import WatchRetrieveSerializer

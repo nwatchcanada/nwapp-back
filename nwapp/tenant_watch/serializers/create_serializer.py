@@ -19,52 +19,10 @@ from shared_foundation.models import SharedUser, SharedGroup
 # from tenant_foundation.constants import *
 from tenant_foundation.models import Watch, Tag, District, StreetAddressRange
 from tenant_watch.tasks import process_watch_with_slug_func
+from tenant_watch.serializers.street_membership_serializers import StreetAddressRangeCreateSerializer
 
 
 logger = logging.getLogger(__name__)
-
-
-class StreetAddressRangeCreateSerializer(serializers.Serializer):
-    street_number_start = serializers.IntegerField()
-    street_number_finish = serializers.IntegerField()
-    street_name = serializers.CharField()
-    street_type = serializers.IntegerField()
-    street_type_other = serializers.CharField(
-        required=False,
-        allow_null=True,
-        allow_blank=True,
-    )
-    street_direction = serializers.IntegerField()
-
-    def create(self, validated_data):
-        """
-        Override the `create` function to add extra functinality.
-        """
-        request = self.context.get('request')
-        watch = self.context.get('watch')
-        street_number_start = validated_data.get('street_number_start')
-        street_number_finish = validated_data.get('street_number_finish')
-        street_name = validated_data.get('street_name')
-        street_type = validated_data.get('street_type')
-        street_type_other = validated_data.get('street_type_other')
-        street_direction = validated_data.get('street_direction')
-        obj = StreetAddressRange.objects.create(
-            watch = watch,
-            street_number_start = street_number_start,
-            street_number_end = street_number_finish,
-            street_name = street_name,
-            street_type = street_type,
-            street_type_other = street_type_other,
-            street_direction = street_direction,
-            is_archived = False,
-            created_by=request.user,
-            created_from=request.client_ip,
-            created_from_is_public=request.client_ip_is_routable,
-            last_modified_by=request.user,
-            last_modified_from=request.client_ip,
-            last_modified_from_is_public=request.client_ip_is_routable,
-        )
-        return obj
 
 
 class WatchCreateSerializer(serializers.Serializer):
