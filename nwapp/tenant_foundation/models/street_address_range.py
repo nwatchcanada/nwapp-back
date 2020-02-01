@@ -202,7 +202,7 @@ class StreetAddressRange(models.Model):
     """
 
     def __str__(self):
-        return str(self.text)
+        return str(self.slug)
 
     @transaction.atomic
     def save(self, *args, **kwargs):

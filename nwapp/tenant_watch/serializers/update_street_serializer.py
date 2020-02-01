@@ -71,6 +71,11 @@ class WatchStreetMembershipUpdateSerializer(serializers.Serializer):
                 s.save()
 
         #TODO: IMPLEMENT DELETING ITEMS NOT INCLUDED IN THE ARRAY.
+        #TODO: MAKE SURE NOT TO DELETE BUT TO SET THE "IS_ARCHIVED" TO BE TRUE INSTEAD OF DELETE.
+
+        # # For debugging purposes only.
+        # for object in StreetAddressRange.objects.all():
+        #     object.delete()
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."

@@ -39,6 +39,11 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
         write_only=True,
         allow_null=True,
     )
+    is_archived = serializers.BooleanField(
+        required=False,
+        write_only=True,
+        allow_null=True,
+    )
 
     def create(self, validated_data):
         """
@@ -50,8 +55,9 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
         street_number_end = validated_data.get('street_number_end')
         street_name = validated_data.get('street_name')
         street_type = validated_data.get('street_type')
-        street_type_other = validated_data.get('street_type_other')
-        street_direction = validated_data.get('street_direction')
+        street_type_other = validated_data.get('street_type_other', "")
+        street_direction = validated_data.get('street_direction', 0)
+        is_archived = validated_data.get('is_archived', False)
         obj = StreetAddressRange.objects.create(
             watch = watch,
             street_number_start = street_number_start,
@@ -60,7 +66,7 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
             street_type = street_type,
             street_type_other = street_type_other,
             street_direction = street_direction,
-            is_archived = False,
+            is_archived = is_archived,
             created_by=request.user,
             created_from=request.client_ip,
             created_from_is_public=request.client_ip_is_routable,
@@ -87,6 +93,11 @@ class StreetAddressRangeUpdateSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
     )
+    is_archived = serializers.BooleanField(
+        required=False,
+        write_only=True,
+        allow_null=True,
+    )
 
     def update(self, instance, validated_data):
         """
@@ -94,26 +105,15 @@ class StreetAddressRangeUpdateSerializer(serializers.Serializer):
         """
         request = self.context.get('request')
         watch = self.context.get('watch')
-        street_number_start = validated_data.get('street_number_start')
-        street_number_end = validated_data.get('street_number_end')
-        street_name = validated_data.get('street_name')
-        street_type = validated_data.get('street_type')
-        street_type_other = validated_data.get('street_type_other')
-        street_direction = validated_data.get('street_direction')
-        obj = StreetAddressRange.objects.create(
-            watch = watch,
-            street_number_start = street_number_start,
-            street_number_end = street_number_end,
-            street_name = street_name,
-            street_type = street_type,
-            street_type_other = street_type_other,
-            street_direction = street_direction,
-            is_archived = False,
-            created_by=request.user,
-            created_from=request.client_ip,
-            created_from_is_public=request.client_ip_is_routable,
-            last_modified_by=request.user,
-            last_modified_from=request.client_ip,
-            last_modified_from_is_public=request.client_ip_is_routable,
-        )
+        instance.street_number_start = validated_data.get('street_number_start')
+        instance.street_number_end = validated_data.get('street_number_end')
+        instance.street_name = validated_data.get('street_name')
+        instance.street_type = validated_data.get('street_type')
+        instance.street_type_other = validated_data.get('street_type_other', "")
+        instance.street_direction = validated_data.get('street_direction', 0)
+        instance.is_archived = validated_data.get('is_archived', False,)
+        instance.last_modified_by=request.user
+        instance.last_modified_from=request.client_ip
+        instance.last_modified_from_is_public=request.client_ip_is_routable
+        instance.save()
         return obj
