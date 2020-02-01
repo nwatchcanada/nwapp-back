@@ -86,6 +86,22 @@ class PrivateImageUpload(models.Model):
         related_name="private_image_uploads",
         on_delete=models.CASCADE,
     )
+    watch = models.ForeignKey(
+        "Watch",
+        help_text=_('The watch whom this image belongs to.'),
+        related_name="private_image_uploads",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    district = models.ForeignKey(
+        "District",
+        help_text=_('The district whom this image belongs to.'),
+        related_name="private_image_uploads",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     image_file = ImageField(
         upload_to = 'uploads/%Y/%m/%d/',
         help_text=_('The upload image.'),

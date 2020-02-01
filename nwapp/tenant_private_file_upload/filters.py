@@ -58,6 +58,14 @@ class PrivateFileUploadFilter(django_filters.FilterSet):
 
     staff = django_filters.CharFilter(method='staff_filtering')
 
+    def watch_filtering(self, queryset, name, value):
+        return queryset.filter(
+            Q(watch__slug=value)
+        )
+
+    watch = django_filters.CharFilter(method='watch_filtering')
+
+
     class Meta:
         model = PrivateFileUpload
         fields = [
@@ -66,6 +74,7 @@ class PrivateFileUploadFilter(django_filters.FilterSet):
             'area_coordinator',
             'associate',
             'staff',
+            'watch',
             'title',
             'description',
             'tags',

@@ -86,6 +86,22 @@ class PrivateFileUpload(models.Model):
         related_name="private_file_uploads",
         on_delete=models.CASCADE,
     )
+    watch = models.ForeignKey(
+        "Watch",
+        help_text=_('The watch whom this file belongs to.'),
+        related_name="private_file_uploads",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    district = models.ForeignKey(
+        "District",
+        help_text=_('The district whom this file belongs to.'),
+        related_name="private_file_uploads",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     data_file = models.FileField(
         upload_to = 'uploads/%Y/%m/%d/',
         help_text=_('The upload binary file.'),
