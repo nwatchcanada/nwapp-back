@@ -300,4 +300,6 @@ class Member(models.Model):
             text += " " + member.address.get_searchable_content()
         if member.metric:
             text += " " + member.metric.get_searchable_content()
+        if member.watch:
+            text += " " + member.watch.get_searchable_content()
         return text

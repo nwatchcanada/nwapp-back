@@ -51,5 +51,12 @@ class MemberWatchUpdateSerializer(serializers.Serializer):
         instance.last_modified_from_is_public=request.client_ip_is_routable
         instance.save()
 
+        # Run the following which will save our searchable content.
+        instance.indexed_text = Member.get_searchable_content(instance)
+        instance.last_modified_by = request.user
+        instance.last_modified_from = request.client_ip
+        instance.last_modified_from_is_public = request.client_ip_is_routable
+        instance.save()
+
         # Return our modified instances.
         return instance

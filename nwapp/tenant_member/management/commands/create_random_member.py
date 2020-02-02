@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
 from tenant_foundation.model_resources import seed_members
-from tenant_member.tasks import process_member_with_slug_func
 
 
 class Command(BaseCommand):

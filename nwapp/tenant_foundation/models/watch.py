@@ -249,3 +249,6 @@ class Watch(models.Model):
 
     def get_type_of_label(self):
         return str(dict(Watch.TYPE_OF_CHOICES).get(self.type_of))
+
+    def get_searchable_content(self):
+        return self.indexed_text

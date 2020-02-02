@@ -18,10 +18,9 @@ from shared_foundation.drf.fields import E164PhoneNumberField
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    Associate, AssociateContact, AssociateAddress, AssociateMetric,
+    Member, Associate, AssociateContact, AssociateAddress, AssociateMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
-from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -59,15 +58,9 @@ class AssociateAddressUpdateSerializer(serializers.Serializer):
         instance.save()
         logger.info("Updated associate address.")
 
-        '''
-        Run in the background the code which will `process` the newly created
-        associate object.
-        '''
-        django_rq.enqueue(
-            process_member_with_slug_func,
-            request.tenant.schema_name,
-            instance.member.user.slug
-        )
+        # Run the following which will save our searchable content.
+        instance.member.indexed_text = Member.get_searchable_content(instance.member)
+        instance.member.save()
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
