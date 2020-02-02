@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
+from tenant_foundation.models import StreetAddressRange
+
 
 class WatchFilter(django_filters.FilterSet):
     o = django_filters.OrderingFilter(
@@ -130,13 +132,35 @@ class WatchFilter(django_filters.FilterSet):
     #     return queryset
     #
     # email = django_filters.CharFilter(method='email_filtering')
-    #
-    # def telephonel_filtering(self, queryset, name, value):
-    #     return queryset.filter(
-    #         Q(contact__primary_phone=value)|
-    #         Q(contact__secondary_phone=value))
-    #
-    # telephone = django_filters.CharFilter(method='telephonel_filtering')
+
+    def search_nearby_address_filtering(self, base_queryset, name, value):
+        if value != None and value != "":
+            address_arr = value.split(",")
+            if len(address_arr) == 4:
+                street_number = int(address_arr[0])
+                street_name = address_arr[1]
+                street_type = int(address_arr[2])
+                street_type_other = address_arr[3]
+
+                # # For debugging purposes only.
+                # print(street_number, street_name, street_type, street_type_other)
+
+                # Lookup all the watches with the nearby address.
+                search_queryset = Watch.objects.search_nearby_address(street_number, street_name, street_type, street_type_other)
+
+                # Special thanks via
+                # https://docs.djangoproject.com/en/1.11/ref/models/querysets/#intersection
+                intersected_queryset = base_queryset.intersection(search_queryset).order_by("name")
+
+                # # For debugging purposes only.
+                # print("BASE QUERY", base_queryset)
+                # print("SEARCH QUERY", search_queryset)
+                # print("INTERSECTED QUERY", intersected_queryset)
+
+                return intersected_queryset
+        return base_queryset
+
+    search_nearby_address = django_filters.CharFilter(method='search_nearby_address_filtering')
 
     class Meta:
         model = Watch

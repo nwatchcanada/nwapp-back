@@ -39,6 +39,26 @@ class WatchManager(models.Manager):
             Q(indexed_text__icontains=keyword)
         )
 
+    def search_nearby_address(self, street_number, street_name, street_type, street_type_other):
+        from psycopg2.extras import NumericRange
+        from tenant_foundation.models import StreetAddressRange
+
+        # Special thanks via
+        # https://docs.djangoproject.com/en/3.0/ref/contrib/postgres/fields/#containment-functions
+        addresses = StreetAddressRange.objects.filter(
+            Q(street_numbers__contains=NumericRange(street_number, street_number))
+            &Q(street_name=street_name)
+            &Q(is_archived=False)
+        )
+
+        if street_type == StreetAddressRange.STREET_TYPE.OTHER:
+            addresses = addresses.filter(street_type_other = street_type_other)
+        else:
+            addresses = addresses.filter(street_type = street_type)
+
+        # print("RANGES", addresses)
+        return Watch.objects.filter(street_address_ranges__in=addresses).order_by('name')
+
 
 class Watch(models.Model):
 
@@ -216,9 +236,10 @@ class Watch(models.Model):
         # The following code will create the searchable content.
         # tags slug
         self.indexed_text = self.name + " " + self.description + " " + str(self.district)
-        tag_names = self.tags.values_list('text', flat=True)
-        for tag_name in tag_names:
-            self.indexed_text += tag_name + ", "
+        if self.pk != None:
+            tag_names = self.tags.values_list('text', flat=True)
+            for tag_name in tag_names:
+                self.indexed_text += tag_name + ", "
 
         '''
         Finally call the parent function which handles saving so we can carry

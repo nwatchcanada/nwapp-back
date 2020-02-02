@@ -36,7 +36,7 @@ class WatchListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = Watch.objects.all().order_by('-id')
+        queryset = Watch.objects.all().order_by('name')
 
         # Fetch all the queries.
         s = self.get_serializer_class()

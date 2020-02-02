@@ -4,6 +4,7 @@ import pytz
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import IntegerRangeField
 from django.db import models
 from django.db import transaction
 from django.db.models import Q
@@ -25,14 +26,13 @@ class StreetAddressRangeManager(models.Manager):
         for item in items.all():
             item.delete()
 
-    def filterMissing(self, search_query, target_query):
+    def filter_missing(self, search_query, target_query):
         """
         Purpose of function is to find all the objects which are missing in the
         `target_query` that the exist in the `search_query`.
         """
         target_query_pks = target_query.values_list('pk', flat=True)
         return StreetAddressRange.objects.filter(~Q(search_query__in=target_query_pks))
-
 
 
 class StreetAddressRange(models.Model):
@@ -114,6 +114,12 @@ class StreetAddressRange(models.Model):
     street_number_end = models.PositiveSmallIntegerField(
         _("Street Number End"),
         help_text=_('Please select the street number end range.'),
+    )
+    street_numbers = IntegerRangeField(
+        _("Street Numbers"),
+        help_text=_('Please select the range of street numbers. Note: Internal implementation.'),
+        blank=True,
+        null=True,
     )
     street_name = models.CharField(
         _("Street Name"),
@@ -247,6 +253,9 @@ class StreetAddressRange(models.Model):
             while StreetAddressRange.objects.filter(slug=slug).exists():
                 slug = slugify(text)+"-"+get_referral_code(16)
             self.slug = slug
+
+        # Update our range.
+        self.street_numbers = (self.street_number_start, self.street_number_end)
 
         '''
         Finally call the parent function which handles saving so we can carry
