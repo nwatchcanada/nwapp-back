@@ -53,6 +53,12 @@ class District(models.Model):
         (TYPE_OF.COMMUNITY_CARES, _('Community Cares')),
     )
 
+    TYPE_OF_CODE_CHOICES = (
+        (TYPE_OF.RESIDENTIAL, 'rez'),
+        (TYPE_OF.BUSINESS, 'biz'),
+        (TYPE_OF.COMMUNITY_CARES, 'com'),
+    )
+
     '''
     OBJECT MANAGERS
     '''
@@ -213,3 +219,6 @@ class District(models.Model):
 
     def get_type_of_label(self):
         return str(dict(District.TYPE_OF_CHOICES).get(self.type_of))
+
+    def get_type_of_code(self):
+        return str(dict(District.TYPE_OF_CODE_CHOICES).get(self.type_of))

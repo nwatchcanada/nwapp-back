@@ -32,6 +32,10 @@ class WatchListSerializer(serializers.Serializer):
         required=True,
         source="district.type_of"
     )
+    district_type_of_code = serializers.CharField(
+        source="district.get_type_of_code",
+        read_only=True,
+    )
     district_name = serializers.CharField(
         required=True,
         allow_blank=False,

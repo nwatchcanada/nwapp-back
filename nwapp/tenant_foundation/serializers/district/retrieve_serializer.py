@@ -25,6 +25,7 @@ class DistrictRetrieveSerializer(serializers.Serializer):
     slug = serializers.SlugField(read_only=True,)
     type_of = serializers.IntegerField(read_only=True,)
     type_of_label = serializers.CharField(source="get_type_of_label",read_only=True,)
+    type_of_code = serializers.CharField(source="get_type_of_code",read_only=True,)
     name = serializers.CharField(read_only=True,)
     description = serializers.CharField(read_only=True,)
     counselor_name = serializers.CharField(read_only=True,)
