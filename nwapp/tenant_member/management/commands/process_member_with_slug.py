@@ -32,8 +32,8 @@ class Command(BaseCommand):
         # the public schema." error.
         connection.set_schema_to_public() # Switch to Public.
         # Get the user inputs.
-        schema_name = options['schema_name'][0]
-        slug = options['slug'][0]
+        schema_name = options['schema_name'][0].strip()
+        slug = options['slug'][0].strip()
 
         try:
             organization = SharedOrganization.objects.get(schema_name=schema_name)
@@ -43,7 +43,12 @@ class Command(BaseCommand):
         # Connection will set it back to our tenant.
         connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
+        for user in SharedUser.objects.all().order_by('-id'):
+            print(user.slug)
+
         member = Member.objects.filter(user__slug=slug).first()
+        print("MEMBER", member)
+        print("SLUG", slug)
         if member:
             self.process(member)
 

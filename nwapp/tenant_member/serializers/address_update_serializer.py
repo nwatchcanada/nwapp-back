@@ -21,7 +21,7 @@ from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
-from tenant_member.tasks import process_member_with_slug_func
+# from tenant_member.tasks import process_member_with_slug_func
 
 
 logger = logging.getLogger(__name__)
@@ -59,15 +59,19 @@ class MemberAddressUpdateSerializer(serializers.Serializer):
         instance.save()
         logger.info("Updated member address.")
 
-        '''
-        Run in the background the code which will `process` the newly created
-        member object.
-        '''
-        django_rq.enqueue(
-            process_member_with_slug_func,
-            request.tenant.schema_name,
-            instance.member.user.slug
-        )
+        # '''
+        # Run in the background the code which will `process` the newly created
+        # member object.
+        # '''
+        # django_rq.enqueue(
+        #     process_member_with_slug_func,
+        #     request.tenant.schema_name,
+        #     instance.member.user.slug
+        # )
+
+        # Run the following which will save our searchable content.
+        member.indexed_text = Member.get_searchable_content(member)
+        member.save()
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."

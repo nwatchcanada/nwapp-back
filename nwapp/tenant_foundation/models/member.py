@@ -286,3 +286,18 @@ class Member(models.Model):
 
     def invalidate_all(self):
         self.invalidate("fullname")
+
+    @staticmethod
+    def get_searchable_content(member):
+        """
+        Utility function which refreshes the searchable content used when
+        searching for `keywords`.
+        """
+        text = member.user.slug + " "
+        if member.contact:
+            text += member.contact.get_searchable_content()
+        if member.address:
+            text += " " + member.address.get_searchable_content()
+        if member.metric:
+            text += " " + member.metric.get_searchable_content()
+        return text

@@ -47,7 +47,14 @@ class Command(BaseCommand):
 
         # Iterate through all the randomly generated members
         for member in members:
-            process_member_with_slug_func(schema_name, member.user.slug)
+            freezer = freeze_time(member.last_modified_at)
+            freezer.start()
+
+            # Run the following which will save our searchable content.
+            member.indexed_text = Member.get_searchable_content(member)
+            member.save()
+
+            freezer.stop()
 
         # For debugging purposes.
         self.stdout.write(
