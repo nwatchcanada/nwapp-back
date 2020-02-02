@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
+from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -23,6 +24,20 @@ class WatchManager(models.Manager):
         items = Watch.objects.all()
         for item in items.all():
             item.delete()
+
+    def search(self, keyword):
+        """Default search algorithm used for this model."""
+        return self.partial_text_search(keyword)
+
+    def partial_text_search(self, keyword):
+        """Function performs partial text search of various textfields."""
+        return Watch.objects.filter(
+            Q(indexed_text__icontains=keyword) |
+            Q(indexed_text__istartswith=keyword) |
+            Q(indexed_text__iendswith=keyword) |
+            Q(indexed_text__exact=keyword) |
+            Q(indexed_text__icontains=keyword)
+        )
 
 
 class Watch(models.Model):
@@ -108,6 +123,18 @@ class Watch(models.Model):
         db_index=True
     )
 
+    # SEARCHABLE FIELDS
+
+    indexed_text = models.CharField(
+        _("Indexed Text"),
+        max_length=1023,
+        help_text=_('The searchable content text used by the keyword searcher function.'),
+        blank=True,
+        null=True,
+        db_index=True,
+        unique=True
+    )
+
     # AUDITING FIELDS
 
     slug = models.SlugField(
@@ -185,6 +212,13 @@ class Watch(models.Model):
             while Watch.objects.filter(slug=slug).exists():
                 slug = slugify(self.name)+"-"+get_referral_code(16)
             self.slug = slug
+
+        # The following code will create the searchable content.
+        # tags slug
+        self.indexed_text = self.name + " " + self.description + " " + str(self.district)
+        tag_names = self.tags.values_list('text', flat=True)
+        for tag_name in tag_names:
+            self.indexed_text += tag_name + ", "
 
         '''
         Finally call the parent function which handles saving so we can carry

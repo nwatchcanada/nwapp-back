@@ -24,11 +24,11 @@ class WatchFilter(django_filters.FilterSet):
         # }
     )
 
-    # def keyword_filtering(self, queryset, name, value):
-    #     return Watch.objects.search(value).order_by('contact__last_name')
-    #
-    # search = django_filters.CharFilter(method='keyword_filtering')
-    #
+    def keyword_filtering(self, queryset, name, value):
+        return Watch.objects.search(value).order_by('name')
+
+    search = django_filters.CharFilter(method='keyword_filtering')
+
     # def first_name_filtering(self, queryset, name, value):
     #     return queryset.filter(
     #         Q(contact__first_name__icontains=value) |
