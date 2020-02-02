@@ -14,4 +14,5 @@ urlpatterns = (
     path('api/v1/member/<slug>/address', MemberAddressUpdateAPIView.as_view(), name='nwapp_members_address_update_api_endpoint'),
     path('api/v1/member/<slug>/contact', MemberContactUpdateAPIView.as_view(), name='nwapp_members_contact_update_api_endpoint'),
     path('api/v1/member/<slug>/metrics', MemberMetricUpdateAPIView.as_view(), name='nwapp_members_metric_update_api_endpoint'),
+    path('api/v1/member/<slug>/watch', MemberWatchUpdateAPIView.as_view(), name='nwapp_members_watch_update_api_endpoint'),
 )
