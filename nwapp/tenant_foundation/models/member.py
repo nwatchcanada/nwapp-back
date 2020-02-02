@@ -133,9 +133,6 @@ class Member(models.Model):
         db_index=True,
     )
 
-    # WATCH
-    #TODO: IMPLEMENT
-
     # STATE FIELDS
 
     state = models.CharField(
@@ -162,9 +159,20 @@ class Member(models.Model):
         null=True,
         default=""
     )
+
+    # MISC FIELDS
+
     avatar_image = models.ForeignKey(
         "PrivateImageUpload",
         help_text=_('The avatar image of this member.'),
+        related_name="members",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    watch = models.ForeignKey(
+        "Watch",
+        help_text=_('The watch this member belongs to.'),
         related_name="members",
         on_delete=models.SET_NULL,
         blank=True,

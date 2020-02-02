@@ -19,7 +19,7 @@ from shared_foundation.models import SharedUser, SharedGroup
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
-    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
+    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem, Watch
 )
 from tenant_member.tasks import process_member_with_slug_func
 
@@ -74,7 +74,7 @@ class MemberCreateSerializer(serializers.Serializer):
 
     # ------ MEMBER WATCH ------ #
 
-    #TODO: IMPLEMENT FIELDS.
+    watch = serializers.SlugField(allow_null=False, allow_blank=False,)
 
     # ------ MEMBER METRICS ------ #
 
@@ -126,6 +126,12 @@ class MemberCreateSerializer(serializers.Serializer):
                 raise serializers.ValidationError(_('Please fill this field in.'))
         return value
 
+    def validate_watch(self, value):
+        #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
+        if not Watch.objects.filter(slug=value).exists():
+            raise serializers.ValidationError("Watch does not exist")
+        return value
+
     def create(self, validated_data):
         """
         Override the `create` function to add extra functinality.
@@ -138,6 +144,8 @@ class MemberCreateSerializer(serializers.Serializer):
         first_name = validated_data.get('first_name')
         last_name = validated_data.get('last_name')
         email = validated_data.get('email')
+        watch_slug = validated_data.get('watch')
+        watch = Watch.objects.filter(slug=watch_slug).first()
 
         user = SharedUser.objects.create(
             tenant=request.tenant,
@@ -156,6 +164,7 @@ class MemberCreateSerializer(serializers.Serializer):
         member = Member.objects.create(
             user=user,
             type_of=type_of,
+            watch=watch,
             created_by=request.user,
             created_from=request.client_ip,
             created_from_is_public=request.client_ip_is_routable,

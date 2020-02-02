@@ -35,6 +35,9 @@ class MemberRetrieveSerializer(serializers.Serializer):
     avatar_url = serializers.SerializerMethodField()
     state = serializers.CharField(read_only=True,)
     role_id = serializers.IntegerField(source="user.role_id")
+    watch_name = serializers.CharField(source="watch.name")
+    watch_slug = serializers.SlugField(source="watch.slug")
+    watch_type_of = serializers.IntegerField(source="watch.type_of")
 
     # ------ MEMBER CONTACT ------ #
 
