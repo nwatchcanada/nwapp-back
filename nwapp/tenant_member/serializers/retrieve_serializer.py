@@ -29,53 +29,52 @@ logger = logging.getLogger(__name__)
 class MemberRetrieveSerializer(serializers.Serializer):
     # ------ MEMBER ------ #
 
-    slug = serializers.SlugField(source="user.slug")
-    type_of = serializers.IntegerField()
-    type_of_label = serializers.CharField(source="get_pretty_type_of")
+    slug = serializers.SlugField(source="user.slug", read_only=True,)
+    type_of = serializers.IntegerField(read_only=True,)
+    type_of_label = serializers.CharField(source="get_pretty_type_of", read_only=True,)
     avatar_url = serializers.SerializerMethodField()
     state = serializers.CharField(read_only=True,)
-    role_id = serializers.IntegerField(source="user.role_id")
-    watch_name = serializers.CharField(source="watch.name")
-    watch_slug = serializers.SlugField(source="watch.slug")
-    watch_type_of = serializers.IntegerField(source="watch.type_of")
+    role_id = serializers.IntegerField(source="user.role_id", read_only=True,)
 
     # ------ MEMBER CONTACT ------ #
 
-    is_ok_to_email = serializers.IntegerField(source="contact.is_ok_to_email")
-    is_ok_to_text = serializers.IntegerField(source="contact.is_ok_to_text")
-    organization_name = serializers.CharField(source="contact.organization_name")
-    organization_type_of = serializers.IntegerField(source="contact.organization_type_of")
-    first_name = serializers.CharField(source="contact.first_name")
-    last_name = serializers.CharField(source="contact.last_name")
+    is_ok_to_email = serializers.IntegerField(source="contact.is_ok_to_email", read_only=True,)
+    is_ok_to_text = serializers.IntegerField(source="contact.is_ok_to_text", read_only=True,)
+    organization_name = serializers.CharField(source="contact.organization_name", read_only=True,)
+    organization_type_of = serializers.IntegerField(source="contact.organization_type_of", read_only=True,)
+    first_name = serializers.CharField(source="contact.first_name", read_only=True,)
+    last_name = serializers.CharField(source="contact.last_name", read_only=True,)
     full_name = serializers.SerializerMethodField()
-    email = serializers.EmailField(source="contact.email")
-    primary_phone_e164 = E164PhoneNumberField(source="contact.primary_phone")
-    primary_phone_national = NationalPhoneNumberField(source="contact.primary_phone")
-    secondary_phone_e164 = E164PhoneNumberField(source="contact.secondary_phone")
-    secondary_phone_national = NationalPhoneNumberField(source="contact.secondary_phone")
+    email = serializers.EmailField(source="contact.email", read_only=True,)
+    primary_phone_e164 = E164PhoneNumberField(source="contact.primary_phone", read_only=True,)
+    primary_phone_national = NationalPhoneNumberField(source="contact.primary_phone", read_only=True,)
+    secondary_phone_e164 = E164PhoneNumberField(source="contact.secondary_phone", read_only=True,)
+    secondary_phone_national = NationalPhoneNumberField(source="contact.secondary_phone", read_only=True,)
 
     # ------ MEMBER ADDRESS ------ #
 
-    country = serializers.CharField(source="address.country")
-    region = serializers.CharField(source="address.region")
-    locality = serializers.CharField(source="address.locality")
-    street_number = serializers.CharField(source="address.street_number")
-    street_name =serializers.CharField(source="address.street_name")
-    apartment_unit = serializers.CharField(source="address.apartment_unit")
-    street_type = serializers.IntegerField(source="address.street_type")
-    street_type_other = serializers.CharField(source="address.street_type_other")
-    street_direction = serializers.IntegerField(source="address.street_direction")
-    postal_code = serializers.CharField(source="address.postal_code")
-    address = serializers.CharField(source="address.street_address")
-    google_maps_url = serializers.URLField(source="address.google_maps_url")
+    country = serializers.CharField(source="address.country", read_only=True,)
+    region = serializers.CharField(source="address.region", read_only=True,)
+    locality = serializers.CharField(source="address.locality", read_only=True,)
+    street_number = serializers.CharField(source="address.street_number", read_only=True,)
+    street_name =serializers.CharField(source="address.street_name", read_only=True,)
+    apartment_unit = serializers.CharField(source="address.apartment_unit", read_only=True,)
+    street_type = serializers.IntegerField(source="address.street_type", read_only=True,)
+    street_type_other = serializers.CharField(source="address.street_type_other", read_only=True,)
+    street_direction = serializers.IntegerField(source="address.street_direction", read_only=True,)
+    postal_code = serializers.CharField(source="address.postal_code", read_only=True,)
+    address = serializers.CharField(source="address.street_address", read_only=True,)
+    google_maps_url = serializers.URLField(source="address.google_maps_url", read_only=True,)
 
     # ------ MEMBER WATCH ------ #
 
-    #TODO: IMPLEMENT FIELDS.
+    watch_name = serializers.CharField(source="watch.name", read_only=True,)
+    watch_slug = serializers.SlugField(source="watch.slug", read_only=True,)
+    watch_type_of = serializers.IntegerField(source="watch.type_of", read_only=True,)
 
     # ------ MEMBER METRICS ------ #
 
-    tags = TagListCreateSerializer(source="metric.tags", many=True,)
+    tags = TagListCreateSerializer(source="metric.tags", many=True, read_only=True,)
     how_did_you_hear = serializers.PrimaryKeyRelatedField(
         source="metric.how_did_you_hear",
         many=False,
@@ -83,8 +82,10 @@ class MemberRetrieveSerializer(serializers.Serializer):
         allow_null=False,
         queryset=HowHearAboutUsItem.objects.all()
     )
-    how_did_you_hear_other = serializers.CharField(source="metric.how_did_you_hear_other", required=False, allow_null=True, allow_blank=True,)
-    how_did_you_hear_label = serializers.CharField(source="metric.how_did_you_hear.text", allow_null=True, read_only=True,)
+    how_did_you_hear_other = serializers.CharField(
+        source="metric.how_did_you_hear_other", required=False, allow_null=True, allow_blank=True,)
+    how_did_you_hear_label = serializers.CharField(
+        source="metric.how_did_you_hear.text", allow_null=True, read_only=True,)
     expectation = serializers.PrimaryKeyRelatedField(
         source="metric.expectation",
         many=False,
@@ -92,8 +93,10 @@ class MemberRetrieveSerializer(serializers.Serializer):
         allow_null=False,
         queryset=ExpectationItem.objects.all()
     )
-    expectation_other = serializers.CharField(source="metric.expectation_other", required=False, allow_null=True, allow_blank=True,)
-    expectation_label = serializers.CharField(source="metric.expectation.text", allow_null=True, read_only=True,)
+    expectation_other = serializers.CharField(
+        source="metric.expectation_other", required=False, allow_null=True, allow_blank=True,)
+    expectation_label = serializers.CharField(
+        source="metric.expectation.text", allow_null=True, read_only=True,)
     meaning = serializers.PrimaryKeyRelatedField(
         source="metric.meaning",
         many=False,
@@ -101,18 +104,18 @@ class MemberRetrieveSerializer(serializers.Serializer):
         allow_null=False,
         queryset=MeaningItem.objects.all()
     )
-    meaning_other = serializers.CharField(source="metric.meaning_other", required=False, allow_null=True, allow_blank=True,)
+    meaning_other = serializers.CharField(source="metric.meaning_other", allow_null=True, allow_blank=True, read_only=True,)
     meaning_label = serializers.CharField(source="metric.meaning.text", allow_null=True, read_only=True,)
-    gender = serializers.IntegerField(source="metric.gender",)
-    gender_label = serializers.CharField(source="metric.get_pretty_gender",)
-    willing_to_volunteer = serializers.IntegerField(source="metric.willing_to_volunteer",)
-    willing_to_volunteer_label = serializers.CharField(source="metric.get_pretty_willing_to_volunteer",)
-    another_household_member_registered = serializers.BooleanField(source="metric.another_household_member_registered",)
-    year_of_birth = serializers.IntegerField(source="metric.year_of_birth",)
-    total_household_count = serializers.IntegerField(source="metric.total_household_count",)
-    under_18_years_household_count = serializers.IntegerField(source="metric.under_18_years_household_count",)
-    organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count",)
-    organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year",)
+    gender = serializers.IntegerField(source="metric.gender", read_only=True,)
+    gender_label = serializers.CharField(source="metric.get_pretty_gender", read_only=True,)
+    willing_to_volunteer = serializers.IntegerField(source="metric.willing_to_volunteer", read_only=True,)
+    willing_to_volunteer_label = serializers.CharField(source="metric.get_pretty_willing_to_volunteer", read_only=True,)
+    another_household_member_registered = serializers.BooleanField(source="metric.another_household_member_registered", read_only=True,)
+    year_of_birth = serializers.IntegerField(source="metric.year_of_birth", read_only=True,)
+    total_household_count = serializers.IntegerField(source="metric.total_household_count", read_only=True,)
+    under_18_years_household_count = serializers.IntegerField(source="metric.under_18_years_household_count", read_only=True,)
+    organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count", read_only=True,)
+    organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year", read_only=True,)
 
     # ------ AUDITING ------ #
 
