@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 class WatchArchiveOperationSerializer(serializers.Serializer):
     watch = serializers.SlugField(write_only=True, required=True)
-    state = serializers.CharField(required=True, allow_blank=False)
+    is_archived = serializers.BooleanField(required=True,)
     deactivation_reason = serializers.CharField(required=True, allow_blank=False)
     deactivation_reason_other = serializers.CharField(required=True, allow_blank=True)
     comment = serializers.CharField(required=True, allow_blank=False)
@@ -44,7 +44,7 @@ class WatchArchiveOperationSerializer(serializers.Serializer):
         slug = validated_data.get('watch')
         watch = Watch.objects.select_for_update().get(slug=slug)
         request = self.context.get('request')
-        state = validated_data.get('state')
+        is_archived = validated_data.get('is_archived')
         deactivation_reason = validated_data.get('deactivation_reason', None)
         deactivation_reason_other = validated_data.get('deactivation_reason_other', None)
         comment_text = validated_data.get('comment')
@@ -71,7 +71,7 @@ class WatchArchiveOperationSerializer(serializers.Serializer):
         #-------------------------#
         # Update watch object. #
         #-------------------------#
-        watch.state = state
+        watch.is_archived = is_archived
         watch.deactivation_reason = deactivation_reason
         watch.deactivation_reason_other = deactivation_reason_other
         watch.last_modified_by = request.user
@@ -80,7 +80,7 @@ class WatchArchiveOperationSerializer(serializers.Serializer):
         watch.save()
 
         # For debugging purposes only.
-        logger.info("Watch updated state.")
+        logger.info("Watch updated `is_archived` value.")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
