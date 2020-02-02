@@ -101,7 +101,7 @@ class ScorePointRetrieveSerializer(serializers.Serializer):
     # another_household_member_registered = serializers.BooleanField(source="metric.another_household_member_registered",)
     # year_of_birth = serializers.IntegerField(source="metric.year_of_birth",)
     # total_household_count = serializers.IntegerField(source="metric.total_household_count",)
-    # under_18_years_household_count = serializers.IntegerField(source="metric.under_18_years_household_count",)
+    # over_18_years_household_count = serializers.IntegerField(source="metric.over_18_years_household_count",)
     # organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count",)
     # organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year",)
     #

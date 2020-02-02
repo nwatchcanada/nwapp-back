@@ -172,7 +172,7 @@ class MemberMetric(models.Model):
         blank=True,
         null=True,
     )
-    under_18_years_household_count = models.PositiveSmallIntegerField(
+    over_18_years_household_count = models.PositiveSmallIntegerField(
         _("Under 18 Years Household Count"),
         help_text=_('How many people in your household are under the age of 18?'),
         blank=True,

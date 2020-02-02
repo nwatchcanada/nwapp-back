@@ -65,7 +65,7 @@ def seed_members(tenant, length=25):
                 # another_household_member_registered=
                 # year_of_birth=
                 # total_household_count=
-                # under_18_years_household_count=
+                # over_18_years_household_count=
                 # organization_employee_count=
                 # organization_founding_year=
             )

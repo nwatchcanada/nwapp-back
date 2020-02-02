@@ -58,7 +58,7 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
     another_household_member_registered = serializers.BooleanField()
     year_of_birth = serializers.IntegerField()
     total_household_count = serializers.IntegerField(required=False, allow_null=True,)
-    under_18_years_household_count = serializers.IntegerField(required=False, allow_null=True,)
+    over_18_years_household_count = serializers.IntegerField(required=False, allow_null=True,)
     organization_employee_count = serializers.IntegerField(required=False, allow_null=True,)
     organization_founding_year = serializers.IntegerField(required=False, allow_null=True,)
 
@@ -85,10 +85,10 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
         instance.another_household_member_registered = another_household_member_registered
         if another_household_member_registered:
             instance.total_household_count = None
-            instance.under_18_years_household_count = None
+            instance.over_18_years_household_count = None
         else:
             instance.total_household_count = validated_data.get('total_household_count')
-            instance.under_18_years_household_count = validated_data.get('under_18_years_household_count')
+            instance.over_18_years_household_count = validated_data.get('over_18_years_household_count')
 
         # DEVELOPERS NOTE:
         # (1) Non-business members cannot have the following fields set,

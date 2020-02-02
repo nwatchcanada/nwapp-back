@@ -104,7 +104,7 @@ class MemberUpdateSerializer(serializers.Serializer):
     another_household_member_registered = serializers.BooleanField()
     year_of_birth = serializers.IntegerField()
     total_household_count = serializers.IntegerField()
-    under_18_years_household_count = serializers.IntegerField()
+    over_18_years_household_count = serializers.IntegerField()
     organization_employee_count = serializers.IntegerField()
     organization_founding_year = serializers.IntegerField()
     organization_type_of = serializers.IntegerField()
@@ -230,7 +230,7 @@ class MemberUpdateSerializer(serializers.Serializer):
         # another_household_member_registered = validated_data.get('another_household_member_registered')
         # year_of_birth = validated_data.get('year_of_birth')
         # total_household_count = validated_data.get('total_household_count')
-        # under_18_years_household_count = validated_data.get('under_18_years_household_count')
+        # over_18_years_household_count = validated_data.get('over_18_years_household_count')
         # organization_employee_count = validated_data.get('organization_employee_count')
         # organization_founding_year = validated_data.get('organization_founding_year')
         #
@@ -247,7 +247,7 @@ class MemberUpdateSerializer(serializers.Serializer):
         #     another_household_member_registered=another_household_member_registered,
         #     year_of_birth=year_of_birth,
         #     total_household_count=total_household_count,
-        #     under_18_years_household_count=under_18_years_household_count,
+        #     over_18_years_household_count=over_18_years_household_count,
         #     organization_employee_count=organization_employee_count,
         #     organization_founding_year=organization_founding_year,
         # )

@@ -113,7 +113,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     another_household_member_registered = serializers.BooleanField(source="metric.another_household_member_registered", read_only=True,)
     year_of_birth = serializers.IntegerField(source="metric.year_of_birth", read_only=True,)
     total_household_count = serializers.IntegerField(source="metric.total_household_count", read_only=True,)
-    under_18_years_household_count = serializers.IntegerField(source="metric.under_18_years_household_count", read_only=True,)
+    over_18_years_household_count = serializers.IntegerField(source="metric.over_18_years_household_count", read_only=True,)
     organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count", read_only=True,)
     organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year", read_only=True,)
 
