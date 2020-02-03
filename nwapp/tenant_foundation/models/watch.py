@@ -235,11 +235,11 @@ class Watch(models.Model):
 
         # The following code will create the searchable content.
         # tags slug
-        self.indexed_text = self.name + " " + self.description + " " + str(self.district)
+        self.indexed_text = str(self.name) + " " + str(self.description) + " " + str(self.district.indexed_text)
         if self.pk != None:
             tag_names = self.tags.values_list('text', flat=True)
             for tag_name in tag_names:
-                self.indexed_text += tag_name + ", "
+                self.indexed_text += str(tag_name) + ", "
 
         '''
         Finally call the parent function which handles saving so we can carry

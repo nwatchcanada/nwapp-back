@@ -68,9 +68,7 @@ class SharedLoginAPIView(APIView):
         )
 
         serializer = SharedProfileInfoRetrieveUpdateSerializer(request.user, many=False, context={
-            'authenticated_by': request.user,
-            'authenticated_from': request.client_ip,
-            'authenticated_from_is_public': request.client_ip_is_routable,
+            'request': request,
             'access_token': access_token,
             'refresh_token': refresh_token
         })

@@ -41,9 +41,7 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         access_token = AccessToken.objects.filter(user=request.user, application=application).order_by('-created').first()
 
         serializer = SharedProfileInfoRetrieveUpdateSerializer(request.user, context={
-            'authenticated_by': request.user,
-            'authenticated_from': request.client_ip,
-            'authenticated_from_is_public': request.client_ip_is_routable,
+            'request': request,
             'access_token': access_token,
             'refresh_token': access_token.refresh_token
         })
@@ -61,9 +59,7 @@ class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         access_token = AccessToken.objects.filter(user=request.user, application=application).order_by('-created').first()
 
         serializer = SharedProfileInfoRetrieveUpdateSerializer(request.user, data=request.data, context={
-            'authenticated_by': request.user,
-            'authenticated_from': request.client_ip,
-            'authenticated_from_is_public': request.client_ip_is_routable,
+            'request': request,
             'access_token': access_token,
             'refresh_token': access_token.refresh_token
         })

@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedUser, e164_phone_regex
+from shared_foundation.utils.string import get_referral_code
 
 
 class DistrictManager(models.Manager):
@@ -135,6 +136,18 @@ class District(models.Model):
         null=True,
     )
 
+    # SEARCHABLE FIELDS
+
+    indexed_text = models.CharField(
+        _("Indexed Text"),
+        max_length=1023,
+        help_text=_('The searchable content text used by the keyword searcher function.'),
+        blank=True,
+        null=True,
+        db_index=True,
+        unique=True
+    )
+
     # SYSTEM FIELDS
 
     slug = models.SlugField(
@@ -208,8 +221,28 @@ class District(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
+        # Assign our unique slug to this model as our external identifier.
         if self.slug == None or self.slug == "":
-            self.slug = slugify(self.name)
+            # The following code will generate a unique slug and if the slug
+            # is not unique in the database, then continue to try generating
+            # a unique slug until it is found.
+            slug = slugify(self.name)
+            while District.objects.filter(slug=slug).exists():
+                slug = slugify(self.name)+"-"+get_referral_code(4)
+            self.slug = slug
+
+        # Update our searchable content.
+        text = str(self.name) + " " + str(self.description)
+        if self.counselor_name:
+            text += str(self.counselor_name)
+        if self.counselor_email:
+            text += " " + str(self.counselor_email)
+        if self.counselor_phone:
+            text += " " + str(self.counselor_phone)
+        if self.website_url:
+            text += " " + str(self.website_url)
+        if self.type_of:
+            text += " " + self.get_type_of_label()
 
         '''
         Finally call the parent function which handles saving so we can carry

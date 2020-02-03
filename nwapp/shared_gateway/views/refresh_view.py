@@ -11,7 +11,6 @@ from rest_framework import generics
 from rest_framework import authentication, viewsets, permissions, status,  parsers, renderers
 from rest_framework.response import Response
 
-from shared_gateway.serializers import SharedProfileInfoRetrieveUpdateSerializer
 from shared_foundation.drf.permissions import DisableOptionsPermission, PublicPermission
 
 
