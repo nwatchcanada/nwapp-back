@@ -40,7 +40,7 @@ class AnnouncementListCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
         fields = (
-            'id',
+            'slug',
             'text',
             'is_archived',
             'created_at',

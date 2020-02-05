@@ -7,7 +7,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
+from django.template.defaultfilters import slugify
 from django.utils import timezone
+from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedUser
@@ -65,11 +67,13 @@ class Announcement(models.Model):
 
     # AUDITING FIELDS
 
-    uuid = models.UUIDField(
-        _("UUID"),
-        help_text=_('The unique identifier we want to release to the public to identify this announcement.'),
-        default=uuid.uuid4,
-        editable=False
+    slug = models.SlugField(
+        _("Slug"),
+        help_text=_('The unique identifier used externally.'),
+        max_length=255,
+        null=False,
+        unique=True,
+        db_index=True,
     )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(
@@ -126,6 +130,14 @@ class Announcement(models.Model):
         '''
         Override the `save` function to support extra functionality of our model.
         '''
+        # The following code will generate a unique slug and if the slug
+        # is not unique in the database, then continue to try generating
+        # a unique slug until it is found.
+        if self.slug == "" or self.slug == None:
+            slug = slugify(self.text)
+            while Watch.objects.filter(slug=slug).exists():
+                slug = slugify(self.text)+"-"+get_referral_code(16)
+            self.slug = Truncator(slug).chars(255)
 
         '''
         Finally call the parent function which handles saving so we can carry
