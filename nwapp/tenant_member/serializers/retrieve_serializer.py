@@ -116,6 +116,11 @@ class MemberRetrieveSerializer(serializers.Serializer):
     over_18_years_household_count = serializers.IntegerField(source="metric.over_18_years_household_count", read_only=True,)
     organization_employee_count = serializers.IntegerField(source="metric.organization_employee_count", read_only=True,)
     organization_founding_year = serializers.IntegerField(source="metric.organization_founding_year", read_only=True,)
+    is_aboriginal = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_aboriginal",)
+    is_transgender = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_transgender",)
+    is_visible_minority = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_visible_minority",)
+    is_disabled_or_has_barriers = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_disabled_or_has_barriers",)
+    is_over_fiftyfive = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_over_fiftyfive",)
 
     # ------ AUDITING ------ #
 

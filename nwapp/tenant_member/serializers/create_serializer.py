@@ -112,6 +112,11 @@ class MemberCreateSerializer(serializers.Serializer):
     organization_employee_count = serializers.IntegerField(required=False,)
     organization_founding_year = serializers.IntegerField(required=False,)
     organization_type_of = serializers.IntegerField(required=False,)
+    is_aboriginal = serializers.BooleanField(required=False,)
+    is_transgender = serializers.BooleanField(required=False,)
+    is_visible_minority = serializers.BooleanField(required=False,)
+    is_disabled_or_has_barriers = serializers.BooleanField(required=False,)
+    is_over_fiftyfive = serializers.BooleanField(required=False,)
 
     def validate_organization_name(self, value):
         """
@@ -258,6 +263,11 @@ class MemberCreateSerializer(serializers.Serializer):
         over_18_years_household_count = validated_data.get('over_18_years_household_count')
         organization_employee_count = validated_data.get('organization_employee_count')
         organization_founding_year = validated_data.get('organization_founding_year')
+        is_aboriginal = validated_data.get('is_aboriginal', False)
+        is_transgender = validated_data.get('is_transgender', False)
+        is_visible_minority = validated_data.get('is_visible_minority', False)
+        is_disabled_or_has_barriers = validated_data.get('is_disabled_or_has_barriers', False)
+        is_over_fiftyfive = validated_data.get('is_over_fiftyfive', False)
 
         # DEVELOPERS NOTE:
         # (1) Non-business members cannot have the following fields set,
@@ -282,6 +292,11 @@ class MemberCreateSerializer(serializers.Serializer):
             over_18_years_household_count=over_18_years_household_count,
             organization_employee_count=organization_employee_count,
             organization_founding_year=organization_founding_year,
+            is_aboriginal=is_aboriginal,
+            is_transgender=is_transgender,
+            is_visible_minority=is_visible_minority,
+            is_disabled_or_has_barriers=is_disabled_or_has_barriers,
+            is_over_fiftyfive=is_over_fiftyfive,
         )
         logger.info("Created member metric.")
 

@@ -190,6 +190,41 @@ class MemberMetric(models.Model):
         null=True,
         blank=True,
     )
+    is_aboriginal = models.BooleanField(
+        _("Is Aboriginal"),
+        help_text=_('Is member an aborinal?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
+    is_transgender = models.BooleanField(
+        _("Is Transgender Individual"),
+        help_text=_('Is member a transgender individual?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
+    is_visible_minority = models.BooleanField(
+        _("Is Visible Minority"),
+        help_text=_('Is member a visible minority?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
+    is_disabled_or_has_barriers = models.BooleanField(
+        _("Is Disabled Or Has Barriers"),
+        help_text=_('Is member disabled or has physical barriers?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
+    is_over_fiftyfive = models.BooleanField(
+        _("Is Over 55"),
+        help_text=_('Is member over 55?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
 
     # AUDITING FIELDS
 
