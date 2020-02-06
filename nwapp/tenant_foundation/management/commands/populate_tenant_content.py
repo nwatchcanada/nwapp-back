@@ -134,11 +134,14 @@ class Command(BaseCommand):
             # ID | SORT # | TEXT | ASSOCIATE | CUSTOMER | STAFF | PARTNER
             #-------------------------------------------------------------------
             # Associate
-            [1, 99,"Other",                            True, True, True, True,],
-            [2, 2, "I want ZZZ",                       True, True, True, True,],
-            [3, 3, "I want YYY",                       True, True, True, True,],
-            [4, 4, "I want XXX",                       True, True, True, True,],
-        ]
+            [1, 99,"Other",                                   True, True, True, True,],
+            [2, 2, "Greater safety",                          True, True, True, True,],
+            [3, 3, "Safety awareness & education",            True, True, True, True,],
+            [4, 4, "Greater community cohesion",              True, True, True, True,],
+            [5, 5, "Better relationships with my neighbours", True, True, True, True,],
+            [6, 6, "A chance to help my community",           True, True, True, True,],
+            [7, 7, "Crime reduction",                         True, True, True, True,],
+        ];
 
         for data_arr in DATA_ARRAY:
             ExpectationItem.objects.update_or_create(
@@ -163,7 +166,7 @@ class Command(BaseCommand):
             [2, 2, "Greater community safety",    True, True, True, True,],
             [3, 3, "Greater social inclusion",    True, True, True, True,],
             [4, 4, "Caring about my neighbour",   True, True, True, True,],
-            [4, 4, "Greater community vigilance", True, True, True, True,],
+            [5, 5, "Greater community vigilance", True, True, True, True,],
         ]
 
         for data_arr in DATA_ARRAY:
