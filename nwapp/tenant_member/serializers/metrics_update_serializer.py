@@ -65,7 +65,7 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
     is_transgender = serializers.BooleanField(required=False,)
     is_visible_minority = serializers.BooleanField(required=False,)
     is_disabled_or_has_barriers = serializers.BooleanField(required=False,)
-    is_over_fiftyfive = serializers.BooleanField(required=False,)
+    is_over_fifty_five = serializers.BooleanField(required=False,)
 
     def update(self, instance, validated_data):
         """
@@ -86,9 +86,8 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
         instance.is_transgender = validated_data.get('is_transgender', False)
         instance.is_visible_minority = validated_data.get('is_visible_minority', False)
         instance.is_disabled_or_has_barriers = validated_data.get('is_disabled_or_has_barriers', False)
-        instance.is_over_fiftyfive = validated_data.get('is_over_fiftyfive', False)
-        print(validated_data)
-
+        instance.is_over_fifty_five = validated_data.get('is_over_fifty_five', False)
+        
         # DEVELOPERS NOTE:
         # (1) Modified household statistics dependent on whether the household
         #     member was registered or not.

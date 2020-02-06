@@ -218,7 +218,7 @@ class MemberMetric(models.Model):
         blank=True,
         null=True,
     )
-    is_over_fiftyfive = models.BooleanField(
+    is_over_fifty_five = models.BooleanField(
         _("Is Over 55"),
         help_text=_('Is member over 55?'),
         default=False,

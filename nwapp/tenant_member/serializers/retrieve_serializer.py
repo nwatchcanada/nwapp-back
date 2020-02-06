@@ -120,7 +120,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     is_transgender = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_transgender",)
     is_visible_minority = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_visible_minority",)
     is_disabled_or_has_barriers = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_disabled_or_has_barriers",)
-    is_over_fiftyfive = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_over_fiftyfive",)
+    is_over_fifty_five = serializers.BooleanField(allow_null=True, read_only=True, source="metric.is_over_fifty_five",)
 
     # ------ AUDITING ------ #
 

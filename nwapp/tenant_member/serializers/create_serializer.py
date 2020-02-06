@@ -116,7 +116,7 @@ class MemberCreateSerializer(serializers.Serializer):
     is_transgender = serializers.BooleanField(required=False,)
     is_visible_minority = serializers.BooleanField(required=False,)
     is_disabled_or_has_barriers = serializers.BooleanField(required=False,)
-    is_over_fiftyfive = serializers.BooleanField(required=False,)
+    is_over_fifty_five = serializers.BooleanField(required=False,)
 
     def validate_organization_name(self, value):
         """
@@ -267,7 +267,7 @@ class MemberCreateSerializer(serializers.Serializer):
         is_transgender = validated_data.get('is_transgender', False)
         is_visible_minority = validated_data.get('is_visible_minority', False)
         is_disabled_or_has_barriers = validated_data.get('is_disabled_or_has_barriers', False)
-        is_over_fiftyfive = validated_data.get('is_over_fiftyfive', False)
+        is_over_fifty_five = validated_data.get('is_over_fifty_five', False)
 
         # DEVELOPERS NOTE:
         # (1) Non-business members cannot have the following fields set,
@@ -296,7 +296,7 @@ class MemberCreateSerializer(serializers.Serializer):
             is_transgender=is_transgender,
             is_visible_minority=is_visible_minority,
             is_disabled_or_has_barriers=is_disabled_or_has_barriers,
-            is_over_fiftyfive=is_over_fiftyfive,
+            is_over_fifty_five=is_over_fifty_five,
         )
         logger.info("Created member metric.")
 
