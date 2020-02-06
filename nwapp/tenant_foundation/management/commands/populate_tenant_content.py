@@ -159,10 +159,11 @@ class Command(BaseCommand):
             # ID | SORT # | TEXT | ASSOCIATE | CUSTOMER | STAFF | PARTNER
             #-------------------------------------------------------------------
             # Associate
-            [1, 99,"Other",                            True, True, True, True,],
-            [2, 2, "It means ZZZ",                     True, True, True, True,],
-            [3, 3, "It means YYY",                     True, True, True, True,],
-            [4, 4, "It means XXX",                     True, True, True, True,],
+            [1, 99,"Other",                       True, True, True, True,],
+            [2, 2, "Greater community safety",    True, True, True, True,],
+            [3, 3, "Greater social inclusion",    True, True, True, True,],
+            [4, 4, "Caring about my neighbour",   True, True, True, True,],
+            [4, 4, "Greater community vigilance", True, True, True, True,],
         ]
 
         for data_arr in DATA_ARRAY:
