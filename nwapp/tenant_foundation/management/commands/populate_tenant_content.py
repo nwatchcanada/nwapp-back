@@ -51,42 +51,28 @@ class Command(BaseCommand):
         )
 
     def populate_default_tags(self):
-        Tag.objects.update_or_create(
-            id=1,
-            defaults={
-                'id': 1,
-                'text': 'Security',
-                'description': 'Please use this tag if something is related to security.',
-                'is_archived': False,
-            }
-        )
-        Tag.objects.update_or_create(
-            id=2,
-            defaults={
-                'id': 2,
-                'text': 'Blacklist',
-                'description': 'Please use this tag if someone is blacklisted from our system.',
-                'is_archived': False,
-            }
-        )
-        Tag.objects.update_or_create(
-            id=3,
-            defaults={
-                'id': 3,
-                'text': 'Residential',
-                'description': 'Tag pertaining to residential items in our system.',
-                'is_archived': False,
-            }
-        )
-        Tag.objects.update_or_create(
-            id=4,
-            defaults={
-                'id': 4,
-                'text': 'Commercial',
-                'description': 'Tag pertaining to commercial items in our system.',
-                'is_archived': False,
-            }
-        )
+        DATA_ARRAY = [
+            # ID | TEXT | DESCRIPTION | IS ARCHIVED |
+            #-------------------------------------------------------------------
+            [1, "Aboriginal", 'Please use this tag if something is related to aboriginal topics.', False, ],
+            [2, "First Responder", 'Please use this tag if something is related to first responder topics.', False, ],
+            [3, "Veteran", 'Please use this tag if something is related to veteran topics.', False, ],
+            [4, "Police Officer", 'Please use this tag if something is related to police officer topics.', False, ],
+            [5, "Doctor", 'Please use this tag if something is related to doctor topics.', False, ],
+            [6, "Nurse", 'Please use this tag if something is related to nurse topics.', False, ],
+            [7, "Teacher", 'Please use this tag if something is related to teacher topics.', False, ],
+            [8, "Armed Forces Member", 'Please use this tag if something is related to armed forces member topics.', False, ],
+        ]
+        for data_arr in DATA_ARRAY:
+            Tag.objects.update_or_create(
+                id=int(data_arr[0]),
+                defaults={
+                    'id': int(data_arr[0]),
+                    'text': data_arr[1],
+                    'description': data_arr[2],
+                    'is_archived': data_arr[3],
+                }
+            )
 
     def populate_default_how_did_you_hear_items(self):
         DATA_ARRAY = [
