@@ -255,3 +255,37 @@ class District(models.Model):
 
     def get_type_of_code(self):
         return str(dict(District.TYPE_OF_CODE_CHOICES).get(self.type_of))
+
+    @staticmethod
+    def seed(length):
+        from faker import Faker
+        results = []
+        faker = Faker('en_CA')
+        for i in range(0,length):
+            try:
+                type_of = faker.random_int(min=1, max=3, step=1)
+                name = faker.company() + " District"
+                description = faker.paragraph(nb_sentences=3, variable_nb_sentences=True, ext_word_list=None)
+                counselor_name = faker.name()
+                counselor_email = faker.email()
+                counselor_phone = faker.phone_number()
+                website_url = faker.uri()
+                # print(
+                #     type_of, "\n", name, "\n", description, "\n",
+                #     counselor_name, "\n", counselor_email, "\n", counselor_phone, "\n",
+                #     website_url, "\n",
+                # )
+                district = District.objects.create(
+                    type_of=type_of,
+                    name=name,
+                    description=description,
+                    counselor_name=counselor_name,
+                    counselor_email=counselor_email,
+                    counselor_phone=counselor_phone,
+                    website_url=website_url,
+                )
+                results.append(district)
+            except Exception as e:
+                print(e)
+                pass
+        return results
