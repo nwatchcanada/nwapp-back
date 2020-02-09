@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import pytz
+from random import randint
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
+from django.db.models.aggregates import Count
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -18,6 +20,15 @@ class DistrictManager(models.Manager):
         items = District.objects.all()
         for item in items.all():
             item.delete()
+
+    def random(self):
+        """
+        Function will get a single random object from the datbase.
+        Special thanks via: https://stackoverflow.com/a/2118712
+        """
+        count = self.aggregate(count=Count('id'))['count']
+        random_index = randint(0, count - 1)
+        return self.all()[random_index]           
 
 
 class District(models.Model):

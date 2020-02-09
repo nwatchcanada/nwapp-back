@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
-from tenant_foundation.model_resources import seed_members
+from tenant_foundation.models import Member
 
 
 class Command(BaseCommand):
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         # Connection will set it back to our tenant.
         connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
-        members = seed_members(organization, length)
+        members = Member.seed(organization, length)
 
         # Iterate through all the randomly generated members
         for member in members:

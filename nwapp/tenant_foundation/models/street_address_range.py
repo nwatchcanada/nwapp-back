@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import csv
 import pytz
+from random import randint
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -8,6 +9,7 @@ from django.contrib.postgres.fields import IntegerRangeField
 from django.db import models
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.aggregates import Count
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -295,3 +297,42 @@ class StreetAddressRange(models.Model):
             if str(target_slug) not in search_slugs:
                 missing_slugs_arr.append(target_slug)
         return missing_slugs_arr
+
+    @staticmethod
+    def seed(length=1, watch=None):
+        from faker import Faker
+        from tenant_foundation.models import Watch
+        results = []
+        faker = Faker('en_CA')
+        for i in range(0,length):
+            try:
+                # Generate our random data.
+                description = faker.paragraph(nb_sentences=3, variable_nb_sentences=True, ext_word_list=None)
+                watch = watch if watch != None else Watch.objects.random()
+                street_number_start = faker.random_int(min=1, max=100, step=1)
+                street_number_end = faker.random_int(min=100, max=1000, step=1)
+                street_numbers = range(street_number_start, street_number_end)
+                street_name = faker.company()
+                street_type = faker.random_int(min=2, max=6, step=1)
+                street_type_other = None
+                street_direction = faker.random_int(min=0, max=8, step=1)
+                is_archived = False
+
+                # Create our object.
+                street_address_range = StreetAddressRange.objects.create(
+                    watch=watch,
+                    street_number_start = street_number_start,
+                    street_number_end = street_number_end,
+                    street_numbers = street_numbers,
+                    street_name = street_name,
+                    street_type = street_type,
+                    street_type_other = street_type_other,
+                    street_direction = street_direction,
+                    is_archived = is_archived,
+                )
+
+                # Append to our result array.
+                results.append(street_address_range)
+            except Exception as e:
+                print(e)
+        return results

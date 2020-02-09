@@ -101,8 +101,9 @@ python manage.py create_shared_organization london \
        "" \
        "N6J4X4" \
        "America/Toronto";
-python manage.py create_random_district "london" 25
-python manage.py create_random_member "london" 30000;
+python manage.py create_random_district "london" 25;
+python manage.py create_random_watch "london" 250;
+python manage.py create_random_member "london" 5000;
 ```
 
 # 6. Host File Setup

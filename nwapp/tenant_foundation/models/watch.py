@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import csv
 import pytz
+from random import randint
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.aggregates import Count
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -58,6 +60,15 @@ class WatchManager(models.Manager):
 
         # print("RANGES", addresses)
         return Watch.objects.filter(street_address_ranges__in=addresses).order_by('name')
+
+    def random(self):
+        """
+        Function will get a single random object from the datbase.
+        Special thanks via: https://stackoverflow.com/a/2118712
+        """
+        count = self.aggregate(count=Count('id'))['count']
+        random_index = randint(0, count - 1)
+        return self.all()[random_index]
 
 
 class Watch(models.Model):
@@ -252,3 +263,36 @@ class Watch(models.Model):
 
     def get_searchable_content(self):
         return self.indexed_text
+
+    @staticmethod
+    def seed(length):
+        from faker import Faker
+        from tenant_foundation.models import District
+        from tenant_foundation.models import StreetAddressRange
+        results = []
+        faker = Faker('en_CA')
+        for i in range(0,length):
+            try:
+                # Generate our random data.
+                name = faker.company() + " Watch"
+                description = faker.paragraph(nb_sentences=3, variable_nb_sentences=True, ext_word_list=None)
+                district = District.objects.random()
+                street_address_ranges_count = faker.random_int(min=1, max=100, step=1)
+
+                # Generate the watch.
+                watch = Watch.objects.create(
+                    type_of=district.type_of,
+                    name=name,
+                    description=description,
+                    district=district,
+                    is_archived=False,
+                )
+
+                # Generate the street address ranges.
+                StreetAddressRange.seed(street_address_ranges_count, watch)
+
+                # Append to our result array.
+                results.append(watch)
+            except Exception as e:
+                print(e)
+        return results

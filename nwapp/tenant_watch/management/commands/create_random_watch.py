@@ -9,12 +9,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
-from tenant_foundation.model_resources import seed_watchs
-from tenant_watch.tasks import process_watch_with_slug_func
+from tenant_foundation.models import Watch, District
 
 
 class Command(BaseCommand):
-    help = _('Command will generate random watchs.')
+    help = _('Command will generate random watches.')
 
     def add_arguments(self, parser):
         """
@@ -43,20 +42,16 @@ class Command(BaseCommand):
         # Connection will set it back to our tenant.
         connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
-        watchs = seed_watchs(organization, length)
-
-        # Iterate through all the randomly generated watchs
-        for watch in watchs:
-            process_watch_with_slug_func(schema_name, watch.user.slug)
+        watches = Watch.seed(length)
 
         # For debugging purposes.
         self.stdout.write(
             self.style.SUCCESS(_('Successfully seed the following watch(s):'))
         )
 
-        for watch in watchs:
+        for watch in watches:
             self.stdout.write(
                 self.style.SUCCESS(_('Slug %(slug)s.') %{
-                    'slug': watch.user.slug,
+                    'slug': watch.slug,
                 })
             )
