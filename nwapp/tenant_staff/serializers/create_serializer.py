@@ -62,8 +62,8 @@ class StaffCreateSerializer(serializers.Serializer):
     # ------ MEMBER ADDRESS ------ #
 
     country = serializers.CharField()
-    region = serializers.CharField()
-    locality = serializers.CharField()
+    province = serializers.CharField()
+    city = serializers.CharField()
     street_number = serializers.CharField()
     street_name =serializers.CharField()
     apartment_unit = serializers.CharField(required=False, allow_null=True, allow_blank=True,)
@@ -204,8 +204,8 @@ class StaffCreateSerializer(serializers.Serializer):
         # ------ MEMBER ADDRESS ------ #
 
         country = validated_data.get('country', None)
-        region = validated_data.get('region', None)
-        locality = validated_data.get('locality', None)
+        province = validated_data.get('province', None)
+        city = validated_data.get('city', None)
         street_number = validated_data.get('street_number', None)
         street_name = validated_data.get('street_name', None)
         apartment_unit = validated_data.get('apartment_unit', None)
@@ -216,8 +216,8 @@ class StaffCreateSerializer(serializers.Serializer):
         staff_address = StaffAddress.objects.create(
             staff=staff,
             country=country,
-            region=region,
-            locality=locality,
+            province=province,
+            city=city,
             street_number=street_number,
             street_name=street_name,
             apartment_unit=apartment_unit,

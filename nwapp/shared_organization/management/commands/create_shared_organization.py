@@ -45,8 +45,8 @@ class Command(BaseCommand):
         parser.add_argument('alternate_name', nargs='+', type=str)
         parser.add_argument('description', nargs='+', type=str)
         parser.add_argument('country', nargs='+', type=str)
-        parser.add_argument('locality', nargs='+', type=str)
-        parser.add_argument('region', nargs='+', type=str)
+        parser.add_argument('city', nargs='+', type=str)
+        parser.add_argument('province', nargs='+', type=str)
         parser.add_argument('street_number', nargs='+', type=str)
         parser.add_argument('street_name', nargs='+', type=str)
         parser.add_argument('apartment_unit', nargs='+', type=str)
@@ -69,8 +69,8 @@ class Command(BaseCommand):
         alternate_name = options['alternate_name'][0]
         description = options['description'][0]
         country = options['country'][0]
-        locality = options['locality'][0]
-        region = options['region'][0]
+        city = options['city'][0]
+        province = options['province'][0]
         try:
             street_number = int(self.get(options, 'street_number'))
         except Exception as e:
@@ -101,8 +101,8 @@ class Command(BaseCommand):
             Alternate Name: %(alternate_name)s
             Description: %(description)s
             Country: %(country)s
-            Region: %(region)s
-            Locality: %(locality)s
+            Province: %(province)s
+            City: %(city)s
             Street #: %(street_number)s
             Street Name: %(street_name)s
             Apt #: %(apartment_unit)s
@@ -118,8 +118,8 @@ class Command(BaseCommand):
                 'alternate_name': alternate_name,
                 'description': description,
                 'country': country,
-                'region': region,
-                'locality': locality,
+                'province': province,
+                'city': city,
                 'street_number': street_number,
                 'street_name': street_name,
                 'apartment_unit': apartment_unit,
@@ -145,7 +145,7 @@ class Command(BaseCommand):
 
         # Create our tenant.
         self.begin_processing(schema_name, name, alternate_name, description,
-                             country, locality, region, street_number, street_name,
+                             country, city, province, street_number, street_name,
                              apartment_unit, street_type, street_type_other,
                              street_direction, postal_code, timezone_name)
 
@@ -155,7 +155,7 @@ class Command(BaseCommand):
         )
 
     def begin_processing(self, schema_name, name, alternate_name, description,
-                         country, locality, region, street_number, street_name,
+                         country, city, province, street_number, street_name,
                          apartment_unit, street_type, street_type_other,
                          street_direction, postal_code, timezone_name):
         """
@@ -169,8 +169,8 @@ class Command(BaseCommand):
             alternate_name=alternate_name,
             description=description,
             country=country,
-            locality=locality,
-            region=region,
+            city=city,
+            province=province,
             street_number=street_number,
             street_name=street_name,
             apartment_unit=apartment_unit,

@@ -59,8 +59,8 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
 
             # Postal Address
             'country',
-            'locality',
-            'region',
+            'city',
+            'province',
             'street_number',
             'street_name',
             'apartment_unit',

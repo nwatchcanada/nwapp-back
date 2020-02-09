@@ -148,15 +148,15 @@ class SharedOrganization(TenantMixin):
         max_length=127,
         help_text=_('The country. For example, USA. You can also provide the two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements">ISO 3166-1 alpha-2</a> country code.'),
     )
-    region = models.CharField(
-        _("Region"),
+    province = models.CharField(
+        _("Province"),
         max_length=127,
-        help_text=_('The region. For example, CA.'),
+        help_text=_('The province. For example, CA.'),
     )
-    locality = models.CharField(
-        _("Locality"),
+    city = models.CharField(
+        _("City"),
         max_length=127,
-        help_text=_('The locality. For example, Mountain View.'),
+        help_text=_('The city. For example, Mountain View.'),
     )
     street_number = models.CharField(
         _("Street Number"),

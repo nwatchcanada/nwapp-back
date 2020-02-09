@@ -37,8 +37,8 @@ class SharedProfileInfoRetrieveUpdateSerializer(serializers.Serializer):
 
     # --- Tenant Details ---
     tenant_country = serializers.CharField(read_only=True, source="tenant.country",)
-    tenant_region = serializers.CharField(read_only=True, source="tenant.region",)
-    tenant_locality = serializers.CharField(read_only=True, source="tenant.locality",)
+    tenant_province = serializers.CharField(read_only=True, source="tenant.province",)
+    tenant_city = serializers.CharField(read_only=True, source="tenant.city",)
     tenant_timezone = serializers.CharField(read_only=True, source="tenant.timezone_name",)
 
     def get_role_id(self, obj):

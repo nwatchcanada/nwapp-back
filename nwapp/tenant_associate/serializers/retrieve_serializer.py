@@ -53,8 +53,8 @@ class AssociateRetrieveSerializer(serializers.Serializer):
     # ------ MEMBER ADDRESS ------ #
 
     country = serializers.CharField(source="user.member.address.country", read_only=True,)
-    region = serializers.CharField(source="user.member.address.region", read_only=True,)
-    locality = serializers.CharField(source="user.member.address.locality", read_only=True,)
+    province = serializers.CharField(source="user.member.address.province", read_only=True,)
+    city = serializers.CharField(source="user.member.address.city", read_only=True,)
     street_number = serializers.CharField(source="user.member.address.street_number", read_only=True,)
     street_name =serializers.CharField(source="user.member.address.street_name", read_only=True,)
     apartment_unit = serializers.CharField(source="user.member.address.apartment_unit", read_only=True,)

@@ -29,8 +29,8 @@ def create_organization_func(validated_data):
     name = validated_data.get('name', None)
     description = validated_data.get('description', False)
     country = validated_data.get('country', None)
-    locality = validated_data.get('locality', None)
-    region = validated_data.get('region', None)
+    city = validated_data.get('city', None)
+    province = validated_data.get('province', None)
     street_number = validated_data.get('street_number', None)
     street_name = validated_data.get('street_name', None)
     apartment_unit = validated_data.get('apartment_unit', None)
@@ -54,8 +54,8 @@ def create_organization_func(validated_data):
         "\nalternate_name", alternate_name,
         "\ndescription", description,
         "\ncountry", country,
-        "\nlocality", locality,
-        "\nregion", region,
+        "\ncity", city,
+        "\nprovince", province,
         "\nstreet_number", street_number,
         "\nstreet_name", street_name,
         "\napartment_unit", apartment_unit,
@@ -73,8 +73,8 @@ def create_organization_func(validated_data):
         alternate_name=alternate_name,
         description=description,
         country=country,
-        locality=locality,
-        region=region,
+        city=city,
+        province=province,
         street_number=street_number,
         street_name=street_name,
         apartment_unit=apartment_unit,

@@ -73,17 +73,17 @@ class MemberListSerializer(serializers.Serializer):
         validators=[],
         source="address.country",
     )
-    region = serializers.CharField(
+    province = serializers.CharField(
         required=True,
         allow_blank=False,
         validators=[],
-        source="address.region",
+        source="address.province",
     )
-    locality = serializers.CharField(
+    city = serializers.CharField(
         required=True,
         allow_blank=False,
         validators=[],
-        source="address.locality",
+        source="address.city",
     )
     postal_code = serializers.CharField(
         required=True,

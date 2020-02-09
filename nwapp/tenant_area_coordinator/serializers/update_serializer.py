@@ -67,8 +67,8 @@ class AreaCoordinatorUpdateSerializer(serializers.Serializer):
     # ------ MEMBER ADDRESS ------ #
 
     country = serializers.CharField(write_only=True,)
-    region = serializers.CharField(write_only=True,)
-    locality = serializers.CharField(write_only=True,)
+    province = serializers.CharField(write_only=True,)
+    city = serializers.CharField(write_only=True,)
     street_number = serializers.CharField(write_only=True,)
     street_name =serializers.CharField(write_only=True,)
     apartment_unit = serializers.CharField(write_only=True,)
@@ -232,8 +232,8 @@ class AreaCoordinatorUpdateSerializer(serializers.Serializer):
         # # ------ MEMBER ADDRESS ------ #
         #
         # country = validated_data.get('country', None)
-        # region = validated_data.get('region', None)
-        # locality = validated_data.get('locality', None)
+        # province = validated_data.get('province', None)
+        # city = validated_data.get('city', None)
         # street_number = validated_data.get('street_number', None)
         # street_name = validated_data.get('street_name', None)
         # apartment_unit = validated_data.get('apartment_unit', None)
@@ -244,8 +244,8 @@ class AreaCoordinatorUpdateSerializer(serializers.Serializer):
         # area_coordinator_address = AreaCoordinatorAddress.objects.create(
         #     area_coordinator=area_coordinator,
         #     country=country,
-        #     region=region,
-        #     locality=locality,
+        #     province=province,
+        #     city=city,
         #     street_number=street_number,
         #     street_name=street_name,
         #     apartment_unit=apartment_unit,

@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 class MemberAddressUpdateSerializer(serializers.Serializer):
     # ------ MEMBER ADDRESS ------ #
     country = serializers.CharField()
-    region = serializers.CharField()
-    locality = serializers.CharField()
+    province = serializers.CharField()
+    city = serializers.CharField()
     street_number = serializers.CharField()
     street_name =serializers.CharField()
     apartment_unit = serializers.CharField()
@@ -46,8 +46,8 @@ class MemberAddressUpdateSerializer(serializers.Serializer):
         # ------ MEMBER ADDRESS ------ #
         request = self.context.get('request')
         instance.country = validated_data.get('country', None)
-        instance.region = validated_data.get('region', None)
-        instance.locality = validated_data.get('locality', None)
+        instance.province = validated_data.get('province', None)
+        instance.city = validated_data.get('city', None)
         instance.street_number = validated_data.get('street_number', None)
         instance.street_name = validated_data.get('street_name', None)
         instance.apartment_unit = validated_data.get('apartment_unit', None)

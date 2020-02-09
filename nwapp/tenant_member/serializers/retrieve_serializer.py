@@ -54,8 +54,8 @@ class MemberRetrieveSerializer(serializers.Serializer):
     # ------ MEMBER ADDRESS ------ #
 
     country = serializers.CharField(source="address.country", read_only=True,)
-    region = serializers.CharField(source="address.region", read_only=True,)
-    locality = serializers.CharField(source="address.locality", read_only=True,)
+    province = serializers.CharField(source="address.province", read_only=True,)
+    city = serializers.CharField(source="address.city", read_only=True,)
     street_number = serializers.CharField(source="address.street_number", read_only=True,)
     street_name =serializers.CharField(source="address.street_name", read_only=True,)
     apartment_unit = serializers.CharField(source="address.apartment_unit", read_only=True,)

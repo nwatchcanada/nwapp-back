@@ -57,8 +57,8 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
 
             # Postal Address
             'country',
-            'locality',
-            'region',
+            'city',
+            'province',
             'street_number',
             'street_name',
             'apartment_unit',
@@ -115,8 +115,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
 
             # Postal Address
             'country',
-            'locality',
-            'region',
+            'city',
+            'province',
             'street_number',
             'street_name',
             'apartment_unit',
@@ -145,8 +145,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.timezone_name = validated_data.get('timezone_name', instance.timezone_name)
 
         instance.country = validated_data.get('country', instance.country)
-        instance.locality = validated_data.get('locality', instance.locality)
-        instance.region = validated_data.get('region', instance.region)
+        instance.city = validated_data.get('city', instance.city)
+        instance.province = validated_data.get('province', instance.province)
         instance.street_number = validated_data.get('street_number', instance.street_number)
         instance.street_name = validated_data.get('street_name', instance.street_name)
         instance.apartment_unit = validated_data.get('apartment_unit', instance.apartment_unit)

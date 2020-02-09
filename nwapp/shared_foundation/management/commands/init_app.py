@@ -59,8 +59,8 @@ class Command(BaseCommand):
                 'name': 'Public Domain',
                 'description': 'Used as shared domain.',
                 'country': "Canada",
-                "region": "Ontario",
-                "locality": "London",
+                "province": "Ontario",
+                "city": "London",
             }
         )
 

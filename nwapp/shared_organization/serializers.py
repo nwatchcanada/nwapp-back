@@ -78,8 +78,8 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
 
             # Postal ddress
             'address_country',
-            'address_locality',
-            'address_region',
+            'address_city',
+            'address_province',
             'post_office_box_number',
             'postal_code',
             'street_address',
@@ -167,8 +167,8 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
 
             # Postal ddress
             'address_country',
-            'address_locality',
-            'address_region',
+            'address_city',
+            'address_province',
             'post_office_box_number',
             'postal_code',
             'street_address',
@@ -257,8 +257,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
 
             # Postal ddress
             'address_country',
-            'address_locality',
-            'address_region',
+            'address_city',
+            'address_province',
             'post_office_box_number',
             'postal_code',
             'street_address',
@@ -284,8 +284,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.timezone_name = validated_data.get('timezone_name', instance.timezone_name)
 
         instance.address_country = validated_data.get('address_country', instance.address_country)
-        instance.address_locality = validated_data.get('address_locality', instance.address_locality)
-        instance.address_region = validated_data.get('address_region', instance.address_region)
+        instance.address_city = validated_data.get('address_city', instance.address_city)
+        instance.address_province = validated_data.get('address_province', instance.address_province)
         instance.post_office_box_number = validated_data.get('post_office_box_number', instance.post_office_box_number)
         instance.postal_code = validated_data.get('postal_code', instance.postal_code)
         instance.street_address = validated_data.get('street_address', instance.street_address)

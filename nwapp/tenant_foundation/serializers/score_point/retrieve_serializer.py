@@ -48,8 +48,8 @@ class ScorePointRetrieveSerializer(serializers.Serializer):
     # # ------ MEMBER ADDRESS ------ #
     #
     # country = serializers.CharField(source="address.country")
-    # region = serializers.CharField(source="address.region")
-    # locality = serializers.CharField(source="address.locality")
+    # province = serializers.CharField(source="address.province")
+    # city = serializers.CharField(source="address.city")
     # street_number = serializers.CharField(source="address.street_number")
     # street_name =serializers.CharField(source="address.street_name")
     # apartment_unit = serializers.CharField(source="address.apartment_unit")

@@ -351,8 +351,8 @@ class Member(models.Model):
                 member_address = MemberAddress.objects.create(
                     member=member,
                     country="Canada",
-                    region="Ontario",
-                    locality=faker.city(),
+                    province="Ontario",
+                    city=faker.city(),
                     street_number=faker.pyint(min_value=1, max_value=1000, step=1),
                     street_name=faker.street_name(),
                     apartment_unit=faker.pyint(min_value=1, max_value=1000, step=1),
