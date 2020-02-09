@@ -17,7 +17,6 @@ from shared_foundation.drf.permissions import DisableOptionsPermission, PublicPe
 class SharedProfileRetrieveUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes= (OAuth2Authentication,)
     serializer_class = SharedProfileInfoRetrieveUpdateSerializer
-    # pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         PublicPermission,

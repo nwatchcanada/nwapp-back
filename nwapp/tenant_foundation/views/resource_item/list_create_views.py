@@ -11,7 +11,6 @@ from rest_framework import authentication, viewsets, permissions, status
 from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
-from shared_foundation.drf.pagination import StandardResultsSetPagination
 # from tenant_api.permissions.tag import (
 #    CanListCreateResourceItemPermission,
 #    CanRetrieveUpdateDestroyResourceItemPermission
@@ -27,7 +26,6 @@ from tenant_foundation.models import ResourceItem
 
 class ResourceItemListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ResourceItemListSerializer
-    pagination_class = StandardResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,
