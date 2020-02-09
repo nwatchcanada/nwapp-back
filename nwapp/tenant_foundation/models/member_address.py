@@ -261,7 +261,7 @@ class MemberAddress(models.Model):
     def street_address(self):
         address = ""
         if self.apartment_unit:
-            address = self.apartment_unit + "-"
+            address = str(self.apartment_unit) + "-"
         address += str(self.street_number) + " "
         address += str(self.street_name) + " "
         if self.street_type == MemberAddress.STREET_TYPE.OTHER:

@@ -333,7 +333,7 @@ class Member(models.Model):
                 user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
                 member = Member.objects.create(
                     user=user,
-                    type_of=Member.MEMBER_TYPE_OF.RESIDENTIAL,
+                    type_of=watch.type_of,
                     watch=watch,
                 )
                 member_contact = MemberContact.objects.create(
