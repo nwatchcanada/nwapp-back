@@ -36,6 +36,7 @@ class WatchRetrieveSerializer(serializers.Serializer):
     district_name = serializers.CharField(source="district.name",read_only=True,)
     tags = TagListCreateSerializer(many=True, read_only=True,)
     is_archived = serializers.BooleanField(read_only=True,)
+    is_virtual = serializers.BooleanField(read_only=True,)
     # street_membership = StreetAddressRangeRetrieveSerializer(many=True, source="street_address_ranges",)
     street_membership = serializers.SerializerMethodField()
 

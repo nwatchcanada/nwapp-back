@@ -37,6 +37,7 @@ class WatchCreateSerializer(serializers.Serializer):
     description = serializers.CharField()
     district = serializers.SlugField()
     street_membership = serializers.JSONField()
+    is_virtual = serializers.BooleanField(allow_null=True,)
 
     def validate_district(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
@@ -55,6 +56,9 @@ class WatchCreateSerializer(serializers.Serializer):
         district_slug = validated_data.get('district')
         tags = validated_data.get('tags')
         street_membership = validated_data.get('street_membership')
+        is_virtual = validated_data.get('is_virtual', False)
+        if is_virtual == None or is_virtual == "":
+            is_virtual = False
 
         district = District.objects.get(slug=district_slug)
 
@@ -63,6 +67,7 @@ class WatchCreateSerializer(serializers.Serializer):
             name = name,
             description = description,
             district = district,
+            is_virtual = is_virtual,
             is_archived = False,
             created_by=request.user,
             created_from=request.client_ip,

@@ -140,6 +140,13 @@ class Watch(models.Model):
         related_name="watches",
         on_delete=models.CASCADE,
     )
+    is_virtual = models.BooleanField(
+        _("Is Virtual Watch"),
+        help_text=_('Indicates whether watch is a virtual watch.'),
+        default=False,
+        blank=True,
+        db_index=True
+    )
     tags = models.ManyToManyField(
         "Tag",
         help_text=_('The tags associated with this watch.'),

@@ -53,6 +53,9 @@ class WatchListSerializer(serializers.Serializer):
     is_archived = serializers.BooleanField(
         required=True,
     )
+    is_virtual = serializers.BooleanField(
+        required=True,
+    )
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """

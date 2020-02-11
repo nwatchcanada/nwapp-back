@@ -34,6 +34,7 @@ class WatchInformationUpdateSerializer(serializers.Serializer):
     name = serializers.CharField()
     description = serializers.CharField()
     district = serializers.SlugField()
+    is_virtual = serializers.BooleanField(allow_null=True,)
 
     def validate_district(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
@@ -52,6 +53,11 @@ class WatchInformationUpdateSerializer(serializers.Serializer):
         instance.last_modified_by = request.user
         instance.last_modified_from = request.client_ip
         instance.last_modified_from_is_public = request.client_ip_is_routable
+        is_virtual = validated_data.get('is_virtual', False)
+        if is_virtual == None or is_virtual == "":
+            instance.is_virtual = False
+        else:
+            instance.is_virtual = is_virtual
         instance.save()
         logger.info("Updated watch.")
 
