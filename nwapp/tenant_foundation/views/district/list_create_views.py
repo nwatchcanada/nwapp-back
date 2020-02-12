@@ -36,7 +36,7 @@ class DistrictListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = District.objects.all()
+        queryset = District.objects.all().order_by("name")
 
         # Fetch all the queries.
         s = self.get_serializer_class()
