@@ -20,7 +20,10 @@ from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
-from tenant_foundation.serializers import TagListCreateSerializer
+from tenant_foundation.serializers import (
+    TagListCreateSerializer,
+    BadgeRetrieveSerializer
+)
 
 
 logger = logging.getLogger(__name__)
@@ -126,6 +129,10 @@ class MemberRetrieveSerializer(serializers.Serializer):
 
     created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
     last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
+
+    # ------ OPERATIONS ------ #
+
+    badges = BadgeRetrieveSerializer(source="user.badges", read_only=True, many=True,)
 
     # ------ FUNCTIONS ------ #
 
