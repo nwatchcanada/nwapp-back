@@ -204,13 +204,13 @@ class Badge(models.Model):
 
     def get_type_of_label(self):
         if self.type_of == Badge.TYPE_OF.OTHER:
-            return self.description_other
+            return self.type_of_other
         elif self.type_of == Badge.TYPE_OF.SUPPORTER:
             return _("Supporter")
         return None
 
     def get_description(self):
         if self.type_of == Badge.TYPE_OF.OTHER:
-            return self.description_other
+            return self.type_of_other
         elif self.type_of == Badge.TYPE_OF.SUPPORTER:
             return _("Badge given to users whom generously supported Neighbourhood Watch with financial donations")
