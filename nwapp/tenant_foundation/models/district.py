@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
 from django.db.models.aggregates import Count
+from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -21,6 +22,20 @@ class DistrictManager(models.Manager):
         for item in items.all():
             item.delete()
 
+    def search(self, keyword):
+        """Default search algorithm used for this model."""
+        return self.partial_text_search(keyword)
+
+    def partial_text_search(self, keyword):
+        """Function performs partial text search of various textfields."""
+        return District.objects.filter(
+            Q(indexed_text__icontains=keyword) |
+            Q(indexed_text__istartswith=keyword) |
+            Q(indexed_text__iendswith=keyword) |
+            Q(indexed_text__exact=keyword) |
+            Q(indexed_text__icontains=keyword)
+        )
+
     def random(self):
         """
         Function will get a single random object from the datbase.
@@ -28,7 +43,7 @@ class DistrictManager(models.Manager):
         """
         count = self.aggregate(count=Count('id'))['count']
         random_index = randint(0, count - 1)
-        return self.all()[random_index]           
+        return self.all()[random_index]
 
 
 class District(models.Model):
@@ -254,6 +269,9 @@ class District(models.Model):
             text += " " + str(self.website_url)
         if self.type_of:
             text += " " + self.get_type_of_label()
+        if self.slug:
+            text += " " + str(self.slug)
+        self.indexed_text = text
 
         '''
         Finally call the parent function which handles saving so we can carry

@@ -27,10 +27,16 @@ class DistrictFilter(django_filters.FilterSet):
     #
     # user = django_filters.CharFilter(method='user_filtering')
 
+    def keyword_filtering(self, queryset, name, value):
+        return District.objects.search(value).order_by('name')
+
+    search = django_filters.CharFilter(method='keyword_filtering')
+
     class Meta:
         model = District
         fields = [
             'is_archived',
             'type_of',
-            'slug'
+            'slug',
+            'search',
         ]
