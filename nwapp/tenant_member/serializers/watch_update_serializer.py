@@ -58,5 +58,9 @@ class MemberWatchUpdateSerializer(serializers.Serializer):
         instance.last_modified_from_is_public = request.client_ip_is_routable
         instance.save()
 
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
         # Return our modified instances.
         return instance

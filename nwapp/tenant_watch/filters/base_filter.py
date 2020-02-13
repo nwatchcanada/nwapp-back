@@ -136,29 +136,35 @@ class WatchFilter(django_filters.FilterSet):
     def search_nearby_address_filtering(self, base_queryset, name, value):
         if value != None and value != "":
             address_arr = value.split(",")
-            if len(address_arr) == 4:
+            if len(address_arr) == 5:
                 try:
-                    street_number = int(address_arr[0])
-                    street_name = address_arr[1]
-                    street_type = int(address_arr[2])
-                    street_type_other = address_arr[3]
+                    type_of = int(address_arr[0])
+                    street_number = int(address_arr[1])
+                    street_name = address_arr[2]
+                    street_type = int(address_arr[3])
+                    street_type_other = address_arr[4]
 
                     # # For debugging purposes only.
-                    # print(street_number, street_name, street_type, street_type_other)
+                    # print(type_of, street_number, street_name, street_type, street_type_other)
 
                     # Lookup all the watches with the nearby address.
                     search_queryset = Watch.objects.search_nearby_address(street_number, street_name, street_type, street_type_other)
 
+                    # Lookup all the virtual watches pertaining the type of.
+                    virtual_queryset = Watch.objects.filter(is_virtual=True, type_of=type_of,)
+
                     # Special thanks via
                     # https://docs.djangoproject.com/en/1.11/ref/models/querysets/#intersection
-                    intersected_queryset = base_queryset.intersection(search_queryset).order_by("name")
+                    intersected_queryset = base_queryset.intersection(search_queryset)
+                    union_queryset = intersected_queryset.union(virtual_queryset)
 
                     # # For debugging purposes only.
                     # print("BASE QUERY", base_queryset)
                     # print("SEARCH QUERY", search_queryset)
                     # print("INTERSECTED QUERY", intersected_queryset)
+                    # print("UNION QUERY", union_queryset)
 
-                    return intersected_queryset
+                    return union_queryset.order_by("name")
                 except Exception as e:
                     print("search_nearby_address_filtering |", e)
         return base_queryset
