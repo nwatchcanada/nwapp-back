@@ -10,6 +10,7 @@ from django.db.models import Q, Prefetch
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.utils.http import urlquote
+from django.utils.text import Truncator
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
@@ -308,7 +309,8 @@ class MemberCreateSerializer(serializers.Serializer):
                 logger.info("Attached tag to member metric.")
 
         # Run the following which will save our searchable content.
-        member.indexed_text = Member.get_searchable_content(member)
+        indexed_text = Member.get_searchable_content(member)
+        member.indexed_text = Truncator(indexed_text).chars(1023)
         member.save()
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!

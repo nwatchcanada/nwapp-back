@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import Truncator
 
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
@@ -50,7 +51,8 @@ class Command(BaseCommand):
             freezer.start()
 
             # Run the following which will save our searchable content.
-            member.indexed_text = Member.get_searchable_content(member)
+            indexed_text = Member.get_searchable_content(member)
+            member.indexed_text = Truncator(indexed_text).chars(1023)
             member.save()
 
             freezer.stop()
