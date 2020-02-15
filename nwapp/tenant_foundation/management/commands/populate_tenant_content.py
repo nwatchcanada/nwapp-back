@@ -44,6 +44,7 @@ class Command(BaseCommand):
         self.populate_default_how_did_you_hear_items()
         self.populate_default_expectation_items()
         self.populate_default_meaning_items()
+        self.populate_default_item_type_items()
 
         # For debugging purposes.
         self.stdout.write(
@@ -166,5 +167,29 @@ class Command(BaseCommand):
                     'is_for_customer': data_arr[4],
                     'is_for_staff': data_arr[5],
                     'is_for_partner': data_arr[6],
+                }
+            )
+
+    def populate_default_item_type_items(self):
+        DATA_ARRAY = [
+            # ID | TEXT | DESCRIPTION | IS ARCHIVED |
+            #-------------------------------------------------------------------
+            [2, "NW Meeting", '', False, ],
+            [3, "Garage Sale", '', False, ],
+            [4, "Party", '', False, ],
+            [5, "Community Cleanup", '', False, ],
+            [6, "Community Consultation", '', False, ],
+            [7, "Arts Event", '', False, ],
+            [8, "Club Meeting", '', False, ],
+            [9, "Fundraiser", '', False, ],
+        ];
+        for data_arr in DATA_ARRAY:
+            Tag.objects.update_or_create(
+                id=int(data_arr[0]),
+                defaults={
+                    'id': int(data_arr[0]),
+                    'text': data_arr[1],
+                    'description': data_arr[2],
+                    'is_archived': data_arr[3],
                 }
             )
