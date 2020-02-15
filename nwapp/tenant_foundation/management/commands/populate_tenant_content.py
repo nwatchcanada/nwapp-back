@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from shared_foundation import constants
 from shared_foundation.models import SharedUser, SharedOrganization
 from tenant_foundation.models import (
-    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
+    Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem, ItemType
 )
 
 
@@ -172,24 +172,25 @@ class Command(BaseCommand):
 
     def populate_default_item_type_items(self):
         DATA_ARRAY = [
-            # ID | TEXT | DESCRIPTION | IS ARCHIVED |
+            # ID | CATEGORY | TEXT | DESCRIPTION | IS ARCHIVED |
             #-------------------------------------------------------------------
-            [2, "NW Meeting", '', False, ],
-            [3, "Garage Sale", '', False, ],
-            [4, "Party", '', False, ],
-            [5, "Community Cleanup", '', False, ],
-            [6, "Community Consultation", '', False, ],
-            [7, "Arts Event", '', False, ],
-            [8, "Club Meeting", '', False, ],
-            [9, "Fundraiser", '', False, ],
+            [2, ItemType.CATEGORY.EVENT, "NW Meeting", '', False, ],
+            [3, ItemType.CATEGORY.EVENT, "Garage Sale", '', False, ],
+            [4, ItemType.CATEGORY.EVENT, "Party", '', False, ],
+            [5, ItemType.CATEGORY.EVENT, "Community Cleanup", '', False, ],
+            [6, ItemType.CATEGORY.EVENT, "Community Consultation", '', False, ],
+            [7, ItemType.CATEGORY.EVENT, "Arts Event", '', False, ],
+            [8, ItemType.CATEGORY.EVENT, "Club Meeting", '', False, ],
+            [9, ItemType.CATEGORY.EVENT, "Fundraiser", '', False, ],
         ];
         for data_arr in DATA_ARRAY:
-            Tag.objects.update_or_create(
+            ItemType.objects.update_or_create(
                 id=int(data_arr[0]),
                 defaults={
                     'id': int(data_arr[0]),
-                    'text': data_arr[1],
-                    'description': data_arr[2],
-                    'is_archived': data_arr[3],
+                    'category': int(data_arr[1]),
+                    'text': data_arr[2],
+                    'description': data_arr[3],
+                    'is_archived': data_arr[4],
                 }
             )
