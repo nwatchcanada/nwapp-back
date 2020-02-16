@@ -11,6 +11,7 @@ class ItemTypeFilter(django_filters.FilterSet):
         # tuple-mapping retains order
         fields=(
             ('created_at', 'created_at'),
+            ('category', 'category'),
             ('text', 'text'),
         ),
 
@@ -31,6 +32,6 @@ class ItemTypeFilter(django_filters.FilterSet):
         model = ItemType
         fields = [
             'is_archived',
-            # 'text',
+            'category',
             'slug'
         ]

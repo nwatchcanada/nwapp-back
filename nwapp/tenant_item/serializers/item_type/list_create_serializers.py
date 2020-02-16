@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class ItemTypeListCreateSerializer(serializers.Serializer):
-
+    slug = serializers.SlugField(read_only=True,)
     category = serializers.IntegerField(
         required=True,
         allow_null=False,

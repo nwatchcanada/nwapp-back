@@ -33,11 +33,11 @@ class ItemTypeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     )
 
     @transaction.atomic
-    def get(self, request, pk=None):
+    def get(self, request, slug=None):
         """
         Retrieve
         """
-        item_type = get_object_or_404(ItemType, pk=pk)
+        item_type = get_object_or_404(ItemType, slug=slug)
         self.check_object_permissions(request, item_type)  # Validate permissions.
         serializer = ItemTypeRetrieveUpdateDestroySerializer(item_type, many=False, context={
             'request': request,
@@ -48,11 +48,11 @@ class ItemTypeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
         )
 
     @transaction.atomic
-    def put(self, request, pk=None):
+    def put(self, request, slug=None):
         """
         Update
         """
-        item_type = get_object_or_404(ItemType, pk=pk)
+        item_type = get_object_or_404(ItemType, slug=slug)
         self.check_object_permissions(request, item_type)  # Validate permissions.
         serializer = ItemTypeRetrieveUpdateDestroySerializer(item_type, data=request.data, context={
             'request': request,
@@ -62,12 +62,12 @@ class ItemTypeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @transaction.atomic
-    def delete(self, request, pk=None):
+    def delete(self, request, slug=None):
         """
         Delete
         """
         client_ip, is_routable = get_client_ip(self.request)
-        item_type = get_object_or_404(ItemType, pk=pk)
+        item_type = get_object_or_404(ItemType, slug=slug)
         self.check_object_permissions(request, item_type)  # Validate permissions.
         item_type.is_archived = True
         item_type.last_modified_by = request.user
