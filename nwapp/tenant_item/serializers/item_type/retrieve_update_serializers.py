@@ -51,3 +51,27 @@ class ItemTypeRetrieveUpdateDestroySerializer(serializers.Serializer):
     created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
     last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
     last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+
+    def update(self, instance, validated_data):
+        """
+        Override the `create` function to add extra functinality.
+        """
+        request = self.context.get('request')
+        instance.category = validated_data.get('category')
+        instance.text = validated_data.get('text')
+        instance.description = validated_data.get('description')
+        instance.created_by = request.user
+        instance.created_from = request.client_ip
+        instance.created_from_is_public = request.client_ip_is_routable
+        instance.last_modified_by=request.user
+        instance.last_modified_from=request.client_ip
+        instance.last_modified_from_is_public=request.client_ip_is_routable
+        instance.save()
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
+        logger.info("Updated item.")
+
+        return instance
