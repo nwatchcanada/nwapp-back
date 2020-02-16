@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import django_filters
-from tenant_foundation.models import Tag
+from tenant_foundation.models import ItemType
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
 
-class TagFilter(django_filters.FilterSet):
+class ItemTypeFilter(django_filters.FilterSet):
     o = django_filters.OrderingFilter(
         # tuple-mapping retains order
         fields=(
@@ -28,7 +28,7 @@ class TagFilter(django_filters.FilterSet):
     # user = django_filters.CharFilter(method='user_filtering')
 
     class Meta:
-        model = Tag
+        model = ItemType
         fields = [
             'is_archived',
             # 'text',

@@ -21,6 +21,7 @@ urlpatterns = ([
     path('', include('tenant_associate.urls')),
     path('', include('tenant_staff.urls')),
     path('', include('tenant_watch.urls')),
+    path('', include('tenant_item.urls')),
     # path('', include('api.urls')),
 ])
 

@@ -181,3 +181,6 @@ class ItemType(models.Model):
         out the saving operation by Django in our ORM.
         '''
         super(ItemType, self).save(*args, **kwargs)
+
+    def get_category_label(self):
+        return str(dict(ItemType.CATEGORY_CHOICES).get(self.category))
