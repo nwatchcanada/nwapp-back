@@ -81,7 +81,6 @@ class ItemType(models.Model):
         max_length=31,
         help_text=_('The text content of this item type.'),
         db_index=True,
-        unique=True
     )
     description = models.TextField(
         _("Description"),
@@ -165,11 +164,18 @@ class ItemType(models.Model):
         '''
 
         '''
-        If we are creating a new model, then we will automatically increment the `id`.
+        If we are creating a new row, then we will automatically increment the
+        `id` field instead of relying on Postgres DB.
         '''
-        # The following code will generate a unique slug and if the slug
-        # is not unique in the database, then continue to try generating
-        # a unique slug until it is found.
+        if self.id == None:
+            latest_obj = ItemType.objects.latest('id');
+            self.id = latest_obj.id + 1 if latest_obj != None else 1
+
+        '''
+        The following code will generate a unique slug and if the slug
+        is not unique in the database, then continue to try generating
+        a unique slug until it is found.
+        '''
         if self.slug == "" or self.slug == None:
             slug = slugify(self.text)
             while ItemType.objects.filter(slug=slug).exists():

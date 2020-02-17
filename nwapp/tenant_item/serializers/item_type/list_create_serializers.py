@@ -55,13 +55,15 @@ class ItemTypeListCreateSerializer(serializers.Serializer):
         Override the `create` function to add extra functinality.
         """
         request = self.context.get("request")
-        description = validated_data.get('description')
+        category = validated_data.get('category')
         text = validated_data.get('text')
+        description = validated_data.get('description')
 
         # Create the district.
         item_type = ItemType.objects.create(
             description=description,
             text=text,
+            category=category,
             created_by = request.user,
             created_from = request.client_ip,
             created_from_is_public = request.client_ip_is_routable,
