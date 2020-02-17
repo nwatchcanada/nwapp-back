@@ -169,7 +169,7 @@ class ItemType(models.Model):
         '''
         if self.id == None:
             latest_obj = ItemType.objects.latest('id');
-            self.id = latest_obj.id + 1 if latest_obj != None else 1
+            self.id = 1 if latest_obj == None else latest_obj.id + 1
 
         '''
         The following code will generate a unique slug and if the slug

@@ -138,6 +138,14 @@ class Tag(models.Model):
         '''
 
         '''
+        If we are creating a new row, then we will automatically increment the
+        `id` field instead of relying on Postgres DB.
+        '''
+        if self.id == None:
+            latest_obj = Tag.objects.latest('id');
+            self.id = 1 if latest_obj == None else latest_obj.id + 1
+
+        '''
         If we are creating a new model, then we will automatically increment the `id`.
         '''
         # The following code will generate a unique slug and if the slug

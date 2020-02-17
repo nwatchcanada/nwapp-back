@@ -247,6 +247,14 @@ class District(models.Model):
         Override the `save` function to support extra functionality of our model.
         '''
 
+        '''
+        If we are creating a new row, then we will automatically increment the
+        `id` field instead of relying on Postgres DB.
+        '''
+        if self.id == None:
+            latest_obj = District.objects.latest('id');
+            self.id = 1 if latest_obj == None else latest_obj.id + 1
+
         # Assign our unique slug to this model as our external identifier.
         if self.slug == None or self.slug == "":
             # The following code will generate a unique slug and if the slug
