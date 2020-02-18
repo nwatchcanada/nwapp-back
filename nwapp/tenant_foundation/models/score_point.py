@@ -186,8 +186,11 @@ class ScorePoint(models.Model):
         `id` field instead of relying on Postgres DB.
         '''
         if self.id == None:
-            latest_obj = ScorePoint.objects.latest('id');
-            self.id = 1 if latest_obj == None else latest_obj.id + 1
+            try:
+                latest_obj = ScorePoint.objects.latest('id');
+                self.id = latest_obj.id + 1
+            except ScorePoint.DoesNotExist:
+                self.id = 1
 
         '''
         Finally call the parent function which handles saving so we can carry

@@ -137,8 +137,8 @@ class Announcement(models.Model):
         '''
         if self.id == None:
             try:
-                latest_obj = Announcement.objects.all().latest('id');
-                self.id = 1 if latest_obj == None else latest_obj.id + 1
+                latest_obj = Announcement.objects.latest('id');
+                self.id = latest_obj.id + 1
             except Announcement.DoesNotExist:
                 self.id = 1
 

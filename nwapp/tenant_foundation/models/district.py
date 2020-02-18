@@ -252,8 +252,11 @@ class District(models.Model):
         `id` field instead of relying on Postgres DB.
         '''
         if self.id == None:
-            latest_obj = District.objects.latest('id');
-            self.id = 1 if latest_obj == None else latest_obj.id + 1
+            try:
+                latest_obj = District.objects.latest('id');
+                self.id = latest_obj.id + 1
+            except District.DoesNotExist:
+                self.id = 1
 
         # Assign our unique slug to this model as our external identifier.
         if self.slug == None or self.slug == "":

@@ -142,8 +142,11 @@ class Tag(models.Model):
         `id` field instead of relying on Postgres DB.
         '''
         if self.id == None:
-            latest_obj = Tag.objects.latest('id');
-            self.id = 1 if latest_obj == None else latest_obj.id + 1
+            try:
+                latest_obj = Tag.objects.latest('id');
+                self.id = latest_obj.id + 1
+            except Tag.DoesNotExist:
+                self.id = 1
 
         '''
         If we are creating a new model, then we will automatically increment the `id`.

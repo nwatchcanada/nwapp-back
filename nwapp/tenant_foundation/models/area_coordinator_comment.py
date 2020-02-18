@@ -103,8 +103,11 @@ class AreaCoordinatorComment(models.Model):
         `id` field instead of relying on Postgres DB.
         '''
         if self.id == None:
-            latest_obj = AreaCoordinatorComment.objects.latest('id');
-            self.id = 1 if latest_obj == None else latest_obj.id + 1
+            try:
+                latest_obj = AreaCoordinatorComment.objects.latest('id');
+                self.id = latest_obj.id + 1
+            except AreaCoordinatorComment.DoesNotExist:
+                self.id = 1
 
         if self.slug == None or self.slug == "":
             # The following code will generate a unique slug and if the slug
