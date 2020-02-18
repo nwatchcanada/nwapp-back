@@ -31,6 +31,7 @@ class AnnouncementListCreateSerializer(serializers.ModelSerializer):
             )
         ],
     )
+    slug = serializers.CharField(read_only=True,)
     is_archived = serializers.BooleanField(read_only=True)
 
     # ------ AUDITING ------ #

@@ -136,15 +136,18 @@ class Announcement(models.Model):
         `id` field instead of relying on Postgres DB.
         '''
         if self.id == None:
-            latest_obj = Announcement.objects.latest('id');
-            self.id = 1 if latest_obj == None else latest_obj.id + 1
+            try:
+                latest_obj = Announcement.objects.all().latest('id');
+                self.id = 1 if latest_obj == None else latest_obj.id + 1
+            except Announcement.DoesNotExist:
+                self.id = 1
 
         # The following code will generate a unique slug and if the slug
         # is not unique in the database, then continue to try generating
         # a unique slug until it is found.
         if self.slug == "" or self.slug == None:
             slug = slugify(self.text)
-            while Watch.objects.filter(slug=slug).exists():
+            while Announcement.objects.filter(slug=slug).exists():
                 slug = slugify(self.text)+"-"+get_referral_code(16)
             self.slug = Truncator(slug).chars(255)
 
