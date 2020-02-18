@@ -19,8 +19,8 @@ email_validator = EmailValidator(message=_("Invalid email"))
 
 class MemberManager(models.Manager):
     def delete_all(self):
-        items = Member.objects.iterator(chunk_size=50)
-        for item in items.all():
+        items = Member.objects.iterator(chunk_size=250)
+        for item in items:
             item.delete()
 
     def search(self, keyword):
