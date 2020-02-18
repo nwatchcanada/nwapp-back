@@ -323,6 +323,8 @@ class Member(models.Model):
                 first_name = faker.first_name()
                 last_name = faker.last_name()
                 watch = Watch.objects.random()
+                organization_name = fake.company()
+                organization_type_of = faker.pyint(min_value=2, max_value=4, step=1)
                 user = SharedUser.objects.create(
                     tenant=tenant,
                     email = faker.safe_email(),
@@ -340,8 +342,8 @@ class Member(models.Model):
                     member=member,
                     is_ok_to_email=True,
                     is_ok_to_text=True,
-                    # organization_name="",
-                    # organization_type_of=
+                    organization_name=organization_name,
+                    organization_type_of=organization_type_of,
                     first_name=user.first_name,
                     last_name=user.last_name,
                     email=user.email,
