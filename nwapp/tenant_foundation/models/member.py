@@ -323,7 +323,7 @@ class Member(models.Model):
                 first_name = faker.first_name()
                 last_name = faker.last_name()
                 watch = Watch.objects.random()
-                organization_name = fake.company()
+                organization_name = faker.company()
                 organization_type_of = faker.pyint(min_value=2, max_value=4, step=1)
                 user = SharedUser.objects.create(
                     tenant=tenant,
