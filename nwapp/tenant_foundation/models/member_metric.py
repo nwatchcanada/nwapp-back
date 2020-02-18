@@ -305,17 +305,6 @@ class MemberMetric(models.Model):
         '''
 
         '''
-        If we are creating a new row, then we will automatically increment the
-        `id` field instead of relying on Postgres DB.
-        '''
-        if self.id == None:
-            try:
-                latest_obj = MemberMetric.objects.latest('id');
-                self.id = latest_obj.id + 1
-            except MemberContact.DoesNotExist:
-                self.id = 1
-
-        '''
         Finally call the parent function which handles saving so we can carry
         out the saving operation by Django in our ORM.
         '''
