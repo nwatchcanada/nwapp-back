@@ -14,7 +14,7 @@ from tenant_foundation.models import Member
 
 
 class Command(BaseCommand):
-    help = _('Command will generate random members.')
+    help = _('Command will remove all members - only use this in developer or quality assurance environment only.')
 
     def add_arguments(self, parser):
         """
