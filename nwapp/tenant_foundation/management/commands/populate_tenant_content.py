@@ -187,7 +187,12 @@ class Command(BaseCommand):
             [104, ItemType.CATEGORY.INCIDENT, "Suspicious Individual", '-', False, ],
             [105, ItemType.CATEGORY.INCIDENT, "Mental Health Issue", '-', False, ],
             [106, ItemType.CATEGORY.INCIDENT, "Addiction Issue", '-', False, ],
-            # [107, ItemType.CATEGORY.EVENT, "-", '', False, ],
+            [202, ItemType.CATEGORY.CONCERN, "Concern with NW", '', False, ],
+            [203, ItemType.CATEGORY.CONCERN, "Concern with an NW Partner", '', False, ],
+            [204, ItemType.CATEGORY.CONCERN, "Concern with an NW Associate", '', False, ],
+            [205, ItemType.CATEGORY.CONCERN, "Concern with an NW Area Coordinator", '', False, ],
+            [206, ItemType.CATEGORY.CONCERN, "Concern with an NW Member", '', False, ],
+            [207, ItemType.CATEGORY.CONCERN, "Concern with an NW Business Member", '', False, ],
         ];
         for data_arr in DATA_ARRAY:
             ItemType.objects.update_or_create(

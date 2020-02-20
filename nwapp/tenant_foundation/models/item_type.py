@@ -78,7 +78,7 @@ class ItemType(models.Model):
     )
     text = models.CharField(
         _("Text"),
-        max_length=31,
+        max_length=127,
         help_text=_('The text content of this item type.'),
         db_index=True,
     )
