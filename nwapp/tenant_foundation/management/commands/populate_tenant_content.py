@@ -174,6 +174,7 @@ class Command(BaseCommand):
         DATA_ARRAY = [
             # ID | CATEGORY | TEXT | DESCRIPTION | IS ARCHIVED |
             #-------------------------------------------------------------------
+            # --- Event --- #
             [2, ItemType.CATEGORY.EVENT, "NW Meeting", '-', False, ],
             [3, ItemType.CATEGORY.EVENT, "Garage Sale", '-', False, ],
             [4, ItemType.CATEGORY.EVENT, "Party", '-', False, ],
@@ -182,17 +183,25 @@ class Command(BaseCommand):
             [7, ItemType.CATEGORY.EVENT, "Arts Event", '-', False, ],
             [8, ItemType.CATEGORY.EVENT, "Club Meeting", '-', False, ],
             [9, ItemType.CATEGORY.EVENT, "Fundraiser", '-', False, ],
+
+            # --- Incident --- #
             [102, ItemType.CATEGORY.INCIDENT, "Criminal Activity", '-', False, ],
             [103, ItemType.CATEGORY.INCIDENT, "Physical Safety Hazard", '-', False, ],
             [104, ItemType.CATEGORY.INCIDENT, "Suspicious Individual", '-', False, ],
             [105, ItemType.CATEGORY.INCIDENT, "Mental Health Issue", '-', False, ],
             [106, ItemType.CATEGORY.INCIDENT, "Addiction Issue", '-', False, ],
+
+            # --- Concern --- #
             [202, ItemType.CATEGORY.CONCERN, "Concern with NW", '', False, ],
             [203, ItemType.CATEGORY.CONCERN, "Concern with an NW Partner", '', False, ],
             [204, ItemType.CATEGORY.CONCERN, "Concern with an NW Associate", '', False, ],
             [205, ItemType.CATEGORY.CONCERN, "Concern with an NW Area Coordinator", '', False, ],
             [206, ItemType.CATEGORY.CONCERN, "Concern with an NW Member", '', False, ],
             [207, ItemType.CATEGORY.CONCERN, "Concern with an NW Business Member", '', False, ],
+
+            # --- Information --- #
+            [302, ItemType.CATEGORY.INFORMATION, "General Question", '', False, ],
+            [303, ItemType.CATEGORY.INFORMATION, "Request Information", '', False, ],
         ];
         for data_arr in DATA_ARRAY:
             ItemType.objects.update_or_create(
