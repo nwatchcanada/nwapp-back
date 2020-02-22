@@ -13,54 +13,121 @@ from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
-from tenant_foundation.models import ItemType
+from tenant_foundation.models import Item, ItemType
 
 
 logger = logging.getLogger(__name__)
 
 
 class ItemCreateSerializer(serializers.Serializer):
-    slug = serializers.SlugField(read_only=True,)
-    category = serializers.IntegerField(
+    # --- COMMON --- #
+    type_of = serializers.IntegerField(
         required=True,
         allow_null=False,
     )
-    category_label = serializers.CharField(
-        read_only=True,
-        source='get_category_label',
-    )
-    text = serializers.CharField(
+    category = serializers.SlugField(
         required=True,
-        allow_blank=False,
         allow_null=False,
-        validators=[
-            UniqueValidator(
-                queryset=ItemType.objects.all(),
-            )
-        ],
+    )
+
+    # --- EVENT --- #
+    start_date_time = serializers.DateTimeField(
+        required=False,
+        allow_null=False,
+    )
+    is_all_day_event = serializers.BooleanField(
+        required=False,
+        allow_null=False,
+    )
+    finish_date_time = serializers.DateTimeField(
+        required=False,
+        allow_null=False,
+    )
+    title = serializers.CharField(
+        required=False,
+        allow_null=True,
     )
     description = serializers.CharField(
-        required=True,
-        allow_blank=False,
-        allow_null=False,
+        required=False,
+        allow_null=True,
     )
-    is_archived = serializers.BooleanField(read_only=True)
+    #TODO: LOGO / GALLERY
+    external_url = serializers.URLField(
+        required=False,
+        allow_null=True,
+    )
+    shown_to_whom = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+    )
+    can_be_posted_on_social_media = serializers.BooleanField(
+        required=False,
+        allow_null=True,
+    )
 
-    # ------ AUDITING ------ #
-    created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
-    last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    def validate_category(self, value):
+        """
+        Add extra validation.
+        (1) Lookup `ItemType` based on `category`.
+        (2) Lookup `ItemType` based on `slug`.
+        """
+        type_of = self.context.get("type_of")
+        does_exist = ItemType.objects.filter(
+            slug=value,
+            category=type_of
+        ).exists()
+        if does_exist:
+            return value
+        else:
+            raise serializers.ValidationError(_("Item type does not exist."))
+
+    def validate_start_date_time(self, value):
+        type_of = self.context.get("type_of")
+        if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
+            return value
+        else:
+            raise serializers.ValidationError(_("Missing start date / time."))
+
+    def validate_finish_date_time(self, value):
+        type_of = self.context.get("type_of")
+        if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
+            return value
+        else:
+            raise serializers.ValidationError(_("Missing finish date / time."))
+
+    def validate_title(self, value):
+        type_of = self.context.get("type_of")
+        if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
+            return value
+        else:
+            raise serializers.ValidationError(_("Missing title."))
+
+    def validate_description(self, value):
+        type_of = self.context.get("type_of")
+        if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
+            return value
+        else:
+            raise serializers.ValidationError(_("Missing description."))
+
+    def validate_shown_to_whom(self, value):
+        type_of = self.context.get("type_of")
+        if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
+            return value
+        else:
+            raise serializers.ValidationError(_("Missing description."))
 
     def create(self, validated_data):
         """
         Override the `create` function to add extra functinality.
         """
-        # request = self.context.get("request")
-        # category = validated_data.get('category')
+        request = self.context.get("request")
+        type_of = self.context.get("type_of")
+        category = validated_data.get('category')
         # text = validated_data.get('text')
         # description = validated_data.get('description')
         #
         # # Create the district.
-        # item_type = ItemType.objects.create(
+        # item_type = Item.objects.create(
         #     description=description,
         #     text=text,
         #     category=category,

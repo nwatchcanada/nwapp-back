@@ -52,6 +52,7 @@ class ItemListCreateAPIView(generics.ListCreateAPIView):
         """
         serializer = ItemCreateSerializer(data=request.data, context={
             'request': request,
+            'type_of': request.data.get("type_of", None)
         })
         serializer.is_valid(raise_exception=True)
         serializer.save()
