@@ -16,8 +16,10 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 #    CanRetrieveUpdateDestroyItemPermission
 # )
 from tenant_item.filters import ItemFilter
-from tenant_item.serializers import ItemListSerializer, ItemCreateSerializer
-from tenant_foundation.models import Item
+from tenant_item.serializers import (
+    ItemListSerializer, EventItemCreateSerializer, EventItemRetrieveSerializer
+)
+from tenant_foundation.models import Item, ItemType
 
 
 class ItemListCreateAPIView(generics.ListCreateAPIView):
@@ -50,10 +52,19 @@ class ItemListCreateAPIView(generics.ListCreateAPIView):
         """
         Create
         """
-        serializer = ItemCreateSerializer(data=request.data, context={
-            'request': request,
-            'type_of': request.data.get("type_of", None)
-        })
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        type_of = request.data.get("type_of", None)
+        serializer = None
+
+        if type_of == ItemType.CATEGORY.EVENT:
+            serializer = EventItemCreateSerializer(data=request.data, context={
+                'request': request,
+                'type_of': request.data.get("type_of", None)
+            })
+            serializer.is_valid(raise_exception=True)
+            obj = serializer.save()
+            serializer = EventItemRetrieveSerializer(obj, many=False,)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data={
+                'error': "Wrong type of item."
+            }, status=status.HTTP_400_BAD_REQUEST)

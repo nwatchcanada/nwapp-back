@@ -19,7 +19,7 @@ from tenant_foundation.models import Item, ItemType
 logger = logging.getLogger(__name__)
 
 
-class ItemCreateSerializer(serializers.Serializer):
+class EventItemCreateSerializer(serializers.Serializer):
     # --- COMMON --- #
     type_of = serializers.IntegerField(
         required=True,
@@ -123,30 +123,35 @@ class ItemCreateSerializer(serializers.Serializer):
         request = self.context.get("request")
         type_of = self.context.get("type_of")
         category = validated_data.get('category')
-        # text = validated_data.get('text')
-        # description = validated_data.get('description')
-        #
-        # # Create the district.
-        # item_type = Item.objects.create(
-        #     description=description,
-        #     text=text,
-        #     category=category,
-        #     created_by = request.user,
-        #     created_from = request.client_ip,
-        #     created_from_is_public = request.client_ip_is_routable,
-        #     last_modified_by = request.user,
-        #     last_modified_from = request.client_ip,
-        #     last_modified_from_is_public = request.client_ip_is_routable,
-        # )
-        #
-        # logger.info("New item_type was been created.")
-        #
-        # # print(private_file)
-        # # print("\n")
+        is_all_day_event = validated_data.get('is_all_day_event')
+        start_date_time = validated_data.get('start_date_time')
+        finish_date_time = validated_data.get('finish_date_time')
+        title = validated_data.get('title')
+        description = validated_data.get('description')
+        external_url = validated_data.get('external_url')
+        shown_to_whom = validated_data.get('shown_to_whom')
+        can_be_posted_on_social_media = validated_data.get('can_be_posted_on_social_media')
 
-        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-            "error": "Terminating for debugging purposes only."
-        })
-        return None
+        item_type = ItemType.objects.filter(slug=category).first()
 
-        # return item_type
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
+        return Item.objects.create(
+            type_of=item_type,
+            start_at=start_date_time,
+            is_all_day_event=is_all_day_event,
+            finish_at=finish_date_time,
+            title=title,
+            description=description,
+            external_url=external_url,
+            shown_to_whom=shown_to_whom,
+            can_be_posted_on_social_media=can_be_posted_on_social_media,
+            created_by=request.user,
+            created_from=request.client_ip,
+            created_from_is_public=request.client_ip_is_routable,
+            last_modified_by=request.user,
+            last_modified_from=request.client_ip,
+            last_modified_from_is_public=request.client_ip_is_routable,
+        )

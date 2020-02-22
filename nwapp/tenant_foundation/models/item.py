@@ -40,6 +40,34 @@ class Item(models.Model):
         permissions = ()
 
     '''
+    CONSTANTS
+    '''
+
+    class STATE:
+        ACTIVE = 'active'
+        INACTIVE = 'inactive'
+
+    class SHOWN_TO_WHOM:
+        GENERAL_PUBLIC = 2
+        ALL_NW_STAFF = 3
+        MY_WATCH_AREA = 4
+
+    '''
+    CHOICES
+    '''
+
+    STATE_CHOICES = (
+        (STATE.ACTIVE, _('Active')),
+        (STATE.INACTIVE, _('Inactive')),
+    )
+
+    SHOWN_TO_WHOM_CHOICES = (
+        (SHOWN_TO_WHOM.GENERAL_PUBLIC, _('General Public')),
+        (SHOWN_TO_WHOM.ALL_NW_STAFF, _('All NW Staff')),
+        (SHOWN_TO_WHOM.MY_WATCH_AREA, _('My Watch Area')),
+    )
+
+    '''
     OBJECT MANAGERS
     '''
 
@@ -49,26 +77,16 @@ class Item(models.Model):
     MODEL FIELDS
     '''
 
-    text = models.CharField(
-        _("Text"),
-        max_length=31,
-        help_text=_('The text content of this item.'),
+    # COMMON FIELDS
+
+    state = models.CharField(
+        _('State'),
+        help_text=_('The state of this item.'),
+        max_length=15,
+        choices=STATE_CHOICES,
+        default=STATE.ACTIVE,
+        blank=True,
         db_index=True,
-        unique=True
-    )
-    description = models.TextField(
-        _("Description"),
-        help_text=_('A short description of this item.'),
-        blank=True,
-        null=True,
-        default='',
-    )
-    is_archived = models.BooleanField(
-        _("Is Archived"),
-        help_text=_('Indicates whether item was archived.'),
-        default=False,
-        blank=True,
-        db_index=True
     )
     type_of = models.ForeignKey(
         "ItemType",
@@ -76,6 +94,71 @@ class Item(models.Model):
         related_name="type_ofs",
         on_delete=models.CASCADE,
     )
+    is_archived = models.BooleanField( # DEPRECATED
+        _("Is Archived"),
+        help_text=_('Indicates whether item was archived.'),
+        default=False,
+        blank=True,
+        db_index=True
+    )
+
+    # EVENT FIELDS
+
+    start_at = models.DateTimeField(
+        _("Start at"),
+        help_text=_('The date and time this item will start if it is an event.'),
+        blank=True,
+        null=True,
+    )
+    is_all_day_event = models.BooleanField(
+        _("Is all day event"),
+        help_text=_('Is this event item full day?'),
+        default=False,
+        blank=True
+    )
+    finish_at = models.DateTimeField(
+        _("Finish at"),
+        help_text=_('The date and time this item will finish if it is an event.'),
+        blank=True,
+        null=True,
+    )
+    title = models.CharField(
+        _("Title"),
+        max_length=63,
+        help_text=_('The title of the item, if it has one.'),
+        null=True,
+        blank=True,
+        default='',
+    )
+    description = models.TextField(
+        _("Description"),
+        help_text=_('A short description of this item, if it has one.'),
+        blank=True,
+        null=True,
+        default='',
+    )
+    external_url = models.URLField(
+        _("External URL"),
+        max_length=63,
+        help_text=_('The URL for the item to reference an external address.'),
+        null=True,
+        blank=True,
+        default='',
+    )
+    shown_to_whom = models.PositiveSmallIntegerField(
+        _("Shown to whom?"),
+        help_text=_('The person / organization that is allowed to view this item.'),
+        choices=SHOWN_TO_WHOM_CHOICES,
+        null=True,
+        blank=True,
+    )
+    can_be_posted_on_social_media = models.BooleanField(
+        _("Can be posted on Social Media?"),
+        help_text=_('Has the poster allowed this item be posted on social media?'),
+        blank=True,
+        default=True,
+    )
+
 
     # AUDITING FIELDS
 
@@ -135,7 +218,7 @@ class Item(models.Model):
     """
 
     def __str__(self):
-        return str(self.text)
+        return str(self.slug)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -161,10 +244,14 @@ class Item(models.Model):
         # is not unique in the database, then continue to try generating
         # a unique slug until it is found.
         if self.slug == "" or self.slug == None:
-            slug = slugify(self.text)
-            while Item.objects.filter(slug=slug).exists():
-                slug = slugify(self.text)+"-"+get_referral_code(16)
-            self.slug = slug
+            from tenant_foundation.models.item_type import ItemType
+            if self.type_of.category == ItemType.CATEGORY.EVENT:
+                slug = slugify(self.title)
+                while Item.objects.filter(slug=slug).exists():
+                    slug = slugify(self.title)+"-"+get_referral_code(16)
+                self.slug = slug
+            else:
+                self.slug = str(self.id)
 
         '''
         Finally call the parent function which handles saving so we can carry
