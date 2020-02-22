@@ -36,7 +36,7 @@ class ItemTypeListCreateAPIView(generics.ListCreateAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = ItemType.objects.all().order_by('text')
+        queryset = ItemType.objects.all().order_by('id')
 
         # The following code will use the 'django-filter'
         filter = ItemTypeFilter(self.request.GET, queryset=queryset)
