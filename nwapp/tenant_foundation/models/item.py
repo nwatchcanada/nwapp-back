@@ -96,6 +96,13 @@ class Item(models.Model):
         related_name="type_ofs",
         on_delete=models.CASCADE,
     )
+    description = models.TextField(
+        _("Description"),
+        help_text=_('A short description of this item, if it has one.'),
+        blank=True,
+        null=True,
+        default='',
+    )
     is_archived = models.BooleanField( # DEPRECATED
         _("Is Archived"),
         help_text=_('Indicates whether item was archived.'),
@@ -124,19 +131,12 @@ class Item(models.Model):
         blank=True,
         null=True,
     )
-    title = models.CharField(
+    title = models.CharField( # Event / Incident
         _("Title"),
         max_length=63,
         help_text=_('The title of the item, if it has one.'),
         null=True,
         blank=True,
-        default='',
-    )
-    description = models.TextField(
-        _("Description"),
-        help_text=_('A short description of this item, if it has one.'),
-        blank=True,
-        null=True,
         default='',
     )
     external_url = models.URLField(
@@ -161,6 +161,36 @@ class Item(models.Model):
         default=True,
     )
 
+    # INCIDENT
+
+    has_notified_authorities = models.BooleanField(
+        _("Has notified authorities"),
+        help_text=_('Has notified authorities?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
+    has_accept_authority_cooperation = models.BooleanField(
+        _("Has accepted authority cooperation"),
+        help_text=_('Has user agreed to the fact that NW can contact the local and federal police services?'),
+        default=False,
+        blank=True,
+        null=True,
+    )
+    date = models.DateTimeField(
+        _("Date"),
+        help_text=_('The date this event occured.'),
+        blank=True,
+        null=True,
+    )
+    location = models.CharField( # Event / Incident
+        _("Location"),
+        max_length=127,
+        help_text=_('The location of where this event occured.'),
+        null=True,
+        blank=True,
+        default='',
+    )
 
     # AUDITING FIELDS
 
@@ -222,6 +252,8 @@ class Item(models.Model):
     def __str__(self):
         from tenant_foundation.models.item_type import ItemType
         if self.type_of.category == ItemType.CATEGORY.EVENT:
+            return self.title
+        if self.type_of.category == ItemType.CATEGORY.INCIDENT:
             return self.title
         return str(self.slug)
 
