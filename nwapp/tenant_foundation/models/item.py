@@ -8,6 +8,7 @@ from django.db import models
 from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.utils import timezone
+from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedUser
@@ -53,6 +54,11 @@ class Item(models.Model):
         ALL_NW_STAFF = 3
         MY_WATCH_AREA = 4
 
+    class WHO_NEWS_FOR:
+        MY_CITY = 2
+        MY_DISTRICT = 3
+        MY_WATCH = 4
+
     '''
     CHOICES
     '''
@@ -67,6 +73,12 @@ class Item(models.Model):
         (SHOWN_TO_WHOM.GENERAL_PUBLIC, _('General Public')),
         (SHOWN_TO_WHOM.ALL_NW_STAFF, _('All NW Staff')),
         (SHOWN_TO_WHOM.MY_WATCH_AREA, _('My Watch Area')),
+    )
+
+    WHO_NEWS_FOR_CHOICES = (
+        (WHO_NEWS_FOR.MY_CITY, _('My City')),
+        (WHO_NEWS_FOR.MY_DISTRICT, _('My District')),
+        (WHO_NEWS_FOR.MY_WATCH, _('My Watch')),
     )
 
     '''
@@ -192,6 +204,16 @@ class Item(models.Model):
         default='',
     )
 
+    # COMMUNITY NEWS
+
+    who_news_for = models.PositiveSmallIntegerField(
+        _("Who news for?"),
+        help_text=_('Whome shall see this news item?'),
+        choices=WHO_NEWS_FOR_CHOICES,
+        null=True,
+        blank=True,
+    )
+
     # AUDITING FIELDS
 
     slug = models.SlugField(
@@ -257,6 +279,8 @@ class Item(models.Model):
             return self.title
         if self.type_of.category == ItemType.CATEGORY.CONCERN:
             return self.title
+        if self.type_of.category == ItemType.CATEGORY.COMMUNITY_NEWS:
+            return Truncator(self.description).chars(63)
         return str(self.slug)
 
     @transaction.atomic
