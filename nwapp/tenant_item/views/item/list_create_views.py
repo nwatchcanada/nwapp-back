@@ -18,7 +18,8 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 from tenant_item.filters import ItemFilter
 from tenant_item.serializers import (
     ItemListSerializer, EventItemCreateSerializer, EventItemRetrieveSerializer,
-    IncidentItemCreateSerializer, IncidentItemRetrieveSerializer
+    IncidentItemCreateSerializer, IncidentItemRetrieveSerializer,
+    ConcernItemCreateSerializer, ConcernItemRetrieveSerializer
 )
 from tenant_foundation.models import Item, ItemType
 
@@ -78,6 +79,16 @@ class ItemListCreateAPIView(generics.ListCreateAPIView):
             serializer.is_valid(raise_exception=True)
             obj = serializer.save()
             serializer = IncidentItemRetrieveSerializer(obj, many=False,)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        elif type_of == ItemType.CATEGORY.CONCERN:
+            serializer = ConcernItemCreateSerializer(data=request.data, context={
+                'request': request,
+                'type_of': request.data.get("type_of", None)
+            })
+            serializer.is_valid(raise_exception=True)
+            obj = serializer.save()
+            serializer = ConcernItemRetrieveSerializer(obj, many=False,)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
             
         else:

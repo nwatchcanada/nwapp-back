@@ -131,7 +131,7 @@ class Item(models.Model):
         blank=True,
         null=True,
     )
-    title = models.CharField( # Event / Incident
+    title = models.CharField( # Event / Incident / Concern
         _("Title"),
         max_length=63,
         help_text=_('The title of the item, if it has one.'),
@@ -161,7 +161,7 @@ class Item(models.Model):
         default=True,
     )
 
-    # INCIDENT
+    # INCIDENT / CONCERN
 
     has_notified_authorities = models.BooleanField(
         _("Has notified authorities"),
@@ -183,7 +183,7 @@ class Item(models.Model):
         blank=True,
         null=True,
     )
-    location = models.CharField( # Event / Incident
+    location = models.CharField( # Event / Incident / Concern
         _("Location"),
         max_length=127,
         help_text=_('The location of where this event occured.'),
@@ -255,6 +255,8 @@ class Item(models.Model):
             return self.title
         if self.type_of.category == ItemType.CATEGORY.INCIDENT:
             return self.title
+        if self.type_of.category == ItemType.CATEGORY.CONCERN:
+            return self.title
         return str(self.slug)
 
     @transaction.atomic
@@ -282,7 +284,7 @@ class Item(models.Model):
         # a unique slug until it is found.
         if self.slug == "" or self.slug == None:
             from tenant_foundation.models.item_type import ItemType
-            if self.type_of.category == ItemType.CATEGORY.EVENT or self.type_of.category == ItemType.CATEGORY.INCIDENT:
+            if self.type_of.category == ItemType.CATEGORY.EVENT or self.type_of.category == ItemType.CATEGORY.INCIDENT or self.type_of.category == ItemType.CATEGORY.CONCERN:
                 slug = slugify(self.title)
                 while Item.objects.filter(slug=slug).exists():
                     slug = slugify(self.title)+"-"+get_referral_code(16)
