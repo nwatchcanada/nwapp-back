@@ -202,6 +202,13 @@ class Command(BaseCommand):
             # --- Information --- #
             [302, ItemType.CATEGORY.INFORMATION, "General Question", '', False, ],
             [303, ItemType.CATEGORY.INFORMATION, "Request Information", '', False, ],
+
+            # --- Community News --- #
+            [402, ItemType.CATEGORY.COMMUNITY_NEWS, "Good News", '', False, ],
+            [403, ItemType.CATEGORY.COMMUNITY_NEWS, "Safety Tip", '', False, ],
+            [404, ItemType.CATEGORY.COMMUNITY_NEWS, "Alert", '', False, ],
+            [405, ItemType.CATEGORY.COMMUNITY_NEWS, "Member Recognition", '', False, ],
+            [406, ItemType.CATEGORY.COMMUNITY_NEWS, "Update", '', False, ],
         ];
         for data_arr in DATA_ARRAY:
             ItemType.objects.update_or_create(
