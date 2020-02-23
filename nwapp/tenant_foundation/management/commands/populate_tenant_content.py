@@ -209,6 +209,11 @@ class Command(BaseCommand):
             [404, ItemType.CATEGORY.COMMUNITY_NEWS, "Alert", '', False, ],
             [405, ItemType.CATEGORY.COMMUNITY_NEWS, "Member Recognition", '', False, ],
             [406, ItemType.CATEGORY.COMMUNITY_NEWS, "Update", '', False, ],
+
+            # --- Volunteer --- #
+            [502, ItemType.CATEGORY.VOLUNTEER, "I want to help someone", '', False, ],
+            [503, ItemType.CATEGORY.VOLUNTEER, "I need help", '', False, ],
+            [504, ItemType.CATEGORY.VOLUNTEER, "Someone in my watch area needs help", '', False, ],
         ];
         for data_arr in DATA_ARRAY:
             ItemType.objects.update_or_create(

@@ -49,6 +49,7 @@ class ItemType(models.Model):
         CONCERN = 4
         INFORMATION = 5
         COMMUNITY_NEWS = 6
+        VOLUNTEER = 7
 
     '''
     CHOICES
@@ -60,6 +61,7 @@ class ItemType(models.Model):
         (CATEGORY.CONCERN, _('Concern')),
         (CATEGORY.INFORMATION, _('Information')),
         (CATEGORY.COMMUNITY_NEWS, _('Community News')),
+        (CATEGORY.VOLUNTEER, _('Volunteer')),
     )
 
     '''
