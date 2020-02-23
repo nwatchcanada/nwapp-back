@@ -21,31 +21,23 @@ logger = logging.getLogger(__name__)
 
 class ItemListSerializer(serializers.Serializer):
     slug = serializers.SlugField(read_only=True,)
-    # category = serializers.IntegerField(
-    #     required=True,
-    #     allow_null=False,
-    # )
-    # category_label = serializers.CharField(
-    #     read_only=True,
-    #     source='get_category_label',
-    # )
-    # text = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     allow_null=False,
-    #     validators=[
-    #         UniqueValidator(
-    #             queryset=ItemType.objects.all(),
-    #         )
-    #     ],
-    # )
-    # description = serializers.CharField(
-    #     required=True,
-    #     allow_blank=False,
-    #     allow_null=False,
-    # )
-    # is_archived = serializers.BooleanField(read_only=True)
-    #
-    # # ------ AUDITING ------ #
-    # created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
-    # last_modified_at = serializers.DateTimeField(read_only=True, allow_null=False,)
+    category = serializers.IntegerField(
+        read_only=True,
+        source="type_of.category"
+    )
+    category_label = serializers.CharField(
+        read_only=True,
+        source='type_of.get_category_label',
+    )
+    created_at = serializers.DateTimeField(read_only=True,)
+    state = serializers.CharField(read_only=True,)
+    text = serializers.CharField(read_only=True, source="__str__")
+    is_archived = serializers.CharField(read_only=True,)
+
+    def setup_eager_loading(cls, queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.prefetch_related(
+            'type_of',
+            # 'created_by', 'last_modified_by'
+        )
+        return queryset

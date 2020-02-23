@@ -40,6 +40,10 @@ class ItemListCreateAPIView(generics.ListCreateAPIView):
         # Fetch all the queries.
         queryset = Item.objects.all().order_by('id')
 
+        # Fetch all the queries.
+        s = self.get_serializer_class()
+        queryset = s.setup_eager_loading(self, queryset)
+
         # The following code will use the 'django-filter'
         filter = ItemFilter(self.request.GET, queryset=queryset)
         queryset = filter.qs

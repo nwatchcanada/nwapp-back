@@ -46,6 +46,7 @@ class Item(models.Model):
     class STATE:
         ACTIVE = 'active'
         INACTIVE = 'inactive'
+        ARCHIVED = 'archived'
 
     class SHOWN_TO_WHOM:
         GENERAL_PUBLIC = 2
@@ -59,6 +60,7 @@ class Item(models.Model):
     STATE_CHOICES = (
         (STATE.ACTIVE, _('Active')),
         (STATE.INACTIVE, _('Inactive')),
+        (STATE.ARCHIVED, _('Archived')),
     )
 
     SHOWN_TO_WHOM_CHOICES = (
@@ -218,6 +220,9 @@ class Item(models.Model):
     """
 
     def __str__(self):
+        from tenant_foundation.models.item_type import ItemType
+        if self.type_of.category == ItemType.CATEGORY.EVENT:
+            return self.title
         return str(self.slug)
 
     @transaction.atomic
