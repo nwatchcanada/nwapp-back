@@ -282,7 +282,7 @@ class Item(models.Model):
         # a unique slug until it is found.
         if self.slug == "" or self.slug == None:
             from tenant_foundation.models.item_type import ItemType
-            if self.type_of.category == ItemType.CATEGORY.EVENT:
+            if self.type_of.category == ItemType.CATEGORY.EVENT or self.type_of.category == ItemType.CATEGORY.INCIDENT:
                 slug = slugify(self.title)
                 while Item.objects.filter(slug=slug).exists():
                     slug = slugify(self.title)+"-"+get_referral_code(16)
