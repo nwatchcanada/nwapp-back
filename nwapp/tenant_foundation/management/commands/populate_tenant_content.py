@@ -214,6 +214,19 @@ class Command(BaseCommand):
             [502, ItemType.CATEGORY.VOLUNTEER, "I want to help someone", '', False, ],
             [503, ItemType.CATEGORY.VOLUNTEER, "I need help", '', False, ],
             [504, ItemType.CATEGORY.VOLUNTEER, "Someone in my watch area needs help", '', False, ],
+
+            # --- Resource --- #
+            [602, ItemType.CATEGORY.RESOURCE, "Safety", '', False, ],
+            [603, ItemType.CATEGORY.RESOURCE, "Fraud Prevention", '', False, ],
+            [604, ItemType.CATEGORY.RESOURCE, "Health", '', False, ],
+            [605, ItemType.CATEGORY.RESOURCE, "Housing", '', False, ],
+            [606, ItemType.CATEGORY.RESOURCE, "Loneliness", '', False, ],
+            [607, ItemType.CATEGORY.RESOURCE, "Food Security", '', False, ],
+            [608, ItemType.CATEGORY.RESOURCE, "Education", '', False, ],
+            [609, ItemType.CATEGORY.RESOURCE, "Municipal", '', False, ],
+            [610, ItemType.CATEGORY.RESOURCE, "Police", '', False, ],
+            [611, ItemType.CATEGORY.RESOURCE, "Fire", '', False, ],
+            [612, ItemType.CATEGORY.RESOURCE, "Emergency", '', False, ],
         ];
         for data_arr in DATA_ARRAY:
             ItemType.objects.update_or_create(
