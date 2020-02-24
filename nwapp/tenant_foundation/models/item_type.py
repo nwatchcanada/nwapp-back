@@ -50,6 +50,7 @@ class ItemType(models.Model):
         INFORMATION = 5
         COMMUNITY_NEWS = 6
         VOLUNTEER = 7
+        RESOURCE = 8
 
     '''
     CHOICES
@@ -62,6 +63,7 @@ class ItemType(models.Model):
         (CATEGORY.INFORMATION, _('Information')),
         (CATEGORY.COMMUNITY_NEWS, _('Community News')),
         (CATEGORY.VOLUNTEER, _('Volunteer')),
+        (CATEGORY.RESOURCE, _('Resource')),
     )
 
     '''
