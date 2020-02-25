@@ -59,6 +59,13 @@ class Item(models.Model):
         MY_DISTRICT = 3
         MY_WATCH = 4
 
+    class FORMAT_TYPE:
+        LINK_RESOURCE_TYPE_OF = 2
+        YOUTUBE_VIDEO_RESOURCE_TYPE_OF = 3
+        IMAGE_RESOURCE_TYPE_OF = 4
+        FILE_RESOURCE_TYPE_OF = 5
+        UNSPECIFIED_TYPE_OF = 6
+
     '''
     CHOICES
     '''
@@ -79,6 +86,14 @@ class Item(models.Model):
         (WHO_NEWS_FOR.MY_CITY, _('My City')),
         (WHO_NEWS_FOR.MY_DISTRICT, _('My District')),
         (WHO_NEWS_FOR.MY_WATCH, _('My Watch')),
+    )
+
+    FORMAT_TYPE_CHOICES = (
+        (FORMAT_TYPE.LINK_RESOURCE_TYPE_OF, _('Link')),
+        (FORMAT_TYPE.YOUTUBE_VIDEO_RESOURCE_TYPE_OF, _('YouTube Video')),
+        (FORMAT_TYPE.IMAGE_RESOURCE_TYPE_OF, _('Image')),
+        (FORMAT_TYPE.FILE_RESOURCE_TYPE_OF, _('File')),
+        (FORMAT_TYPE.UNSPECIFIED_TYPE_OF, _('Unspecified')),
     )
 
     '''
@@ -214,6 +229,25 @@ class Item(models.Model):
         blank=True,
     )
 
+    # RESOURCE
+
+    format_type = models.PositiveSmallIntegerField(
+        _("Format Type"),
+        help_text=_('The format type of resource.'),
+        choices=FORMAT_TYPE_CHOICES,
+        default=FORMAT_TYPE.UNSPECIFIED_TYPE_OF,
+        blank=True,
+        null=True,
+    )
+    embed_code = models.CharField( # Event / Incident / Concern
+        _("Embed Code"),
+        max_length=1023,
+        help_text=_('The YouTube embed code for this item.'),
+        null=True,
+        blank=True,
+        default='',
+    )
+
     # AUDITING FIELDS
 
     slug = models.SlugField(
@@ -281,6 +315,11 @@ class Item(models.Model):
             return self.title
         if self.type_of.category == ItemType.CATEGORY.COMMUNITY_NEWS or self.type_of.category == ItemType.CATEGORY.VOLUNTEER:
             return Truncator(self.description).chars(63)
+        if self.type_of.category == ItemType.CATEGORY.RESOURCE:
+            if self.format_type == Item.FORMAT_TYPE.LINK_RESOURCE_TYPE_OF:
+                return self.title
+            if self.format_type == Item.FORMAT_TYPE.YOUTUBE_VIDEO_RESOURCE_TYPE_OF:
+                return self.title
         return str(self.slug)
 
     @transaction.atomic

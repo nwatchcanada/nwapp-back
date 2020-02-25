@@ -21,7 +21,8 @@ from tenant_item.serializers import (
     IncidentItemCreateSerializer, IncidentItemRetrieveSerializer,
     ConcernItemCreateSerializer, ConcernItemRetrieveSerializer,
     CommunityNewsItemCreateSerializer, CommunityNewsItemRetrieveSerializer,
-    VolunteerItemCreateSerializer, VolunteerItemRetrieveSerializer
+    VolunteerItemCreateSerializer, VolunteerItemRetrieveSerializer,
+    ResourceItemCreateSerializer, ResourceItemRetrieveSerializer
 )
 from tenant_foundation.models import Item, ItemType
 
@@ -111,6 +112,16 @@ class ItemListCreateAPIView(generics.ListCreateAPIView):
             serializer.is_valid(raise_exception=True)
             obj = serializer.save()
             serializer = VolunteerItemRetrieveSerializer(obj, many=False,)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        elif type_of == ItemType.CATEGORY.RESOURCE:
+            serializer = ResourceItemCreateSerializer(data=request.data, context={
+                'request': request,
+                'type_of': request.data.get("type_of", None)
+            })
+            serializer.is_valid(raise_exception=True)
+            obj = serializer.save()
+            serializer = ResourceItemRetrieveSerializer(obj, many=False,)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:
