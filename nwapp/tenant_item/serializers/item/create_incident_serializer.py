@@ -13,7 +13,8 @@ from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
-from tenant_foundation.models import Item, ItemType
+from shared_foundation.utils import get_content_file_from_base64_string
+from tenant_foundation.models import Item, ItemType, PrivateImageUpload
 
 
 logger = logging.getLogger(__name__)
@@ -56,8 +57,10 @@ class IncidentItemCreateSerializer(serializers.Serializer):
         required=True,
         allow_null=False,
     )
-
-    # TODO: PHOTOS
+    photos = serializers.JSONField(
+       required=False,
+       allow_null=True,
+    )
 
     def validate_category(self, value):
         """
@@ -123,21 +126,17 @@ class IncidentItemCreateSerializer(serializers.Serializer):
         date = validated_data.get('date')
         description = validated_data.get('description')
         location = validated_data.get('location')
+        photos = validated_data.get('photos')
 
         item_type = ItemType.objects.filter(slug=category).first()
-
-        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-        #     "error": "Terminating for debugging purposes only."
-        # })
-
-        return Item.objects.create(
+        item = Item.objects.create(
             type_of=item_type,
             has_notified_authorities=has_notified_authorities,
             has_accept_authority_cooperation=has_accept_authority_cooperation,
             title=title,
             date=date,
             description=description,
-            location=location,            
+            location=location,
             created_by=request.user,
             created_from=request.client_ip,
             created_from_is_public=request.client_ip_is_routable,
@@ -145,3 +144,32 @@ class IncidentItemCreateSerializer(serializers.Serializer):
             last_modified_from=request.client_ip,
             last_modified_from_is_public=request.client_ip_is_routable,
         )
+
+        # Proccess the uploaded photos which are encoded in `base64` format.
+        # The following code will convert the `base64` string into a Python
+        # binary data and save it in our database.
+        if photos != None and photos != "" and len(photos) > 0:
+            for photo in photos:
+                data = photo['data']
+                filename = photo['file_name']
+                if settings.DEBUG:
+                    filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
+                content_file = get_content_file_from_base64_string(data, filename)
+
+                private_image = PrivateImageUpload.objects.create(
+                    item = item,
+                    user = request.user,
+                    image_file = content_file,
+                    created_by = request.user,
+                    created_from = request.client_ip,
+                    created_from_is_public = request.client_ip_is_routable,
+                    last_modified_by = request.user,
+                    last_modified_from = request.client_ip,
+                    last_modified_from_is_public = request.client_ip_is_routable,
+                )
+
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
+        return item

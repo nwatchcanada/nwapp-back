@@ -102,6 +102,14 @@ class PrivateImageUpload(models.Model):
         null=True,
         blank=True,
     )
+    item = models.ForeignKey(
+        "Item",
+        help_text=_('The item whom this image belongs to.'),
+        related_name="private_image_uploads",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     image_file = ImageField(
         upload_to = 'uploads/%Y/%m/%d/',
         help_text=_('The upload image.'),

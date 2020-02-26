@@ -102,6 +102,14 @@ class PrivateFileUpload(models.Model):
         null=True,
         blank=True,
     )
+    item = models.ForeignKey(
+        "Item",
+        help_text=_('The items whom this file belongs to.'),
+        related_name="private_file_uploads",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     data_file = models.FileField(
         upload_to = 'uploads/%Y/%m/%d/',
         help_text=_('The upload binary file.'),

@@ -247,6 +247,14 @@ class Item(models.Model):
         blank=True,
         default='',
     )
+    # image = models.ForeignKey(
+    #     "PrivateImageUpload",
+    #     help_text=_('The image of this issue.'),
+    #     related_name="members",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    # )
 
     # AUDITING FIELDS
 
