@@ -126,7 +126,7 @@ class IncidentItemCreateSerializer(serializers.Serializer):
         date = validated_data.get('date')
         description = validated_data.get('description')
         location = validated_data.get('location')
-        photos = validated_data.get('photos')
+        photos = validated_data.get('photos', [])
 
         item_type = ItemType.objects.filter(slug=category).first()
         item = Item.objects.create(
