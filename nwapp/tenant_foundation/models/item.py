@@ -187,10 +187,10 @@ class Item(models.Model):
         blank=True,
         default=True,
     )
-    logo_image = models.ForeignKey(
+    event_logo_image = models.ForeignKey(
         "PrivateImageUpload",
-        help_text=_('The logo image of this item.'),
-        related_name="logo_items",
+        help_text=_('The logo image of this event item.'),
+        related_name="event_logo_items",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
