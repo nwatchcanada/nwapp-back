@@ -52,7 +52,10 @@ class EventItemCreateSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
     )
-    #TODO: LOGO
+    event_logo_image = serializers.JSONField(
+       required=False,
+       allow_null=True,
+    )
     photos = serializers.JSONField(
        required=False,
        allow_null=True,
@@ -136,6 +139,7 @@ class EventItemCreateSerializer(serializers.Serializer):
         external_url = validated_data.get('external_url')
         shown_to_whom = validated_data.get('shown_to_whom')
         can_be_posted_on_social_media = validated_data.get('can_be_posted_on_social_media')
+        event_logo_image = validated_data.get('event_logo_image', None)
         photos = validated_data.get('photos', [])
 
         item_type = ItemType.objects.filter(slug=category).first()
@@ -180,6 +184,30 @@ class EventItemCreateSerializer(serializers.Serializer):
                     last_modified_from = request.client_ip,
                     last_modified_from_is_public = request.client_ip_is_routable,
                 )
+
+        if event_logo_image:
+            # print(event_logo_image) # For debugging purposes only.
+            data = event_logo_image.get('data', None)
+            filename = event_logo_image.get('file_name', None)
+            if settings.DEBUG:
+                filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
+            content_file = get_content_file_from_base64_string(data, filename)
+
+            private_image = PrivateImageUpload.objects.create(
+                item = item,
+                user = request.user,
+                image_file = content_file,
+                created_by = request.user,
+                created_from = request.client_ip,
+                created_from_is_public = request.client_ip_is_routable,
+                last_modified_by = request.user,
+                last_modified_from = request.client_ip,
+                last_modified_from_is_public = request.client_ip_is_routable,
+            )
+
+            item.event_logo_image = private_image
+            item.save()
+            # print("Created - event_logo_image")
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
