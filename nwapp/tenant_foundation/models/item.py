@@ -187,6 +187,14 @@ class Item(models.Model):
         blank=True,
         default=True,
     )
+    logo_image = models.ForeignKey(
+        "PrivateImageUpload",
+        help_text=_('The logo image of this item.'),
+        related_name="logo_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     # INCIDENT / CONCERN
 
@@ -247,14 +255,22 @@ class Item(models.Model):
         blank=True,
         default='',
     )
-    # image = models.ForeignKey(
-    #     "PrivateImageUpload",
-    #     help_text=_('The image of this issue.'),
-    #     related_name="members",
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    # )
+    resource_image = models.ForeignKey(
+        "PrivateImageUpload",
+        help_text=_('The resource image of this item.'),
+        related_name="resource_image_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    resource_file = models.ForeignKey(
+        "PrivateFileUpload",
+        help_text=_('The resource file of this item.'),
+        related_name="resource_file_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     # AUDITING FIELDS
 
