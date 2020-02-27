@@ -12,7 +12,8 @@ from django.utils.http import urlquote
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 
-from tenant_foundation.models import Item, ItemType
+from shared_foundation.utils import get_content_file_from_base64_string
+from tenant_foundation.models import Item, ItemType, PrivateImageUpload, PrivateFileUpload
 
 
 logger = logging.getLogger(__name__)
@@ -29,15 +30,13 @@ class ResourceItemCreateSerializer(serializers.Serializer):
 
     # REACT-DJANGO UPLOAD | STEP 1 OF 4: We define two string fields required (write-only)
     # for accepting our file uploads.
-    upload_content = serializers.CharField(
-        write_only=True,
-        allow_null=True,
-        required=False,
+    resource_image = serializers.JSONField(
+       required=False,
+       allow_null=True,
     )
-    upload_filename = serializers.CharField(
-        write_only=True,
-        allow_null=True,
-        required=False,
+    resource_file = serializers.JSONField(
+       required=False,
+       allow_null=True,
     )
 
     def validate_category(self, value):
@@ -59,8 +58,9 @@ class ResourceItemCreateSerializer(serializers.Serializer):
     def create_image(self, request, validated_data):
         try:
             # Extract our upload file data
-            content = validated_data.get('upload_content')
-            filename = validated_data.get('upload_filename')
+            resource_image = validated_data.get('resource_image', None)
+            content = resource_image.get('data', None)
+            filename = resource_image.get('file_name', None)
             if settings.DEBUG:
                 filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
             content_file = get_content_file_from_base64_string(content, filename) # REACT-DJANGO UPLOAD | STEP 3 OF 4: Convert to `ContentFile` type.
@@ -87,8 +87,9 @@ class ResourceItemCreateSerializer(serializers.Serializer):
     def create_file(self, request, validated_data):
         try:
             # Extract our upload file data
-            content = validated_data.get('upload_content')
-            filename = validated_data.get('upload_filename')
+            resource_file = validated_data.get('resource_file', None)
+            content = resource_file.get('data', None)
+            filename = resource_file.get('file_name', None)
             if settings.DEBUG:
                 filename = "QA_"+filename # NOTE: Attach `QA_` prefix if server running in QA mode.
             content_file = get_content_file_from_base64_string(content, filename) # REACT-DJANGO UPLOAD | STEP 3 OF 4: Convert to `ContentFile` type.
@@ -105,7 +106,7 @@ class ResourceItemCreateSerializer(serializers.Serializer):
                 last_modified_from = request.client_ip,
                 last_modified_from_is_public = request.client_ip_is_routable,
             )
-            logger.info("Private image was been created.")
+            logger.info("Private file was been created.")
             return private_file
         except Exception as e:
             print(e)
@@ -125,6 +126,8 @@ class ResourceItemCreateSerializer(serializers.Serializer):
         embed_code = validated_data.get('embed_code', None)
         description = validated_data.get('description', None)
         # text = validated_data.get('text')
+        resource_file = validated_data.get('resource_file', None)
+        resource_image = validated_data.get('resource_image', None)
 
         item_type = ItemType.objects.filter(slug=category).first()
 
@@ -145,14 +148,12 @@ class ResourceItemCreateSerializer(serializers.Serializer):
             last_modified_from_is_public = request.client_ip_is_routable,
         )
 
-        logger.info("New tag was been created.")
-
         # Attach the file upload.
         if format_type == Item.FORMAT_TYPE.IMAGE_RESOURCE_TYPE_OF:
-            resource_item.image = self.create_image(request, validated_data)
+            resource_item.resource_image = self.create_image(request, validated_data)
             resource_item.save()
         elif format_type == Item.FORMAT_TYPE.FILE_RESOURCE_TYPE_OF:
-            resource_item.file = self.create_file(request, validated_data)
+            resource_item.resource_file = self.create_file(request, validated_data)
             resource_item.save()
 
         # print(private_file)

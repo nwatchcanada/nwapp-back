@@ -344,6 +344,8 @@ class Item(models.Model):
                 return self.title
             if self.format_type == Item.FORMAT_TYPE.YOUTUBE_VIDEO_RESOURCE_TYPE_OF:
                 return self.title
+            if self.format_type == Item.FORMAT_TYPE.FILE_RESOURCE_TYPE_OF and self.format_type == Item.FORMAT_TYPE.IMAGE_RESOURCE_TYPE_OF:
+                return self.title
         return str(self.slug)
 
     @transaction.atomic
@@ -371,7 +373,7 @@ class Item(models.Model):
         # a unique slug until it is found.
         if self.slug == "" or self.slug == None:
             from tenant_foundation.models.item_type import ItemType
-            if self.type_of.category == ItemType.CATEGORY.EVENT or self.type_of.category == ItemType.CATEGORY.INCIDENT or self.type_of.category == ItemType.CATEGORY.CONCERN:
+            if self.type_of.category == ItemType.CATEGORY.EVENT or self.type_of.category == ItemType.CATEGORY.INCIDENT or self.type_of.category == ItemType.CATEGORY.CONCERN or self.type_of.category == ItemType.CATEGORY.RESOURCE:
                 slug = slugify(self.title)
                 while Item.objects.filter(slug=slug).exists():
                     slug = slugify(self.title)+"-"+get_referral_code(16)
