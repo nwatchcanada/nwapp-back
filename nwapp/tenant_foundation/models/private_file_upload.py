@@ -118,7 +118,7 @@ class PrivateFileUpload(models.Model):
     title = models.CharField(
         _("Title"),
         max_length=63,
-        help_text=_('The tile content of this upload.'),
+        help_text=_('The file title of this upload.'),
         blank=True,
         null=True,
     )
@@ -222,6 +222,9 @@ class PrivateFileUpload(models.Model):
                 self.id = latest_obj.id + 1
             except PrivateFileUpload.DoesNotExist:
                 self.id = 1
+
+        if self.title == None:
+            self.title = str(self.data_file)
 
         # The following code will generate a unique slug and if the slug
         # is not unique in the database, then continue to try generating

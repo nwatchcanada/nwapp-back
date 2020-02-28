@@ -32,7 +32,7 @@ class PrivateImageUploadRetrieveSerializer(serializers.ModelSerializer):
         read_only=True,
         max_length=None,
         use_url=True,
-        source="data_file"
+        source="image_file"
     )
     title = serializers.CharField(required=True, allow_null=False,)
     description = serializers.CharField(required=True, allow_null=False,)

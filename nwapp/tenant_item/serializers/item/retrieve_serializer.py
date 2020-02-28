@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from tenant_foundation.models import Item, ItemType
+from tenant_private_image_upload.serializers import PrivateImageUploadRetrieveSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,12 @@ class ItemRetrieveSerializer(serializers.Serializer):
     type_of_text = serializers.CharField(read_only=True,source="type_of.text",)
     description = serializers.CharField(read_only=True,)
     is_archived = serializers.BooleanField(read_only=True,)
+    photos = PrivateImageUploadRetrieveSerializer(
+        read_only=True,
+        many=True,
+        allow_null=True,
+        source="private_image_uploads",
+    )
 
     # --- EVENT --- #
 

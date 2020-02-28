@@ -115,6 +115,25 @@ class PrivateImageUpload(models.Model):
         help_text=_('The upload image.'),
         storage=PrivateMediaStorage()
     )
+    title = models.CharField(
+        _("Title"),
+        max_length=63,
+        help_text=_('The image title of this upload.'),
+        blank=True,
+        null=True,
+    )
+    description = models.TextField(
+        _("Description"),
+        help_text=_('The text content of this upload.'),
+        blank=True,
+        null=True
+    )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this private file uploads.'),
+        blank=True,
+        related_name="private_image_uploads"
+    )
     is_archived = models.BooleanField(
         _("Is Archived"),
         help_text=_('Indicates whether private image was archived.'),
@@ -194,6 +213,10 @@ class PrivateImageUpload(models.Model):
                 self.id = latest_obj.id + 1
             except PrivateImageUpload.DoesNotExist:
                 self.id = 1
+
+        if self.title == None:
+            if self.image_file != None:
+                self.title = str(self.image_file.name)
 
         # The following code will generate a unique slug and if the slug
         # is not unique in the database, then continue to try generating
