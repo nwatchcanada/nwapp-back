@@ -14,3 +14,4 @@ from tenant_item.serializers.item.retrieve_concern_serializer import ConcernItem
 from tenant_item.serializers.item.retrieve_incident_serializer import IncidentItemRetrieveSerializer
 from tenant_item.serializers.item.retrieve_event_serializer import EventItemRetrieveSerializer
 from tenant_item.serializers.item.list_serializers import ItemListSerializer
+from tenant_item.serializers.item.retrieve_serializer import ItemRetrieveSerializer
