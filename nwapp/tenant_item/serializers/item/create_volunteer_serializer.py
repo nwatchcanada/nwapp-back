@@ -105,17 +105,19 @@ class VolunteerItemCreateSerializer(serializers.Serializer):
         request = self.context.get("request")
         type_of = self.context.get("type_of")
         category = validated_data.get('category')
-        title = validated_data.get('title')
+        who_news_for = validated_data.get('who_news_for')
         description = validated_data.get('description')
         location = validated_data.get('location')
+        external_url = validated_data.get('external_url')
         photos = validated_data.get('photos', [])
 
         item_type = ItemType.objects.filter(slug=category).first()
 
         item = Item.objects.create(
             type_of=item_type,
-            title=title,
+            who_news_for=who_news_for,
             description=description,
+            external_url=external_url,
             location=location,
             created_by=request.user,
             created_from=request.client_ip,
