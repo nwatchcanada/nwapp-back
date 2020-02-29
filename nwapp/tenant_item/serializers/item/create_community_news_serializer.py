@@ -22,29 +22,37 @@ logger = logging.getLogger(__name__)
 
 class CommunityNewsItemCreateSerializer(serializers.Serializer):
     # --- COMMON --- #
-    type_of = serializers.IntegerField(
+    type_of = serializers.ChoiceField(
         required=True,
         allow_null=False,
+        write_only=True,
+        choices=ItemType.CATEGORY_CHOICES
     )
     category = serializers.SlugField(
         required=True,
         allow_null=False,
+        write_only=True,
     )
-    who_news_for = serializers.IntegerField(
+    who_news_for = serializers.ChoiceField(
         required=True,
         allow_null=False,
+        write_only=True,
+        choices=Item.WHO_NEWS_FOR_CHOICES
     )
     description = serializers.CharField(
         required=False,
         allow_null=True,
+        write_only=True,
     )
     external_url = serializers.URLField(
         required=False,
         allow_null=True,
+        write_only=True,
     )
     photos = serializers.JSONField(
        required=False,
        allow_null=True,
+       write_only=True,
     )
 
     def validate_category(self, value):
@@ -63,41 +71,6 @@ class CommunityNewsItemCreateSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError(_("Item type does not exist."))
 
-    # def validate_start_date_time(self, value):
-    #     type_of = self.context.get("type_of")
-    #     if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
-    #         return value
-    #     else:
-    #         raise serializers.ValidationError(_("Missing start date / time."))
-    #
-    # def validate_finish_date_time(self, value):
-    #     type_of = self.context.get("type_of")
-    #     if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
-    #         return value
-    #     else:
-    #         raise serializers.ValidationError(_("Missing finish date / time."))
-    #
-    # def validate_title(self, value):
-    #     type_of = self.context.get("type_of")
-    #     if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
-    #         return value
-    #     else:
-    #         raise serializers.ValidationError(_("Missing title."))
-    #
-    # def validate_description(self, value):
-    #     type_of = self.context.get("type_of")
-    #     if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
-    #         return value
-    #     else:
-    #         raise serializers.ValidationError(_("Missing description."))
-    #
-    # def validate_shown_to_whom(self, value):
-    #     type_of = self.context.get("type_of")
-    #     if type_of == ItemType.CATEGORY.EVENT and value != "" and value != None:
-    #         return value
-    #     else:
-    #         raise serializers.ValidationError(_("Missing description."))
-
     def create(self, validated_data):
         """
         Override the `create` function to add extra functinality.
@@ -105,18 +78,20 @@ class CommunityNewsItemCreateSerializer(serializers.Serializer):
         request = self.context.get("request")
         type_of = self.context.get("type_of")
         category = validated_data.get('category')
-        title = validated_data.get('title')
         description = validated_data.get('description')
+        who_news_for = validated_data.get('who_news_for')
         location = validated_data.get('location')
+        external_url = validated_data.get('external_url')
         photos = validated_data.get('photos', [])
 
         item_type = ItemType.objects.filter(slug=category).first()
 
         item = Item.objects.create(
             type_of=item_type,
-            title=title,
             description=description,
+            who_news_for=who_news_for,
             location=location,
+            external_url=external_url,
             created_by=request.user,
             created_from=request.client_ip,
             created_from_is_public=request.client_ip_is_routable,

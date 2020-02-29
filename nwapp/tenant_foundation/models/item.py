@@ -388,3 +388,6 @@ class Item(models.Model):
         out the saving operation by Django in our ORM.
         '''
         super(Item, self).save(*args, **kwargs)
+
+    def get_who_news_for_label(self):
+        return str(dict(Item.WHO_NEWS_FOR_CHOICES).get(self.who_news_for))

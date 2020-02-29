@@ -100,6 +100,11 @@ class ItemRetrieveSerializer(serializers.Serializer):
         required=False,
         allow_null=False,
     )
+    who_news_for_label = serializers.CharField(
+        required=False,
+        allow_null=False,
+        source="get_who_news_for_label"
+    )
 
     # --- RESOURCE --- #
 
