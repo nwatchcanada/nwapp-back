@@ -31,6 +31,11 @@ class ItemRetrieveSerializer(serializers.Serializer):
     type_of_text = serializers.CharField(read_only=True,source="type_of.text",)
     description = serializers.CharField(read_only=True,)
     is_archived = serializers.BooleanField(read_only=True,)
+    event_logo_image = PrivateImageUploadRetrieveSerializer(
+        read_only=True,
+        many=False,
+        allow_null=True,
+    )
     photos = PrivateImageUploadRetrieveSerializer(
         read_only=True,
         many=True,
