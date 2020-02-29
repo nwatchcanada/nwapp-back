@@ -337,6 +337,8 @@ class Item(models.Model):
             return self.title
         if self.type_of.category == ItemType.CATEGORY.CONCERN:
             return self.title
+        if self.type_of.category == ItemType.CATEGORY.INFORMATION:
+            return Truncator(self.description).chars(63)
         if self.type_of.category == ItemType.CATEGORY.COMMUNITY_NEWS or self.type_of.category == ItemType.CATEGORY.VOLUNTEER:
             return Truncator(self.description).chars(63)
         if self.type_of.category == ItemType.CATEGORY.RESOURCE:
