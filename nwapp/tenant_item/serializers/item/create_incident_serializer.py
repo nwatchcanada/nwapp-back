@@ -34,11 +34,11 @@ class IncidentItemCreateSerializer(serializers.Serializer):
     # --- INCIDENT --- #
 
     has_notified_authorities = serializers.BooleanField(
-        required=False,
+        required=True,
         allow_null=False,
     )
     has_accept_authority_cooperation = serializers.BooleanField(
-        required=False,
+        required=True,
         allow_null=False,
     )
     title = serializers.CharField(
@@ -77,6 +77,11 @@ class IncidentItemCreateSerializer(serializers.Serializer):
             return value
         else:
             raise serializers.ValidationError(_("Item type does not exist."))
+
+    def validate_has_accept_authority_cooperation(self, value):
+        if not value:
+            raise serializers.ValidationError(_("You must accept cooperation with authorities to use our system."))
+        return value
 
     # def validate_start_date_time(self, value):
     #     type_of = self.context.get("type_of")

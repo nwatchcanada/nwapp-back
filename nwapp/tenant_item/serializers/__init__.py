@@ -18,3 +18,4 @@ from tenant_item.serializers.item.retrieve_event_serializer import EventItemRetr
 from tenant_item.serializers.item.list_serializers import ItemListSerializer
 from tenant_item.serializers.item.retrieve_serializer import ItemRetrieveSerializer
 from tenant_item.serializers.item.update_category_serializer import ItemCategoryUpdateSerializer
+from tenant_item.serializers.item.update_authorities_serializer import ItemAuthoritiesUpdateSerializer
