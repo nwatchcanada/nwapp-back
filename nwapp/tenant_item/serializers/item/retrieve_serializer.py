@@ -15,6 +15,7 @@ from rest_framework.validators import UniqueValidator
 
 from tenant_foundation.models import Item, ItemType
 from tenant_private_image_upload.serializers import PrivateImageUploadRetrieveSerializer
+from tenant_private_file_upload.serializers import PrivateFileUploadRetrieveSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -116,13 +117,13 @@ class ItemRetrieveSerializer(serializers.Serializer):
         required=False,
         allow_null=False,
     )
-    resource_image = serializers.URLField(
-        required=False,
-        allow_null=False,
-        source="resource_image.image_file.url",
+    resource_image  = PrivateImageUploadRetrieveSerializer(
+        read_only=True,
+        many=False,
+        allow_null=True,
     )
-    resource_file = serializers.URLField(
-        required=False,
-        allow_null=False,
-        source="resource_image.data_file.url",
+    resource_file = PrivateFileUploadRetrieveSerializer(
+        read_only=True,
+        many=False,
+        allow_null=True,
     )
