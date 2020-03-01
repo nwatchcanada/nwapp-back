@@ -87,7 +87,7 @@ class ItemRetrieveSerializer(serializers.Serializer):
         required=False,
         allow_null=False,
     )
-    date = serializers.DateTimeField( #DateTimeField
+    date = serializers.DateField( #DateTimeField
         required=False,
         allow_null=False,
     )

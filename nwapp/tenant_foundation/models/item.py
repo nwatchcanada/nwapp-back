@@ -212,9 +212,9 @@ class Item(models.Model):
         blank=True,
         null=True,
     )
-    date = models.DateTimeField(
+    date = models.DateField(
         _("Date"),
-        help_text=_('The date this event occured.'),
+        help_text=_('The date this item occured.'),
         blank=True,
         null=True,
     )
