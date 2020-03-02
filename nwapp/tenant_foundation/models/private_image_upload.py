@@ -240,7 +240,7 @@ class PrivateImageUpload(models.Model):
             is missing this functionality as it's our responsibility to handle
             the local images.
         """
-        if self.data_image:
-            self.data_image.delete()
+        if self.image_file:
+            self.image_file.delete()
 
         super(PrivateImageUpload, self).delete(*args, **kwargs) # Call the "real" delete() method
