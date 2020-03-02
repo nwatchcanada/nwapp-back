@@ -21,7 +21,8 @@ from tenant_item.serializers import (
     ItemRetrieveSerializer,
     IncidentDetailsUpdateSerializer,
     EventDetailsUpdateSerializer,
-    ConcernDetailsUpdateSerializer
+    ConcernDetailsUpdateSerializer,
+    InformationDetailsUpdateSerializer
 )
 from tenant_foundation.models import Item, ItemType
 
@@ -73,6 +74,17 @@ class ItemDetailsUpdateAPIView(generics.UpdateAPIView):
 
         elif type_of == ItemType.CATEGORY.CONCERN:
             write_serializer = ConcernDetailsUpdateSerializer(
+                object,
+                data=request.data,
+                context={
+                    'request': request,
+                    'type_of': object.type_of.category,
+                }
+            )
+            write_serializer.is_valid(raise_exception=True)
+            object = write_serializer.save()
+        elif type_of == ItemType.CATEGORY.INFORMATION:
+            write_serializer = InformationDetailsUpdateSerializer(
                 object,
                 data=request.data,
                 context={
