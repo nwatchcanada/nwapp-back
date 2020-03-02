@@ -23,3 +23,4 @@ from tenant_item.serializers.item.update_authorities_serializer import ItemAutho
 
 from tenant_item.serializers.item.update.incident_details_update_serializer import IncidentDetailsUpdateSerializer
 from tenant_item.serializers.item.update.event_details_update_serializer import EventDetailsUpdateSerializer
+from tenant_item.serializers.item.update.concern_details_update_serializer import ConcernDetailsUpdateSerializer
