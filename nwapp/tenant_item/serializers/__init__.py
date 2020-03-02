@@ -19,4 +19,7 @@ from tenant_item.serializers.item.list_serializers import ItemListSerializer
 from tenant_item.serializers.item.retrieve_serializer import ItemRetrieveSerializer
 from tenant_item.serializers.item.update_category_serializer import ItemCategoryUpdateSerializer
 from tenant_item.serializers.item.update_authorities_serializer import ItemAuthoritiesUpdateSerializer
-from tenant_item.serializers.item.update_details_serializer import ItemDetailsUpdateSerializer
+# from tenant_item.serializers.item.update_details_serializer import ItemDetailsUpdateSerializer
+
+from tenant_item.serializers.item.update.incident_details_update_serializer import IncidentDetailsUpdateSerializer
+from tenant_item.serializers.item.update.event_details_update_serializer import EventDetailsUpdateSerializer

@@ -17,8 +17,12 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 #    CanListCreateItemPermission,
 #    CanRetrieveItemPermission
 # )
-from tenant_item.serializers import ItemRetrieveSerializer, ItemDetailsUpdateSerializer
-from tenant_foundation.models import Item
+from tenant_item.serializers import (
+    ItemRetrieveSerializer,
+    IncidentDetailsUpdateSerializer,
+    EventDetailsUpdateSerializer
+)
+from tenant_foundation.models import Item, ItemType
 
 
 class ItemDetailsUpdateAPIView(generics.UpdateAPIView):
@@ -39,16 +43,36 @@ class ItemDetailsUpdateAPIView(generics.UpdateAPIView):
         """
         object = get_object_or_404(Item, slug=slug)
         self.check_object_permissions(request, object)  # Validate permissions.
-        write_serializer = ItemDetailsUpdateSerializer(
-            object,
-            data=request.data,
-            context={
-                'request': request,
-                'type_of': object.type_of.category,
-            }
-        )
-        write_serializer.is_valid(raise_exception=True)
-        object = write_serializer.save()
+        serializer = None
+        type_of = object.type_of.category
+
+        if type_of == ItemType.CATEGORY.INCIDENT:
+            write_serializer = IncidentDetailsUpdateSerializer(
+                object,
+                data=request.data,
+                context={
+                    'request': request,
+                    'type_of': object.type_of.category,
+                }
+            )
+            write_serializer.is_valid(raise_exception=True)
+            object = write_serializer.save()
+
+        elif type_of == ItemType.CATEGORY.EVENT:
+            write_serializer = EventDetailsUpdateSerializer(
+                object,
+                data=request.data,
+                context={
+                    'request': request,
+                    'type_of': object.type_of.category,
+                }
+            )
+            write_serializer.is_valid(raise_exception=True)
+            object = write_serializer.save()
+        else:
+            return Response(data={}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
         read_serializer = ItemRetrieveSerializer(
             object,
             many=False,

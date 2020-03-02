@@ -20,13 +20,9 @@ from tenant_foundation.models import Item, ItemType, PrivateImageUpload
 logger = logging.getLogger(__name__)
 
 
-class ItemDetailsUpdateSerializer(serializers.Serializer):
+class EventDetailsUpdateSerializer(serializers.Serializer):
 
     title = serializers.CharField(
-        required=True,
-        allow_null=False,
-    )
-    date = serializers.DateField(
         required=True,
         allow_null=False,
     )
@@ -34,9 +30,21 @@ class ItemDetailsUpdateSerializer(serializers.Serializer):
         required=True,
         allow_null=False,
     )
-    location = serializers.CharField(
-        required=True,
-        allow_null=False,
+    event_logo_image = serializers.JSONField(
+       required=False,
+       allow_null=True,
+    )
+    external_url = serializers.URLField(
+        required=False,
+        allow_null=True,
+    )
+    shown_to_whom = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+    )
+    can_be_posted_on_social_media = serializers.BooleanField(
+        required=False,
+        allow_null=True,
     )
 
     def update(self, instance, validated_data):
@@ -45,23 +53,23 @@ class ItemDetailsUpdateSerializer(serializers.Serializer):
         """
         request = self.context.get("request")
         title = validated_data.get("title")
-        date = validated_data.get('date')
         description = validated_data.get('description')
-        location = validated_data.get('location')
+        event_logo_image = validated_data.get('event_logo_image')
+        external_url = validated_data.get('external_url')
+        shown_to_whom = validated_data.get('shown_to_whom')
+        can_be_posted_on_social_media = validated_data.get('can_be_posted_on_social_media')
 
         # Save it.
         instance.title = title
-        instance.date = date
         instance.description = description
-        instance.location = location
+        # # instance.event_logo_image = event_logo_image
+        instance.external_url = external_url
+        instance.shown_to_whom = shown_to_whom
+        instance.can_be_posted_on_social_media = can_be_posted_on_social_media
         instance.last_modified_by=request.user
         instance.last_modified_from=request.client_ip
         instance.last_modified_from_is_public=request.client_ip_is_routable
         instance.save()
-
-        # print(validated_data)
-        # print(instance.has_notified_authorities)
-        # print(instance.has_accept_authority_cooperation)
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
