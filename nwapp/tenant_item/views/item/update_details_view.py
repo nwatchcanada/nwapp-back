@@ -22,7 +22,8 @@ from tenant_item.serializers import (
     IncidentDetailsUpdateSerializer,
     EventDetailsUpdateSerializer,
     ConcernDetailsUpdateSerializer,
-    InformationDetailsUpdateSerializer
+    InformationDetailsUpdateSerializer,
+    CommunityNewsDetailsUpdateSerializer
 )
 from tenant_foundation.models import Item, ItemType
 
@@ -83,6 +84,7 @@ class ItemDetailsUpdateAPIView(generics.UpdateAPIView):
             )
             write_serializer.is_valid(raise_exception=True)
             object = write_serializer.save()
+
         elif type_of == ItemType.CATEGORY.INFORMATION:
             write_serializer = InformationDetailsUpdateSerializer(
                 object,
@@ -94,6 +96,19 @@ class ItemDetailsUpdateAPIView(generics.UpdateAPIView):
             )
             write_serializer.is_valid(raise_exception=True)
             object = write_serializer.save()
+
+        elif type_of == ItemType.CATEGORY.COMMUNITY_NEWS:
+            write_serializer = CommunityNewsDetailsUpdateSerializer(
+                object,
+                data=request.data,
+                context={
+                    'request': request,
+                    'type_of': object.type_of.category,
+                }
+            )
+            write_serializer.is_valid(raise_exception=True)
+            object = write_serializer.save()
+
         else:
             return Response(data={}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
