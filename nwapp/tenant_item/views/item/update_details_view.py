@@ -24,7 +24,8 @@ from tenant_item.serializers import (
     ConcernDetailsUpdateSerializer,
     InformationDetailsUpdateSerializer,
     CommunityNewsDetailsUpdateSerializer,
-    VolunteerDetailsUpdateSerializer
+    VolunteerDetailsUpdateSerializer,
+    ResourceDetailsUpdateSerializer
 )
 from tenant_foundation.models import Item, ItemType
 
@@ -112,6 +113,18 @@ class ItemDetailsUpdateAPIView(generics.UpdateAPIView):
 
         elif type_of == ItemType.CATEGORY.VOLUNTEER:
             write_serializer = VolunteerDetailsUpdateSerializer(
+                object,
+                data=request.data,
+                context={
+                    'request': request,
+                    'type_of': object.type_of.category,
+                }
+            )
+            write_serializer.is_valid(raise_exception=True)
+            object = write_serializer.save()
+
+        elif type_of == ItemType.CATEGORY.RESOURCE:
+            write_serializer = ResourceDetailsUpdateSerializer(
                 object,
                 data=request.data,
                 context={
