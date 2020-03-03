@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 
 class ResourceDetailsUpdateSerializer(serializers.Serializer):
 
+    title = serializers.CharField(
+        required=True,
+        allow_null=False,
+    )
     description = serializers.CharField(
         required=True,
         allow_null=False,
@@ -36,10 +40,12 @@ class ResourceDetailsUpdateSerializer(serializers.Serializer):
         Override the `create` function to add extra functinality.
         """
         request = self.context.get("request")
+        title = validated_data.get('title')
         description = validated_data.get('description')
         external_url = validated_data.get('external_url')
 
         # Save it.
+        instance.title = title
         instance.description = description
         instance.external_url = external_url
         instance.last_modified_by=request.user
