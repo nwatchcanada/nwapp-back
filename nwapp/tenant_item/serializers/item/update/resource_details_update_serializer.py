@@ -34,6 +34,10 @@ class ResourceDetailsUpdateSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
     )
+    embed_code = serializers.CharField(
+        required=False,
+        allow_null=True,
+    )
 
     def update(self, instance, validated_data):
         """
@@ -43,11 +47,13 @@ class ResourceDetailsUpdateSerializer(serializers.Serializer):
         title = validated_data.get('title')
         description = validated_data.get('description')
         external_url = validated_data.get('external_url')
+        embed_code = validated_data.get('embed_code')
 
         # Save it.
         instance.title = title
         instance.description = description
         instance.external_url = external_url
+        instance.embed_code = embed_code
         instance.last_modified_by=request.user
         instance.last_modified_from=request.client_ip
         instance.last_modified_from_is_public=request.client_ip_is_routable
