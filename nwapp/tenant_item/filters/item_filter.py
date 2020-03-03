@@ -31,7 +31,7 @@ class ItemFilter(django_filters.FilterSet):
     class Meta:
         model = Item
         fields = [
-            # 'is_archived',
+            'state',
             # 'category',
             'slug'
         ]

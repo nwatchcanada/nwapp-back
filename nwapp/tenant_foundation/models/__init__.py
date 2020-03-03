@@ -45,3 +45,4 @@ from tenant_foundation.models.street_address_range import StreetAddressRange
 
 from tenant_foundation.models.item_type import ItemType
 from tenant_foundation.models.item import Item
+from tenant_foundation.models.item_comment import ItemComment

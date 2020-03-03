@@ -44,7 +44,8 @@ class ItemTypeRetrieveUpdateDestroySerializer(serializers.Serializer):
         allow_blank=False,
         allow_null=False,
     )
-    is_archived = serializers.BooleanField(read_only=True)
+    state = serializers.CharField(read_only=True)
+    state_label = serializers.CharField(read_only=True, source="get_state_label()")
 
     # ------ AUDITING ------ #
     created_at = serializers.DateTimeField(read_only=True, allow_null=False,)

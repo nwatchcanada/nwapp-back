@@ -27,12 +27,12 @@ class ItemRetrieveSerializer(serializers.Serializer):
 
     slug = serializers.SlugField(read_only=True,)
     state = serializers.CharField(read_only=True,)
+    state_label = serializers.CharField(read_only=True,source="get_state_label()")
     type_of_category = serializers.IntegerField(read_only=True,source="type_of.category",)
     type_of_category_label = serializers.CharField(read_only=True,source="type_of.get_category_label",)
     type_of_text = serializers.CharField(read_only=True,source="type_of.text",)
     type_of_slug = serializers.CharField(read_only=True,source="type_of.slug",)
     description = serializers.CharField(read_only=True,)
-    is_archived = serializers.BooleanField(read_only=True,)
     event_logo_image = PrivateImageUploadRetrieveSerializer(
         read_only=True,
         many=False,

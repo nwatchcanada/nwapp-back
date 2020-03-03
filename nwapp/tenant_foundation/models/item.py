@@ -130,13 +130,6 @@ class Item(models.Model):
         null=True,
         default='',
     )
-    is_archived = models.BooleanField( # DEPRECATED
-        _("Is Archived"),
-        help_text=_('Indicates whether item was archived.'),
-        default=False,
-        blank=True,
-        db_index=True
-    )
 
     # EVENT FIELDS
 
@@ -391,3 +384,6 @@ class Item(models.Model):
 
     def get_who_news_for_label(self):
         return str(dict(Item.WHO_NEWS_FOR_CHOICES).get(self.who_news_for))
+
+    def get_state_label(self):
+        return str(dict(Item.STATE).get(self.state))

@@ -2,7 +2,11 @@ from tenant_item.views.item_type.list_create_views import ItemTypeListCreateAPIV
 from tenant_item.views.item_type.retrieve_update_delete_views import ItemTypeRetrieveUpdateDestroyAPIView
 
 from tenant_item.views.item.list_create_views import ItemListCreateAPIView
+
 from tenant_item.views.item.retrieve_views import ItemRetrieveAPIView
+
 from tenant_item.views.item.update_category_view import ItemCategoryUpdateAPIView
 from tenant_item.views.item.update_authorities_view import ItemAuthoritiesUpdateAPIView
 from tenant_item.views.item.update_details_view import ItemDetailsUpdateAPIView
+
+from tenant_item.views.item.archive_operation_views import ItemArchiveOperationAPIView
