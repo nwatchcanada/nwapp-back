@@ -119,13 +119,32 @@ class ResourceDetailsUpdateSerializer(serializers.Serializer):
 
         # Attach the file upload.
         if instance.format_type == Item.FORMAT_TYPE.IMAGE_RESOURCE_TYPE_OF:
-            if instance.resource_image:
-                instance.resource_image.delete()
-            instance.resource_image = self.create_resource_image(request, validated_data)
+            # DEVELOPERS NOTE:
+            # (1) The following code will either update the `resource_image` or
+            #     create a new image.
+            # (2) Check to see if a previous image was uploaded and if so then
+            #     we need to delete it.
+            resource_image_slug = resource_image.get("slug", None)
+            if resource_image_slug:
+                instance.resource_image__slug = resource_image_slug
+            else:
+                if instance.resource_image:
+                    instance.resource_image.delete()
+                instance.resource_image = self.create_resource_image(request, validated_data)
+
         elif instance.format_type == Item.FORMAT_TYPE.FILE_RESOURCE_TYPE_OF:
-            if instance.resource_file:
-                instance.resource_file.delete()
-            instance.resource_file = self.create_resource_file(request, validated_data)
+            # DEVELOPERS NOTE:
+            # (1) The following code will either update the `resource_file` or
+            #     create a new image.
+            # (2) Check to see if a previous file was uploaded and if so then
+            #     we need to delete it.
+            resource_file_slug = resource_file.get("slug", None)
+            if resource_file_slug:
+                instance.resource_file__slug = resource_file_slug
+            else:
+                if instance.resource_file:
+                    instance.resource_file.delete()
+                instance.resource_file = self.create_resource_file(request, validated_data)
 
         # Save it.
         instance.title = title
