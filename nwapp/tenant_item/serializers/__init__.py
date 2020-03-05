@@ -30,3 +30,5 @@ from tenant_item.serializers.item.update.volunteer_details_update_serializer imp
 from tenant_item.serializers.item.update.resource_details_update_serializer import ResourceDetailsUpdateSerializer
 
 from tenant_item.serializers.item.operations.archive_operation_serializers import ItemArchiveOperationSerializer
+
+from tenant_item.serializers.item.comment_serializers import ItemCommentListSerializer, ItemCommentCreateSerializer

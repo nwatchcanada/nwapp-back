@@ -10,3 +10,5 @@ from tenant_item.views.item.update_authorities_view import ItemAuthoritiesUpdate
 from tenant_item.views.item.update_details_view import ItemDetailsUpdateAPIView
 
 from tenant_item.views.item.archive_operation_views import ItemArchiveOperationAPIView
+
+from tenant_item.views.item.comment_views import ItemCommentListCreateAPIView

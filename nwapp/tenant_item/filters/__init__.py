@@ -1,2 +1,3 @@
 from tenant_item.filters.item_type_filter import ItemTypeFilter
 from tenant_item.filters.item_filter import ItemFilter
+from tenant_item.filters.comment_filter import ItemCommentFilter

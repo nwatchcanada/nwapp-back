@@ -1,0 +1,2 @@
+from tenant_item.permissions.base_permissions import CanListCreateItemPermission, CanRetrieveUpdateDestroyItemPermission
+from tenant_item.permissions.comment_permissions import CanListCreateItemCommentPermission, CanRetrieveUpdateDestroyItemCommentPermission
