@@ -22,9 +22,8 @@ from tenant_task.serializers import (
 from tenant_foundation.models import TaskItem
 
 
-class TaskItemListCreateAPIView(generics.ListAPIView):
+class TaskItemListAPIView(generics.ListAPIView):
     serializer_class = TaskItemListSerializer
-    # pagination_class = TinyResultsSetPagination
     permission_classes = (
         DisableOptionsPermission,
         permissions.IsAuthenticated,

@@ -77,8 +77,9 @@ class TaskItem(models.Model):
         ACTION_CONCERNT_ITEM = 5
 
     class STATE:
-        ACTIVE = 1
-        CLOSED = 2
+        UNASSIGNED = 1
+        PENDING = 2
+        CLOSED = 3
 
     '''
     CHOICES
@@ -93,7 +94,8 @@ class TaskItem(models.Model):
     )
 
     STATE_CHOICES = (
-        (STATE.ACTIVE, _('Active')),
+        (STATE.UNASSIGNED, _('Unassigned')),
+        (STATE.PENDING, _('Pending')),
         (STATE.CLOSED, _('Closed')),
     )
 
@@ -149,11 +151,44 @@ class TaskItem(models.Model):
         blank=True,
         null=True,
     )
+    item = models.ForeignKey(
+        "Item",
+        help_text=_('The item this task item belongs to.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    staff = models.ForeignKey(
+        "Staff",
+        help_text=_('The staff member which is responsibel for processing this task item.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     tags = models.ManyToManyField(
         "Tag",
         help_text=_('The tags associated with this task item.'),
         blank=True,
         related_name="task_items"
+    )
+
+    next_task_item = models.ForeignKey(
+        "self",
+        help_text=_('The next task item that belongs to this task item.'),
+        related_name="+",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    previous_task_item = models.ForeignKey(
+        "self",
+        help_text=_('The previous task item that belongs to this task item.'),
+        related_name="+",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
 
     # closing_reason = models.PositiveSmallIntegerField(
@@ -267,13 +302,13 @@ class TaskItem(models.Model):
         super(TaskItem, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.title)
+        return self.get_type_of_label()+" (External ID: "+str(self.uuid)+")"
 
     def get_type_of_label(self):
-        return dict(TYPE_OF_CHOICES).get(self.type_of)
+        return dict(TaskItem.TYPE_OF_CHOICES).get(self.type_of)
 
     def get_state_label(self):
-        return dict(STATE_CHOICES).get(self.state)
+        return dict(TaskItem.STATE_CHOICES).get(self.state)
 
     @staticmethod
     def get_searchable_content(task_item):
@@ -281,13 +316,83 @@ class TaskItem(models.Model):
         Utility function which refreshes the searchable content used when
         searching for `keywords`.
         """
-        text = task_item.uuid + " "
-        # if task_item.contact:
-        #     text += task_item.contact.get_searchable_content()
-        # if task_item.address:
-        #     text += " " + task_item.address.get_searchable_content()
-        # if task_item.metric:
-        #     text += " " + task_item.metric.get_searchable_content()
-        # if task_item.watch:
-        #     text += " " + task_item.watch.get_searchable_content()
-        return text
+        text = str(task_item.uuid) + " "
+        text += task_item.get_type_of_label() + " "
+        text += task_item.get_description()
+        return str(text)
+
+    def get_description(self):
+        text = ""
+        if self.type_of == self.TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH:
+            text = _("A new watch has been created and requires an area coordinator to be assigned. Please assign an area coordinator to the watch.")
+        elif self.type_of == self.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH:
+            text = _("A new watch has been created and requires an associate to be assigned. Please assign an associate to the watch.")
+        elif self.type_of == self.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT:
+            text = _("A new district has been created and requires an associate to be assigned. Please assign an associate to the watch.")
+        elif self.type_of == self.TYPE_OF.ACTION_INCIDENT_ITEM:
+            text = _("Someone submitted a NW incident item that requires action.")
+        elif self.type_of == self.TYPE_OF.ACTION_CONCERNT_ITEM:
+            text = _("Someone submitted a NW concern item that requires action.")
+        return str(text)
+
+    @staticmethod
+    def seed(tenant, length=25, type_of=None):
+        from faker import Faker
+        results = []
+        faker = Faker('en_CA')
+        for i in range(0,length):
+            try:
+                from shared_foundation.models import SharedUser, SharedGroup
+
+                if type_of == None:
+                    type_of = faker.pyint(min_value=1, max_value=5, step=1)
+
+                if type_of == TaskItem.TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH or type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH:
+                    from tenant_foundation.models import Watch
+
+                    watch = Watch.objects.filter(
+                        task_items__isnull=True
+                    ).first()
+                    random_days_count = faker.pyint(min_value=0, max_value=10, step=1)
+                    task_item = TaskItem.objects.create(
+                        type_of=type_of,
+                        state=TaskItem.STATE.UNASSIGNED,
+                        due_date=get_todays_date(random_days_count),
+                        watch=watch,
+                    )
+                    results.append(task_item)
+
+                elif type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT:
+                    from tenant_foundation.models import District
+
+                    district = District.objects.filter(
+                        task_items__isnull=True
+                    ).first()
+                    random_days_count = faker.pyint(min_value=0, max_value=10, step=1)
+                    task_item = TaskItem.objects.create(
+                        type_of=type_of,
+                        state=TaskItem.STATE.UNASSIGNED,
+                        due_date=get_todays_date(random_days_count),
+                        district=district,
+                    )
+                    results.append(task_item)
+
+                elif type_of == TaskItem.TYPE_OF.ACTION_INCIDENT_ITEM or type_of == TaskItem.TYPE_OF.ACTION_CONCERNT_ITEM:
+                    from tenant_foundation.models import Item
+
+                    item = Item.objects.filter(
+                        task_items__isnull=True
+                    ).first()
+                    random_days_count = faker.pyint(min_value=0, max_value=10, step=1)
+                    task_item = TaskItem.objects.create(
+                        type_of=type_of,
+                        state=TaskItem.STATE.UNASSIGNED,
+                        due_date=get_todays_date(random_days_count),
+                        item=item,
+                    )
+                    results.append(task_item)
+
+            except Exception as e:
+                print(e)
+                pass
+        return results

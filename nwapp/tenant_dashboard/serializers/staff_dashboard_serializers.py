@@ -11,9 +11,10 @@ from rest_framework import exceptions, serializers
 from shared_foundation.models import SharedOrganization
 
 from tenant_foundation.models import (
-    Member, AreaCoordinator, Associate, Watch, Announcement
+    Member, AreaCoordinator, Associate, Watch, Announcement, TaskItem
 )
 from tenant_foundation.serializers.announcement.list_create_serializers import AnnouncementListCreateSerializer
+from tenant_task.serializers import TaskItemListSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -32,12 +33,21 @@ class StaffDashboardSerializer(serializers.BaseSerializer):
                 'context': self.context,
             }
         )
-        active_tasks_count = 0 #TODO: IMPLEMENT
+        active_task_items = TaskItem.objects.filter(
+            Q(state=TaskItem.STATE.UNASSIGNED)|Q(state=TaskItem.STATE.PENDING)
+        ).order_by('due_date')
+        active_task_item_s = TaskItemListSerializer(
+            active_task_items[0:20],
+            many=True,
+            context={
+                'context': self.context,
+            }
+        )
         return {
             'active_members_count': active_members_count,
             'active_watches_count': active_watches_count,
             'active_associates_count': active_associates_count,
-            'active_tasks_count': active_tasks_count,
+            'active_tasks_count': active_task_items.count(),
             'announcements': announcement_serializer.data,
-            'latest_tasks': [], #TODO: IMPLEMENT
+            'latest_tasks': active_task_item_s.data
         }

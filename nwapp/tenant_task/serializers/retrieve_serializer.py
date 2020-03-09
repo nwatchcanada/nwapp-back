@@ -25,6 +25,15 @@ logger = logging.getLogger(__name__)
 
 
 class TaskItemRetrieveSerializer(serializers.Serializer):
-    slug = serializers.SlugField(read_only=True,)
+    uuid = serializers.UUIDField(read_only=True,)
     type_of = serializers.IntegerField(read_only=True,)
-    # type_of_label = serializers.CharField(source="get_pretty_type_of", read_only=True,)
+    type_of_label = serializers.CharField(read_only=True, source="get_type_of_label",)
+    description = serializers.CharField(read_only=True, source="get_description",)
+    due_date = serializers.DateField(read_only=True,)
+    district = serializers.SlugField(read_only=True, source="district.slug",)
+    watch = serializers.SlugField(read_only=True, source="watch.slug",)
+    staff = serializers.SlugField(read_only=True, source="staff.slug",)
+    created_at = serializers.DateField(read_only=True,)
+    created_by = serializers.SlugField(read_only=True, source="created_by.slug",)
+    last_modified_at = serializers.DateField(read_only=True,)
+    last_modified_by = serializers.SlugField(read_only=True, source="last_modified_by.slug",)

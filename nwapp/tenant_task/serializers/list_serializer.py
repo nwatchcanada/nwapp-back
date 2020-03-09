@@ -23,8 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 class TaskItemListSerializer(serializers.Serializer):
-    uuid = serializers.UUIDField()
-    type_of = serializers.IntegerField()
+    uuid = serializers.UUIDField(read_only=True,)
+    type_of = serializers.IntegerField(read_only=True,)
+    type_of_label = serializers.CharField(read_only=True, source="get_type_of_label",)
+    due_date = serializers.DateField(read_only=True,)
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
