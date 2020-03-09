@@ -20,6 +20,20 @@ class TaskItemManager(models.Manager):
         for obj in TaskItem.objects.iterator(chunk_size=500):
             obj.delete()
 
+    def search(self, keyword):
+        """Default search algorithm used for this model."""
+        return self.partial_text_search(keyword)
+
+    def partial_text_search(self, keyword):
+        """Function performs partial text search of various textfields."""
+        return TaskItem.objects.filter(
+            Q(indexed_text__icontains=keyword) |
+            Q(indexed_text__istartswith=keyword) |
+            Q(indexed_text__iendswith=keyword) |
+            Q(indexed_text__exact=keyword) |
+            Q(indexed_text__icontains=keyword)
+        )
+
 
 @transaction.atomic
 def get_todays_date(days=0):
@@ -58,8 +72,9 @@ class TaskItem(models.Model):
     class TYPE_OF:
         ASSIGN_AREA_COORDINATOR_TO_WATCH = 1
         ASSIGN_ASSOCIATE_TO_WATCH = 2
-        ACTION_INCIDENT_ITEM = 3
-        ACTION_CONCERNT_ITEM = 4
+        ASSIGN_ASSOCIATE_TO_DISTRICT = 3
+        ACTION_INCIDENT_ITEM = 4
+        ACTION_CONCERNT_ITEM = 5
 
     class STATE:
         ACTIVE = 1
@@ -72,6 +87,7 @@ class TaskItem(models.Model):
     TYPE_OF_CHOICES = (
         (TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH, _('Assign Area Coordinator to Watch')),
         (TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH, _('Assign Associate to Watch')),
+        (TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT, _('Assign Associate to District')),
         (TYPE_OF.ACTION_INCIDENT_ITEM, _('Action a NW concern item')),
         (TYPE_OF.ACTION_CONCERNT_ITEM, _('Action a NW item item')),
     )
@@ -175,6 +191,18 @@ class TaskItem(models.Model):
     #     default='',
     # )
 
+    # SEARCHABLE FIELDS
+
+    indexed_text = models.CharField(
+        _("Indexed Text"),
+        max_length=1023,
+        help_text=_('The searchable content text used by the keyword searcher function.'),
+        blank=True,
+        null=True,
+        db_index=True,
+        unique=True
+    )
+
     #
     #  SYSTEM FIELDS
     #
@@ -226,8 +254,40 @@ class TaskItem(models.Model):
     MODEL FUNCTIONS
     """
 
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        '''
+        Override the `save` function to support extra functionality of our model.
+        '''
+
+        '''
+        Finally call the parent function which handles saving so we can carry
+        out the saving operation by Django in our ORM.
+        '''
+        super(TaskItem, self).save(*args, **kwargs)
+
     def __str__(self):
         return str(self.title)
 
-    def get_pretty_type_of(self):
+    def get_type_of_label(self):
         return dict(TYPE_OF_CHOICES).get(self.type_of)
+
+    def get_state_label(self):
+        return dict(STATE_CHOICES).get(self.state)
+
+    @staticmethod
+    def get_searchable_content(task_item):
+        """
+        Utility function which refreshes the searchable content used when
+        searching for `keywords`.
+        """
+        text = task_item.uuid + " "
+        # if task_item.contact:
+        #     text += task_item.contact.get_searchable_content()
+        # if task_item.address:
+        #     text += " " + task_item.address.get_searchable_content()
+        # if task_item.metric:
+        #     text += " " + task_item.metric.get_searchable_content()
+        # if task_item.watch:
+        #     text += " " + task_item.watch.get_searchable_content()
+        return text
