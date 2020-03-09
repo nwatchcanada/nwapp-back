@@ -117,6 +117,28 @@ class TaskItem(models.Model):
         default=get_todays_date,
         db_index=True
     )
+    district = models.ForeignKey(
+        "District",
+        help_text=_('The district whom this task item belongs to.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    watch = models.ForeignKey(
+        "Watch",
+        help_text=_('The watch this task item belongs to.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this task item.'),
+        blank=True,
+        related_name="task_items"
+    )
 
     # closing_reason = models.PositiveSmallIntegerField(
     #     _("Closing Reason"),
