@@ -37,7 +37,7 @@ class TaskItemListAPIView(generics.ListAPIView):
         List
         """
         # Fetch all the queries.
-        queryset = TaskItem.objects.all().order_by('-id')
+        queryset = TaskItem.objects.all().order_by('-due_date')
 
         # Fetch all the queries.
         s = self.get_serializer_class()

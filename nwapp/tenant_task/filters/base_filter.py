@@ -10,7 +10,9 @@ class TaskItemFilter(django_filters.FilterSet):
     o = django_filters.OrderingFilter(
         # tuple-mapping retains order
         fields=(
-            ('id', 'id'),
+            ('type_of', 'type_of'),
+            ('state', 'state'),
+            ('due_date', 'due_date'),
         ),
 
         # # labels do not need to retain order
@@ -137,9 +139,6 @@ class TaskItemFilter(django_filters.FilterSet):
         model = TaskItem
         fields = [
             'type_of',
-            # 'search',
-            # 'first_name',
-            # 'last_name',
-            # 'email',
-            # 'telephone',
+            'state',
+            'due_date',
         ]
