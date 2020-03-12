@@ -21,17 +21,19 @@ class ItemFilter(django_filters.FilterSet):
         # }
     )
 
-    # def user_filtering(self, queryset, name, value):
-    #     return queryset.filter(
-    #         Q(user__slug=value)
-    #     )
-    #
-    # user = django_filters.CharFilter(method='user_filtering')
+    def category_filtering(self, queryset, name, value):
+        if int(value) == 0:
+            return queryset
+        return queryset.filter(
+            Q(type_of__category=value)
+        )
+
+    category = django_filters.CharFilter(method='category_filtering')
 
     class Meta:
         model = Item
         fields = [
             'state',
-            # 'category',
+            'category',
             'slug'
         ]
