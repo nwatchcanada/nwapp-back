@@ -286,7 +286,7 @@ class AreaCoordinatorCreateSerializer(serializers.Serializer):
 
         '''
         Run in the background the code which will `process` the newly created
-        area_coordinator object.
+        area coordinator object.
         '''
         django_rq.enqueue(
             process_area_coordinator_with_slug_func,

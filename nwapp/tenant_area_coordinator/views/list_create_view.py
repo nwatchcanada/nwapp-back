@@ -38,7 +38,7 @@ class AreaCoordinatorListCreateAPIView(generics.ListCreateAPIView):
         # Fetch all the queries.
         queryset = AreaCoordinator.objects.filter(
             user__groups__id=SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR
-        ).order_by('-id')
+        ).order_by('-user__id')
 
         # Fetch all the queries.
         s = self.get_serializer_class()
