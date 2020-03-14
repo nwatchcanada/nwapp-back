@@ -17,7 +17,7 @@ from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumb
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    TaskItem
+    TaskItem, AreaCoordinator
 )
 
 
@@ -25,13 +25,37 @@ logger = logging.getLogger(__name__)
 
 
 class TaskItemUpdateSerializer(serializers.Serializer):
-    area_coordinator_slug = serializers.SlugField()
+    area_coordinator_slug = serializers.SlugField(required=False, allow_blank=True, allow_null=True,)
+
+    def validate_area_coordinator_slug(self, value):
+        type_of = self.context.get("type_of")
+        if type_of == TaskItem.TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH:
+            if value == None or value == "":
+                raise serializers.ValidationError(_("Please specify the area coordinator."))
+        return value
 
     def update(self, instance, validated_data):
         """
         Override the `update` function to add extra functinality.
         """
-        logger.info("-")
+        request = self.context.get("request")
+        type_of = self.context.get("type_of")
+        if type_of == TaskItem.TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH:
+            slug = validated_data.get("area_coordinator_slug")
+            area_coordinator = AreaCoordinator.objects.get(user__slug=slug)
+            area_coordinator.user.member.watch = instance.watch
+            area_coordinator.user.member.last_modified_by = request.user
+            area_coordinator.user.member.last_modified_from = request.client_ip
+            area_coordinator.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            area_coordinator.user.member.save()
+            logger.info("Assigned area coordinator to watch.")
+
+            instance.state = TaskItem.STATE.CLOSED
+            instance.last_modified_by = request.user
+            instance.last_modified_from = request.client_ip
+            instance.last_modified_from_is_public = request.client_ip_is_routable
+            instance.save()
+            logger.info("Closing task.")
 
         raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
             "error": "Terminating for debugging purposes only."

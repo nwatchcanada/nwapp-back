@@ -45,7 +45,10 @@ class TaskItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
         write_serializer = TaskItemUpdateSerializer(
             object,
             data=request.data,
-            context={'request': request,}
+            context={
+                'request': request,
+                'type_of': object.type_of
+            }
         )
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
