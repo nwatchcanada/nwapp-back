@@ -57,8 +57,8 @@ class TaskItemUpdateSerializer(serializers.Serializer):
             instance.save()
             logger.info("Closing task.")
 
-        raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-            "error": "Terminating for debugging purposes only."
-        })
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
 
         return instance

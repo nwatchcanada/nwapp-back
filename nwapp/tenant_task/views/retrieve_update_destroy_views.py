@@ -52,5 +52,11 @@ class TaskItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
         )
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
-        read_serializer = TaskItemRetrieveSerializer(object, many=False, context={'request': request,})
+        read_serializer = TaskItemRetrieveSerializer(
+            object,
+            many=False,
+            context={
+                'request': request,
+            }
+        )
         return Response(read_serializer.data, status=status.HTTP_200_OK)

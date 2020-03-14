@@ -38,7 +38,8 @@ class TaskItemManager(models.Manager):
 @transaction.atomic
 def get_todays_date(days=0):
     """Returns the current date plus paramter number of days."""
-    return timezone.now() + timedelta(days=days)
+    todays_dt = timezone.now() + timedelta(days=days)
+    return todays_dt.date()
 
 
 @transaction.atomic
