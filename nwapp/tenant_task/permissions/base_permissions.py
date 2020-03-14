@@ -28,27 +28,31 @@ class CanRetrieveUpdateDestroyTaskItemPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # print("has_object_permission", request.method)  # For debugging purposes only.
 
-        # --- RETRIEVE ---
-        if "GET" in request.method:
-            # OWNERSHIP BASED
-            if request.user == obj.user:
-                return True
+        return True
 
-            # PERMISSION BASED
-            return request.user.is_executive or request.user.is_management or request.user.is_frontline
+        #TODO: IMPLEMENT.
 
-        # ---UPDATE ---
-        if "PUT" in request.method:
-            # OWNERSHIP BASED
-            if request.user == obj.user:
-                return True
-
-            # PERMISSION BASED
-            return request.user.is_executive or request.user.is_management or request.user.is_frontline
-
-        # --- DELETE ---
-        if "DELETE" in request.method:
-            # PERMISSION BASED
-            return request.user.is_executive or request.user.is_management or request.user.is_frontline
+        # # --- RETRIEVE ---
+        # if "GET" in request.method:
+        #     # OWNERSHIP BASED
+        #     if request.user == obj.user:
+        #         return True
+        #
+        #     # PERMISSION BASED
+        #     return request.user.is_executive or request.user.is_management or request.user.is_frontline
+        #
+        # # ---UPDATE ---
+        # if "PUT" in request.method:
+        #     # OWNERSHIP BASED
+        #     if request.user == obj.user:
+        #         return True
+        #
+        #     # PERMISSION BASED
+        #     return request.user.is_executive or request.user.is_management or request.user.is_frontline
+        #
+        # # --- DELETE ---
+        # if "DELETE" in request.method:
+        #     # PERMISSION BASED
+        #     return request.user.is_executive or request.user.is_management or request.user.is_frontline
 
         return False
