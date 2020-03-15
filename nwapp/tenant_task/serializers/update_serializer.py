@@ -37,7 +37,7 @@ class TaskItemUpdateSerializer(serializers.Serializer):
 
     def validate_associate_slug(self, value):
         type_of = self.context.get("type_of")
-        if type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH:
+        if type_of in [TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH, TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH]:
             if value == None or value == "":
                 raise serializers.ValidationError(_("Please specify the associate."))
         return value
@@ -48,7 +48,7 @@ class TaskItemUpdateSerializer(serializers.Serializer):
         """
         request = self.context.get("request")
         type_of = self.context.get("type_of")
-        
+
         if type_of == TaskItem.TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH:
             slug = validated_data.get("area_coordinator_slug")
             area_coordinator = AreaCoordinator.objects.get(user__slug=slug)
@@ -82,6 +82,23 @@ class TaskItemUpdateSerializer(serializers.Serializer):
             instance.last_modified_from_is_public = request.client_ip_is_routable
             instance.save()
             logger.info("Closing task for assigning associate to watch.")
+
+        elif type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT:
+            slug = validated_data.get("associate_slug")
+            associate = Associate.objects.get(user__slug=slug)
+            associate.user.member.district = instance.district
+            associate.user.member.last_modified_by = request.user
+            associate.user.member.last_modified_from = request.client_ip
+            associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            associate.user.member.save()
+            logger.info("Assigned associate to district.")
+
+            instance.state = TaskItem.STATE.CLOSED
+            instance.last_modified_by = request.user
+            instance.last_modified_from = request.client_ip
+            instance.last_modified_from_is_public = request.client_ip_is_routable
+            instance.save()
+            logger.info("Closing task for assigning associate to district.")
 
         else:
             raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
