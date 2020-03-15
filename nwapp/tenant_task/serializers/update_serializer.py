@@ -27,6 +27,10 @@ logger = logging.getLogger(__name__)
 class TaskItemUpdateSerializer(serializers.Serializer):
     area_coordinator_slug = serializers.SlugField(required=False, allow_blank=True, allow_null=True,)
     associate_slug = serializers.SlugField(required=False, allow_blank=True, allow_null=True,)
+    will_action = serializers.BooleanField(required=False,  allow_null=True,)
+    comment = serializers.CharField(required=False, allow_blank=True, allow_null=True,)
+    reason = serializers.IntegerField(required=False, allow_null=True,)
+    reason_other = serializers.CharField(required=False, allow_blank=True, allow_null=True,)
 
     def validate_area_coordinator_slug(self, value):
         type_of = self.context.get("type_of")
@@ -99,6 +103,56 @@ class TaskItemUpdateSerializer(serializers.Serializer):
             instance.last_modified_from_is_public = request.client_ip_is_routable
             instance.save()
             logger.info("Closing task for assigning associate to district.")
+
+        elif type_of == TaskItem.TYPE_OF.ACTION_INCIDENT_ITEM:
+            will_action = validated_data.get("will_action")
+            comment = validated_data.get("comment")
+            reason = validated_data.get("reason")
+            reason_other = validated_data.get("reason_other")
+
+            print("\nwill_action", will_action)
+            print("comment", comment)
+            print("reason", reason)
+            print("reason_other", reason_other, "\n\n")
+
+            # slug = validated_data.get("associate_slug")
+            # associate = Associate.objects.get(user__slug=slug)
+            # associate.user.member.district = instance.district
+            # associate.user.member.last_modified_by = request.user
+            # associate.user.member.last_modified_from = request.client_ip
+            # associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            # associate.user.member.save()
+            # logger.info("Assigned associate to district.")
+            #
+            # instance.state = TaskItem.STATE.CLOSED
+            # instance.last_modified_by = request.user
+            # instance.last_modified_from = request.client_ip
+            # instance.last_modified_from_is_public = request.client_ip_is_routable
+            # instance.save()
+            # logger.info("Closing task for assigning associate to district.")
+            raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+                "developerError": "TODO"
+            })
+
+        elif type_of == TaskItem.TYPE_OF.ACTION_CONCERNT_ITEM:
+            # slug = validated_data.get("associate_slug")
+            # associate = Associate.objects.get(user__slug=slug)
+            # associate.user.member.district = instance.district
+            # associate.user.member.last_modified_by = request.user
+            # associate.user.member.last_modified_from = request.client_ip
+            # associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
+            # associate.user.member.save()
+            # logger.info("Assigned associate to district.")
+            #
+            # instance.state = TaskItem.STATE.CLOSED
+            # instance.last_modified_by = request.user
+            # instance.last_modified_from = request.client_ip
+            # instance.last_modified_from_is_public = request.client_ip_is_routable
+            # instance.save()
+            # logger.info("Closing task for assigning associate to district.")
+            raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+                "developerError": "TODO"
+            })
 
         else:
             raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
