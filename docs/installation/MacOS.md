@@ -105,6 +105,8 @@ python manage.py create_random_district "london" 50;
 python manage.py create_random_watch "london" 250;
 python manage.py create_random_member "london" 250;
 python manage.py create_random_area_coordinator "london" 100;
+python manage.py create_random_associate "london" 100;
+python manage.py create_random_task_item "london" 250;
 ```
 
 # 6. Host File Setup
