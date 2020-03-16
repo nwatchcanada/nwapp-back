@@ -17,7 +17,7 @@ from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumb
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    TaskItem, AreaCoordinator, Associate
+    TaskItem, AreaCoordinator, Associate, Item, ItemComment
 )
 
 
@@ -105,10 +105,13 @@ class TaskItemUpdateSerializer(serializers.Serializer):
             logger.info("Closing task for assigning associate to district.")
 
         elif type_of == TaskItem.TYPE_OF.ACTION_INCIDENT_ITEM:
+            item = instance.item
             will_action = validated_data.get("will_action")
             comment = validated_data.get("comment")
             reason = validated_data.get("reason")
             reason_other = validated_data.get("reason_other")
+
+            print()
 
             print("\nwill_action", will_action)
             print("comment", comment)
@@ -131,7 +134,7 @@ class TaskItemUpdateSerializer(serializers.Serializer):
             # instance.save()
             # logger.info("Closing task for assigning associate to district.")
             raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
-                "developerError": "TODO"
+                "developerError": "TODO - Discuss with Rodolfo on what to do next..."
             })
 
         elif type_of == TaskItem.TYPE_OF.ACTION_CONCERNT_ITEM:
