@@ -172,5 +172,9 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.last_modified_from_is_public = self.context['last_modified_from_is_public']
         instance.save()
 
+        # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+        #     "error": "Terminating for debugging purposes only."
+        # })
+
         # Return our output
         return validated_data
