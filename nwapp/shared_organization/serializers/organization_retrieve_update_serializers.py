@@ -43,6 +43,16 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         allow_blank=False,
     )
 
+    street_type_label = serializers.CharField(
+        read_only=True,
+        source="get_pretty_street_type",
+    )
+
+    street_direction_label = serializers.CharField(
+        read_only=True,
+        source="get_pretty_street_direction",
+    )
+
     class Meta:
         model = SharedOrganization
         fields = (
@@ -64,7 +74,9 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
             'apartment_unit',
             'street_type',
             'street_type_other',
+            'street_type_label',
             'street_direction',
+            'street_direction_label',
             'postal_code',
 
             # Tenancy

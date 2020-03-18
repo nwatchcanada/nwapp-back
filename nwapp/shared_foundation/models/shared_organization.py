@@ -295,6 +295,12 @@ class SharedOrganization(TenantMixin):
         else:
             return "CA"
 
+    def get_pretty_street_type(self):
+        return str(dict(SharedOrganization.STREET_TYPE_CHOICES).get(self.street_type))
+
+    def get_pretty_street_direction(self):
+        return str(dict(SharedOrganization.STREET_DIRECTION_CHOICES).get(self.street_direction))
+
 
 class SharedOrganizationDomain(DomainMixin):
     class Meta:
