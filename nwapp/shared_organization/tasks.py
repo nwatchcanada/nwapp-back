@@ -39,6 +39,7 @@ def create_organization_func(validated_data):
     street_direction = validated_data.get('street_direction', None)
     postal_code = validated_data.get('postal_code', None)
     timezone_name = validated_data.get('timezone_name', None)
+    police_report_url = validated_data.get('police_report_url', None)
 
     if street_type == "" or street_type == None:
         street_type = "-"
@@ -63,7 +64,9 @@ def create_organization_func(validated_data):
         "\nstreet_type_other", street_type_other,
         "\nstreet_direction", street_direction,
         "\npostal_code", postal_code,
-        "\ntimezone_name", timezone_name, "\n"
+        "\ntimezone_name", timezone_name,
+        "\npolice_report_url", police_report_url,
+        "\n"
     )
 
     # Create your tenant in the database.
@@ -82,7 +85,8 @@ def create_organization_func(validated_data):
         street_type_other=street_type_other,
         street_direction=street_direction,
         postal_code=postal_code,
-        timezone_name=timezone_name
+        timezone_name=timezone_name,
+        police_report_url=police_report_url
     )
     tenant.save()
 

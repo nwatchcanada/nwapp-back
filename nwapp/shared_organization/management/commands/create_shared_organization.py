@@ -18,7 +18,8 @@ $(env) python manage.py create_shared_organization london \
        "" \
        "" \
        "N6J4X4" \
-       "America/Toronto";
+       "America/Toronto" \
+       "https://www.coplogic.ca/dors/en/filing/selectincidenttype?dynparam=1584326750929";
 """
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -55,6 +56,7 @@ class Command(BaseCommand):
         parser.add_argument('street_direction', nargs='+', type=str)
         parser.add_argument('postal_code', nargs='+', type=str)
         parser.add_argument('timezone_name', nargs='+', type=str)
+        parser.add_argument('police_report_url', nargs='+', type=str)
 
     def get(self, options, key):
         try:
@@ -91,6 +93,7 @@ class Command(BaseCommand):
             street_direction = SharedOrganization.STREET_DIRECTION.NONE
         postal_code = self.get(options, 'postal_code')
         timezone_name = self.get(options, 'timezone_name')
+        police_report_url = self.get(options, 'police_report_url')
 
         # For debugging purposes only.
         self.stdout.write(
@@ -111,6 +114,7 @@ class Command(BaseCommand):
             Street Direction: %(street_direction)s
             Postal Code: %(postal_code)s
             Timezone: %(timezone_name)s
+            Police Report URL: %(police_report_url)s
             '''
             ) % {
                 'schema_name': schema_name,
@@ -127,7 +131,8 @@ class Command(BaseCommand):
                 'street_type_other': street_type_other,
                 'street_direction': street_direction,
                 'postal_code': postal_code,
-                'timezone_name': timezone_name
+                'timezone_name': timezone_name,
+                'police_report_url': police_report_url,
             })
         )
 
@@ -147,7 +152,8 @@ class Command(BaseCommand):
         self.begin_processing(schema_name, name, alternate_name, description,
                              country, city, province, street_number, street_name,
                              apartment_unit, street_type, street_type_other,
-                             street_direction, postal_code, timezone_name)
+                             street_direction, postal_code, timezone_name,
+                             police_report_url)
 
         # Used for debugging purposes.
         self.stdout.write(
@@ -157,7 +163,8 @@ class Command(BaseCommand):
     def begin_processing(self, schema_name, name, alternate_name, description,
                          country, city, province, street_number, street_name,
                          apartment_unit, street_type, street_type_other,
-                         street_direction, postal_code, timezone_name):
+                         street_direction, postal_code, timezone_name,
+                         police_report_url):
         """
         Functin will create a new tenant based on the parameters.
         """
@@ -178,7 +185,8 @@ class Command(BaseCommand):
             street_type_other=street_type_other,
             street_direction=street_direction,
             postal_code=postal_code,
-            timezone_name=timezone_name
+            timezone_name=timezone_name,
+            police_report_url=police_report_url,
         )
         tenant.save()
 

@@ -44,6 +44,10 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
         required=True,
         allow_blank=False,
     )
+    police_report_url = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
 
     class Meta:
         model = SharedOrganization
@@ -56,6 +60,7 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
             'name',
             # 'url',
             'timezone_name',
+            'police_report_url',
 
             # Postal Address
             'country',

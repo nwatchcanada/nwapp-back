@@ -53,6 +53,11 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         source="get_pretty_street_direction",
     )
 
+    police_report_url = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
+
     class Meta:
         model = SharedOrganization
         fields = (
@@ -64,6 +69,7 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
             'name',
             # 'url',
             'timezone_name',
+            'police_report_url',
 
             # Postal Address
             'country',
@@ -112,6 +118,10 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         required=True,
         allow_blank=False,
     )
+    police_report_url = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
 
     class Meta:
         model = SharedOrganization
@@ -124,6 +134,7 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
             'name',
             # 'url',
             'timezone_name',
+            'police_report_url',
 
             # Postal Address
             'country',
@@ -155,6 +166,7 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         # instance.url = validated_data.get('url', instance.url)
         instance.timezone_name = validated_data.get('timezone_name', instance.timezone_name)
+        instance.police_report_url = validated_data.get('police_report_url', instance.police_report_url)
 
         instance.country = validated_data.get('country', instance.country)
         instance.city = validated_data.get('city', instance.city)

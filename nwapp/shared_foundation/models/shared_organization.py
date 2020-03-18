@@ -214,6 +214,13 @@ class SharedOrganization(TenantMixin):
         choices=TIMEZONE_CHOICES,
         default="UTC"
     )
+    police_report_url = models.URLField(
+        _("Police Report URL"),
+        help_text=_('The URL of the police reporting service used to submit crime reports.'),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
 
     #
     #  SYSTEM FIELDS
