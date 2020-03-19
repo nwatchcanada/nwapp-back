@@ -343,6 +343,7 @@ class Watch(models.Model):
                 description = faker.paragraph(nb_sentences=3, variable_nb_sentences=True, ext_word_list=None)
                 district = District.objects.random()
                 street_address_ranges_count = faker.random_int(min=1, max=100, step=1)
+                is_virtual = faker.random_int(min=0, max=1, step=1)
 
                 # Generate the watch.
                 watch = Watch.objects.create(
@@ -350,10 +351,12 @@ class Watch(models.Model):
                     name=name,
                     description=description,
                     district=district,
+                    is_virtual=True if is_virtual else False,
                 )
 
-                # Generate the street address ranges.
-                StreetAddressRange.seed(street_address_ranges_count, watch)
+                if is_virtual is 0:
+                    # Generate the street address ranges.
+                    StreetAddressRange.seed(street_address_ranges_count, watch)
 
                 # Append to our result array.
                 results.append(watch)
