@@ -36,6 +36,15 @@ class StreetAddressRangeManager(models.Manager):
         target_query_pks = target_query.values_list('pk', flat=True)
         return StreetAddressRange.objects.filter(~Q(search_query__in=target_query_pks))
 
+    def random(self):
+        """
+        Function will get a single random object from the datbase.
+        Special thanks via: https://stackoverflow.com/a/2118712
+        """
+        count = self.aggregate(count=Count('id'))['count']
+        random_index = randint(0, count - 1)
+        return self.all()[random_index]
+
 
 class StreetAddressRange(models.Model):
 

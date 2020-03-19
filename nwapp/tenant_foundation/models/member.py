@@ -316,13 +316,14 @@ class Member(models.Model):
         from tenant_foundation.models import MemberMetric
         from tenant_foundation.models import MemberComment
         from tenant_foundation.models import Watch
+        from tenant_foundation.models import StreetAddressRange
         results = []
         faker = Faker('en_CA')
         for i in range(0,length):
             try:
                 first_name = faker.first_name()
                 last_name = faker.last_name()
-                watch = Watch.objects.random()
+                street_address = StreetAddressRange.objects.random()
                 organization_name = faker.company()
                 organization_type_of = faker.pyint(min_value=2, max_value=4, step=1)
                 user = SharedUser.objects.create(
@@ -335,8 +336,8 @@ class Member(models.Model):
                 user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
                 member = Member.objects.create(
                     user=user,
-                    type_of=watch.type_of,
-                    watch=watch,
+                    type_of=street_address.watch.type_of,
+                    watch=street_address.watch,
                 )
                 member_contact = MemberContact.objects.create(
                     member=member,
@@ -355,12 +356,20 @@ class Member(models.Model):
                     country="Canada",
                     province="Ontario",
                     city=faker.city(),
-                    street_number=faker.pyint(min_value=1, max_value=1000, step=1),
-                    street_name=faker.street_name(),
-                    apartment_unit=faker.pyint(min_value=1, max_value=1000, step=1),
-                    street_type=MemberAddress.STREET_TYPE.OTHER,
-                    street_type_other="Highway",
-                    street_direction=MemberAddress.STREET_DIRECTION.NONE,
+                    street_number=faker.pyint(
+                        min_value=street_address.street_number_start,
+                        max_value=street_address.street_number_end,
+                        step=1
+                    ),
+                    street_name=street_address.street_name,
+                    apartment_unit=faker.pyint(
+                        min_value=1,
+                        max_value=1000,
+                        step=1
+                    ),
+                    street_type=street_address.street_type,
+                    street_type_other=street_address.street_type_other,
+                    street_direction=street_address.street_direction,
                     postal_code=faker.postalcode(),
                 )
                 member_metric = MemberMetric.objects.create(

@@ -350,7 +350,6 @@ class Watch(models.Model):
                     name=name,
                     description=description,
                     district=district,
-                    is_archived=False,
                 )
 
                 # Generate the street address ranges.

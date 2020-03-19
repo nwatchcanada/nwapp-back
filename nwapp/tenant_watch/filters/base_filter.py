@@ -13,6 +13,7 @@ class WatchFilter(django_filters.FilterSet):
         # tuple-mapping retains order
         fields=(
             ('id', 'id'),
+            ('state', 'state'),
             # ('contact__first_name', 'first_name'),
             # ('contact__last_name', 'last_name'),
             # # ('telephone', 'telephone'),
@@ -140,9 +141,16 @@ class WatchFilter(django_filters.FilterSet):
                 try:
                     type_of = int(address_arr[0])
                     street_number = int(address_arr[1])
-                    street_name = address_arr[2]
+                    street_name = address_arr[2].replace("COMMA", ",") # (1) see below...
                     street_type = int(address_arr[3])
                     street_type_other = address_arr[4]
+
+                    # DEVELOPERS NOTE:
+                    # (1) There are weird street names that MAY contain a comma
+                    #     which will result in our URL parameter being messed up.
+                    #     As a result our frontend will replace the comma with a
+                    #     text value "COMMA" and our backend will replace the
+                    #     text with our comma character to get around this issue.
 
                     # # For debugging purposes only.
                     # print(type_of, street_number, street_name, street_type, street_type_other)
