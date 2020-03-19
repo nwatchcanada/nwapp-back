@@ -89,19 +89,43 @@ class Watch(models.Model):
     CONSTANTS
     '''
 
+    class STATE:
+        ACTIVE = 'active'
+        INACTIVE = 'inactive'
+
     class TYPE_OF:
         RESIDENTIAL = 1
         BUSINESS = 2
         COMMUNITY_CARES = 3
 
+    class DEACTIVATION_REASON:
+        NOT_SPECIFIED = 0
+        OTHER = 1
+        NO_AREA_COORDINATOR = 2
+        OPTED_OUT = 3
+        NOT_COMPLIANT = 4
+
     '''
     CHOICES
     '''
+
+    STATE_CHOICES = (
+        (STATE.ACTIVE, _('Active')),
+        (STATE.INACTIVE, _('Inactive')),
+    )
 
     TYPE_OF_CHOICES = (
         (TYPE_OF.BUSINESS, _('Business')),
         (TYPE_OF.RESIDENTIAL, _('Residential')),
         (TYPE_OF.COMMUNITY_CARES, _('Community Cares')),
+    )
+
+    DEACTIVATION_REASON_CHOICES = (
+        (DEACTIVATION_REASON.NO_AREA_COORDINATOR, _('No Area Coordinator')),
+        (DEACTIVATION_REASON.OPTED_OUT, _('Watch has collectively opted out of program')),
+        (DEACTIVATION_REASON.NOT_COMPLIANT, _('Watch Area not compliant')),
+        (DEACTIVATION_REASON.OTHER, _('Other')),
+        (DEACTIVATION_REASON.NOT_SPECIFIED, _('Not specified')),
     )
 
     '''
@@ -114,6 +138,15 @@ class Watch(models.Model):
     MODEL FIELDS
     '''
 
+    state = models.CharField(
+        _('State'),
+        help_text=_('The state of this watch.'),
+        max_length=15,
+        choices=STATE_CHOICES,
+        default=STATE.ACTIVE,
+        blank=True,
+        db_index=True,
+    )
     type_of = models.PositiveSmallIntegerField(
         _("Type of"),
         help_text=_('The type of watch this is.'),
@@ -153,12 +186,20 @@ class Watch(models.Model):
         blank=True,
         related_name="watches"
     )
-    is_archived = models.BooleanField(
-        _("Is Archived"),
-        help_text=_('Indicates whether watch was archived.'),
-        default=False,
+    deactivation_reason = models.PositiveSmallIntegerField(
+        _("Deactivation reason"),
+        help_text=_('The reason why this watch was deactivated.'),
         blank=True,
-        db_index=True
+        choices=DEACTIVATION_REASON_CHOICES,
+        default=DEACTIVATION_REASON.NOT_SPECIFIED
+    )
+    deactivation_reason_other = models.CharField(
+        _("Deactivation reason (other)"),
+        max_length=2055,
+        help_text=_('The reason why this watch was deactivated which was not in the list.'),
+        blank=True,
+        null=True,
+        default=""
     )
 
     # SEARCHABLE FIELDS
@@ -276,8 +317,14 @@ class Watch(models.Model):
         '''
         super(Watch, self).save(*args, **kwargs)
 
+    def get_state_label(self):
+        return str(dict(Watch.STATE_CHOICES).get(self.state))
+
     def get_type_of_label(self):
         return str(dict(Watch.TYPE_OF_CHOICES).get(self.type_of))
+
+    def get_deactivation_reason_label(self):
+        return str(dict(Watch.DEACTIVATION_REASON_CHOICES).get(self.deactivation_reason))
 
     def get_searchable_content(self):
         return self.indexed_text

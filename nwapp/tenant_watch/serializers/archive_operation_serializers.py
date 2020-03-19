@@ -29,7 +29,11 @@ logger = logging.getLogger(__name__)
 class WatchArchiveOperationSerializer(serializers.Serializer):
     watch = serializers.SlugField(write_only=True, required=True)
     is_archived = serializers.BooleanField(required=True,)
-    deactivation_reason = serializers.CharField(required=True, allow_blank=False)
+    deactivation_reason = serializers.ChoiceField(
+        required=True,
+        allow_blank=False,
+        choices=Watch.DEACTIVATION_REASON_CHOICES
+    )
     deactivation_reason_other = serializers.CharField(required=True, allow_blank=True)
     comment = serializers.CharField(required=True, allow_blank=False)
 

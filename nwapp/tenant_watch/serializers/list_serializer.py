@@ -16,20 +16,22 @@ from rest_framework.validators import UniqueValidator
 
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
 # from tenant_foundation.constants import *
-from tenant_foundation.models import Watch
+from tenant_foundation.models import Watch, District
 
 
 logger = logging.getLogger(__name__)
 
 
 class WatchListSerializer(serializers.Serializer):
-    type_of = serializers.IntegerField()
+    state = serializers.ChoiceField(choices=Watch.STATE_CHOICES,read_only=True,)
+    type_of = serializers.ChoiceField(choices=Watch.TYPE_OF_CHOICES, read_only=True,)
     name = serializers.CharField(
         required=True,
         allow_blank=False,
     )
-    district_type_of = serializers.IntegerField(
-        required=True,
+    district_type_of = serializers.ChoiceField(
+        choices=Watch.TYPE_OF_CHOICES, 
+        read_only=True,
         source="district.type_of"
     )
     district_type_of_code = serializers.CharField(
@@ -49,9 +51,6 @@ class WatchListSerializer(serializers.Serializer):
     slug = serializers.SlugField(
         required=True,
         allow_blank=False,
-    )
-    is_archived = serializers.BooleanField(
-        required=True,
     )
     is_virtual = serializers.BooleanField(
         required=True,

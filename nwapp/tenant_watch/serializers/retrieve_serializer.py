@@ -26,7 +26,9 @@ logger = logging.getLogger(__name__)
 
 class WatchRetrieveSerializer(serializers.Serializer):
     slug = serializers.SlugField(read_only=True,)
-    type_of = serializers.IntegerField(read_only=True,)
+    state = serializers.ChoiceField(choices=Watch.STATE_CHOICES,read_only=True,)
+    state_label = serializers.CharField(source="get_state_label", read_only=True,)
+    type_of = serializers.ChoiceField(choices=Watch.TYPE_OF_CHOICES, read_only=True,)
     type_of_label = serializers.CharField(source="get_type_of_label", read_only=True,)
     name = serializers.CharField(read_only=True,)
     description = serializers.CharField(read_only=True,)
@@ -35,10 +37,17 @@ class WatchRetrieveSerializer(serializers.Serializer):
     district_slug = serializers.SlugField(source="district.slug",read_only=True,)
     district_name = serializers.CharField(source="district.name",read_only=True,)
     tags = TagListCreateSerializer(many=True, read_only=True,)
-    is_archived = serializers.BooleanField(read_only=True,)
     is_virtual = serializers.BooleanField(read_only=True,)
     # street_membership = StreetAddressRangeRetrieveSerializer(many=True, source="street_address_ranges",)
     street_membership = serializers.SerializerMethodField()
+    deactivation_reason = serializers.ChoiceField(
+        choices=Watch.DEACTIVATION_REASON_CHOICES,
+        allow_null=True,
+        allow_blank=True,
+        read_only=True,
+    )
+    deactivation_reason_other = serializers.CharField(read_only=True, allow_null=True, allow_blank=True)
+    deactivation_reason_label = serializers.CharField(read_only=True, source="get_deactivation_reason_label")
 
     def get_street_membership(self, watch_obj):
         """
