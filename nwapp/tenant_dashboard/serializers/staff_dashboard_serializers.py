@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class StaffDashboardSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
         active_members_count = Member.objects.filter(state=Member.MEMBER_STATE.ACTIVE).count()
-        active_watches_count = Watch.objects.filter(is_archived=False).count()
+        active_watches_count = Watch.objects.filter(state=Watch.STATE.ACTIVE).count()
         active_associates_count = Associate.objects.filter(user__member__state=Member.MEMBER_STATE.ACTIVE).count()
         active_announcements = Announcement.objects.filter(is_archived=False)
         announcement_serializer = AnnouncementListCreateSerializer(
