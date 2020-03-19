@@ -75,7 +75,10 @@ class WatchArchiveOperationSerializer(serializers.Serializer):
         #-------------------------#
         # Update watch object. #
         #-------------------------#
-        watch.is_archived = is_archived
+        if watch.state == Watch.STATE.INACTIVE:
+            watch.state = Watch.STATE.ACTIVE
+        else:
+            watch.state = Watch.STATE.INACTIVE
         watch.deactivation_reason = deactivation_reason
         watch.deactivation_reason_other = deactivation_reason_other
         watch.last_modified_by = request.user

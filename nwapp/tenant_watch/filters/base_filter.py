@@ -175,6 +175,7 @@ class WatchFilter(django_filters.FilterSet):
         model = Watch
         fields = [
             'name',
+            'state',
             # 'search',
             # 'first_name',
             # 'last_name',
