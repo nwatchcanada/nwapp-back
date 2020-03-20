@@ -56,7 +56,10 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
     )
     willing_to_volunteer = serializers.IntegerField()
     another_household_member_registered = serializers.BooleanField()
-    year_of_birth = serializers.IntegerField()
+    year_of_birth = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+    )
     total_household_count = serializers.IntegerField(required=False, allow_null=True,)
     over_18_years_household_count = serializers.IntegerField(required=False, allow_null=True,)
     organization_employee_count = serializers.IntegerField(required=False, allow_null=True,)
@@ -87,7 +90,7 @@ class MemberMetricsUpdateSerializer(serializers.Serializer):
         instance.is_visible_minority = validated_data.get('is_visible_minority', False)
         instance.is_disabled_or_has_barriers = validated_data.get('is_disabled_or_has_barriers', False)
         instance.is_over_fifty_five = validated_data.get('is_over_fifty_five', False)
-        
+
         # DEVELOPERS NOTE:
         # (1) Modified household statistics dependent on whether the household
         #     member was registered or not.

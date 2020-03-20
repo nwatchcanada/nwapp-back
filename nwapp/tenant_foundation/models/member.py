@@ -383,7 +383,7 @@ class Member(models.Model):
                     # gender=
                     # willing_to_volunteer=
                     # another_household_member_registered=
-                    # year_of_birth=
+                    year_of_birth=faker.pyint(min_value=1920, max_value=1990, step=1),
                     # total_household_count=
                     # over_18_years_household_count=
                     # organization_employee_count=

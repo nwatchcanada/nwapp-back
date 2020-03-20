@@ -74,6 +74,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     watch_name = serializers.CharField(source="watch.name", read_only=True,)
     watch_slug = serializers.SlugField(source="watch.slug", read_only=True,)
     watch_type_of = serializers.IntegerField(source="watch.type_of", read_only=True,)
+    watch_is_virtual = serializers.BooleanField(source="watch.is_virtual", read_only=True,)
 
     # ------ MEMBER METRICS ------ #
 

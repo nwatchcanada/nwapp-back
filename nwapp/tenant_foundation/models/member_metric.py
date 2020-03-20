@@ -164,6 +164,7 @@ class MemberMetric(models.Model):
         _("Year of Birth"),
         help_text=_('The year that this member was born in.'),
         blank=True,
+        null=True,
         default=0,
     )
     total_household_count = models.PositiveSmallIntegerField(
