@@ -416,17 +416,27 @@ class Member(models.Model):
         from shared_foundation.models import SharedGroup
         from tenant_foundation.models import AreaCoordinator
 
-        has_signed_area_coordinator_agreement = defaults['has_signed_area_coordinator_agreement']
-        has_signed_conflict_of_interest_agreement = defaults['has_signed_conflict_of_interest_agreement']
-        has_signed_code_of_conduct_agreement = defaults['has_signed_code_of_conduct_agreement']
-        has_signed_confidentiality_agreement = defaults['has_signed_confidentiality_agreement']
-        police_check_date = defaults['police_check_date']
-        created_by = defaults['created_by']
-        created_from = defaults['created_from']
-        created_from_is_public = defaults['created_from_is_public']
-        last_modified_by = defaults['last_modified_by']
-        last_modified_from = defaults['last_modified_from']
-        last_modified_from_is_public = defaults['last_modified_from_is_public']
+        role_id = defaults.get('role_id', None)
+        has_signed_area_coordinator_agreement = defaults.get('has_signed_area_coordinator_agreement', None)
+        has_signed_conflict_of_interest_agreement = defaults.get('has_signed_conflict_of_interest_agreement', None)
+        has_signed_code_of_conduct_agreement = defaults.get('has_signed_code_of_conduct_agreement', None)
+        has_signed_confidentiality_agreement = defaults.get('has_signed_confidentiality_agreement', None)
+        police_check_date = defaults.get('police_check_date', None)
+        created_by = defaults.get('created_by', None)
+        created_from = defaults.get('created_from', None)
+        created_from_is_public = defaults.get('created_from_is_public', None)
+        last_modified_by = defaults.get('last_modified_by', None)
+        last_modified_from = defaults.get('last_modified_from', None)
+        last_modified_from_is_public = defaults.get('last_modified_from_is_public', None)
+
+        # Defensive code.
+        assert self.user != None
+        assert isinstance(role_id, int)
+        assert isinstance(has_signed_area_coordinator_agreement, bool)
+        assert isinstance(has_signed_conflict_of_interest_agreement, bool)
+        assert isinstance(has_signed_code_of_conduct_agreement, bool)
+        assert isinstance(has_signed_confidentiality_agreement, bool)
+        assert police_check_date != None
 
         # Get the text agreement which will be signed.
         area_coordinator_agreement = render_to_string('account/area_coordinator_agreement/2019_05_01.txt', {}) if has_signed_area_coordinator_agreement else None
@@ -488,17 +498,27 @@ class Member(models.Model):
         from shared_foundation.models import SharedGroup
         from tenant_foundation.models import Associate
 
-        has_signed_associate_agreement = defaults['has_signed_associate_agreement']
-        has_signed_conflict_of_interest_agreement = defaults['has_signed_conflict_of_interest_agreement']
-        has_signed_code_of_conduct_agreement = defaults['has_signed_code_of_conduct_agreement']
-        has_signed_confidentiality_agreement = defaults['has_signed_confidentiality_agreement']
-        police_check_date = defaults['police_check_date']
-        created_by = defaults['created_by']
-        created_from = defaults['created_from']
-        created_from_is_public = defaults['created_from_is_public']
-        last_modified_by = defaults['last_modified_by']
-        last_modified_from = defaults['last_modified_from']
-        last_modified_from_is_public = defaults['last_modified_from_is_public']
+        role_id = defaults.get('role_id', None)
+        has_signed_associate_agreement = defaults.get('has_signed_associate_agreement', None)
+        has_signed_conflict_of_interest_agreement = defaults.get('has_signed_conflict_of_interest_agreement', None)
+        has_signed_code_of_conduct_agreement = defaults.get('has_signed_code_of_conduct_agreement', None)
+        has_signed_confidentiality_agreement = defaults.get('has_signed_confidentiality_agreement', None)
+        police_check_date = defaults.get('police_check_date', None)
+        created_by = defaults.get('created_by', None)
+        created_from = defaults.get('created_from', None)
+        created_from_is_public = defaults.get('created_from_is_public', None)
+        last_modified_by = defaults.get('last_modified_by', None)
+        last_modified_from = defaults.get('last_modified_from', None)
+        last_modified_from_is_public = defaults.get('last_modified_from_is_public', None)
+
+        # Defensive code.
+        assert self.user != None
+        assert isinstance(role_id, int)
+        assert isinstance(has_signed_associate_agreement, bool)
+        assert isinstance(has_signed_conflict_of_interest_agreement, bool)
+        assert isinstance(has_signed_code_of_conduct_agreement, bool)
+        assert isinstance(has_signed_confidentiality_agreement, bool)
+        assert police_check_date != None
 
         # Get the text agreement which will be signed.
         associate_agreement = render_to_string('account/associate_agreement/2019_05_01.txt', {}) if has_signed_associate_agreement else None
