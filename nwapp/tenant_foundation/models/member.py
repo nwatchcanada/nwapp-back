@@ -539,3 +539,84 @@ class Member(models.Model):
         associate.user.groups.add(SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE)
 
         return associate
+
+    def promote_to_staff(self, defaults):
+        """
+        - defaults
+            - role_id
+            - has_signed_staff_agreement
+            - has_signed_conflict_of_interest_agreement
+            - has_signed_code_of_conduct_agreement
+            - has_signed_confidentiality_agreement
+            - police_check_date
+            - created_by
+            - created_from
+            - created_from_is_public
+            - last_modified_by
+            - last_modified_from
+            - last_modified_from_is_public
+        """
+        from django.template.loader import render_to_string  # HTML / TXT
+        from django.utils import timezone
+        from shared_foundation.models import SharedGroup
+        from tenant_foundation.models import Staff
+
+        role_id = defaults['role_id']
+        has_signed_staff_agreement = defaults['has_signed_staff_agreement']
+        has_signed_conflict_of_interest_agreement = defaults['has_signed_conflict_of_interest_agreement']
+        has_signed_code_of_conduct_agreement = defaults['has_signed_code_of_conduct_agreement']
+        has_signed_confidentiality_agreement = defaults['has_signed_confidentiality_agreement']
+        police_check_date = defaults['police_check_date']
+        created_by = defaults['created_by']
+        created_from = defaults['created_from']
+        created_from_is_public = defaults['created_from_is_public']
+        last_modified_by = defaults['last_modified_by']
+        last_modified_from = defaults['last_modified_from']
+        last_modified_from_is_public = defaults['last_modified_from_is_public']
+
+        # Defensive code.
+        assert self.user != None
+        assert isinstance(role_id, int)
+        assert isinstance(has_signed_staff_agreement, bool)
+        assert isinstance(has_signed_conflict_of_interest_agreement, bool)
+        assert isinstance(has_signed_code_of_conduct_agreement, bool)
+        assert police_check_date != None
+
+        # Get the text agreement which will be signed.
+        staff_agreement = render_to_string('account/staff_agreement/2019_05_01.txt', {}) if has_signed_staff_agreement else None
+        conflict_of_interest_agreement = render_to_string('account/conflict_of_interest_agreement/2019_05_01.txt', {}) if has_signed_conflict_of_interest_agreement else None
+        code_of_conduct_agreement = render_to_string('account/code_of_conduct_agreement/2019_05_01.txt', {}) if has_signed_code_of_conduct_agreement else None
+        confidentiality_agreement = render_to_string('account/confidentiality_agreement/2019_05_01.txt', {}) if has_signed_confidentiality_agreement else None
+
+        # Create or update our model.
+        staff, created = Staff.objects.update_or_create(
+            user=self.user,
+            defaults={
+                'user': self.user,
+                'has_signed_staff_agreement': has_signed_staff_agreement,
+                'staff_agreement': staff_agreement,
+                'staff_agreement_signed_on': timezone.now(),
+                'has_signed_conflict_of_interest_agreement': has_signed_conflict_of_interest_agreement,
+                'conflict_of_interest_agreement': conflict_of_interest_agreement,
+                'conflict_of_interest_agreement_signed_on': timezone.now(),
+                'has_signed_code_of_conduct_agreement': has_signed_code_of_conduct_agreement,
+                'code_of_conduct_agreement': code_of_conduct_agreement,
+                'code_of_conduct_agreement_signed_on': timezone.now(),
+                'has_signed_confidentiality_agreement': has_signed_confidentiality_agreement,
+                'confidentiality_agreement': confidentiality_agreement,
+                'confidentiality_agreement_signed_on': timezone.now(),
+                'police_check_date': police_check_date,
+                'created_by': created_by,
+                'created_from': created_from,
+                'created_from_is_public': created_from_is_public,
+                'last_modified_by': last_modified_by,
+                'last_modified_from': last_modified_from,
+                'last_modified_from_is_public': last_modified_from_is_public,
+            }
+        )
+
+        # Set the user's role to be after clearing the previous group memberships.
+        staff.user.groups.clear()
+        staff.user.groups.add(role_id)
+
+        return staff
