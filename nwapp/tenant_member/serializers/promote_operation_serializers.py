@@ -176,46 +176,10 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         slug = validated_data.get('member')
         member = Member.objects.select_for_update().get(user__slug=slug)
         request = self.context.get('request')
-        role_id = validated_data.get('role_id')
-        conflict_of_interest_agreement = validated_data.get('conflict_of_interest_agreement')
-        code_of_conduct_agreement = validated_data.get('code_of_conduct_agreement')
-        confidentiality_agreement = validated_data.get('confidentiality_agreement')
-        staff_agreement = validated_data.get('staff_agreement')
-        police_check_date = validated_data.get('police_check_date')
 
         logger.info("Beginning promotion...")
 
-        # Get the text agreement which will be signed.
-        conflict_of_interest_agreement = render_to_string('account/conflict_of_interest_agreement/2019_05_01.txt', {})
-        code_of_conduct_agreement = render_to_string('account/code_of_conduct_agreement/2019_05_01.txt', {})
-        confidentiality_agreement = render_to_string('account/confidentiality_agreement/2019_05_01.txt', {})
-        staff_agreement = render_to_string('account/staff_agreement/2019_05_01.txt', {})
-
-        # Create or update our model.
-        staff, created = Staff.objects.update_or_create(
-            user=member.user,
-            defaults={
-                'user': member.user,
-                'has_signed_conflict_of_interest_agreement': True,
-                'conflict_of_interest_agreement': conflict_of_interest_agreement,
-                'conflict_of_interest_agreement_signed_on': timezone.now(),
-                'has_signed_code_of_conduct_agreement': True,
-                'code_of_conduct_agreement': code_of_conduct_agreement,
-                'code_of_conduct_agreement_signed_on': timezone.now(),
-                'has_signed_confidentiality_agreement': True,
-                'confidentiality_agreement': confidentiality_agreement,
-                'confidentiality_agreement_signed_on': timezone.now(),
-                'has_signed_staff_agreement': True,
-                'staff_agreement': staff_agreement,
-                'staff_agreement_signed_on': timezone.now(),
-                'police_check_date': police_check_date,
-            }
-        )
-
-        # Set the user's role to be a area coordinator after clearing the
-        # previous group memberships.
-        staff.user.groups.clear()
-        staff.user.groups.add(role_id)
+        staff = member.promote_to_staff(defaults=validated_data)
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
@@ -235,7 +199,20 @@ class MemberPromoteOperationSerializer(serializers.Serializer):
         # })
 
         # Extract the data we are processing.
+        request = self.context.get("request")
         role_id = validated_data.get('role_id')
+
+        # Append additional request information.
+        validated_data['created_by'] = request.user
+        validated_data['created_from'] = request.client_ip
+        validated_data['created_from_is_public'] = request.client_ip_is_routable
+        validated_data['last_modified_by'] = request.user
+        validated_data['last_modified_from'] = request.client_ip
+        validated_data['last_modified_from_is_public'] = request.client_ip_is_routable
+        validated_data['has_signed_staff_agreement'] = True
+        validated_data['has_signed_conflict_of_interest_agreement'] = True
+        validated_data['has_signed_code_of_conduct_agreement'] = True
+        validated_data['has_signed_confidentiality_agreement'] = True
 
         # Create the object based on the role assigned.
         if role_id == SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR:
