@@ -91,7 +91,7 @@ class Command(BaseCommand):
 
             # Customer
             [9, 2, "A friend or family member",  False, True, False, False,],
-            [10, 5, "An Over 55 Associate",      False, True, False, False,],
+            [10, 5, "An existing NW member",     False, True, False, False,],
             [11, 6, "Facebook",                  False, True, False, False,],
             [12, 7, "Twitter",                   False, True, False, False,],
             [13, 8, "Instagram",                 False, True, False, False,],
