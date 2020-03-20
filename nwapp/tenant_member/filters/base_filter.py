@@ -100,6 +100,17 @@ class MemberFilter(django_filters.FilterSet):
     #
     # state = django_filters.NumberFilter(method='state_filtering')
     #
+
+    def role_id_filtering(self, queryset, name, value):
+        if value == 0 or value == "0":
+            return queryset
+        return queryset.filter(
+            user__groups__id=value,
+            user__is_active=True
+        )
+
+    role_id = django_filters.NumberFilter(method='role_id_filtering')
+
     def role_ids_filtering(self, queryset, name, value):
         pks_string = value
         pks_arr = pks_string.split(",")
@@ -146,5 +157,6 @@ class MemberFilter(django_filters.FilterSet):
             'last_name',
             'email',
             'telephone',
+            'role_id',
             'role_ids',
         ]
