@@ -15,6 +15,7 @@ class StaffFilter(django_filters.FilterSet):
             ('user__member__contact__last_name', 'last_name'),
             # ('telephone', 'telephone'),
             ('user__member__contact__email', 'email'),
+            ('user__groups', 'role_id'),
         ),
 
         # # labels do not need to retain order
@@ -137,6 +138,30 @@ class StaffFilter(django_filters.FilterSet):
 
     telephone = django_filters.CharFilter(method='telephonel_filtering')
 
+    def role_id_filtering(self, queryset, name, value):
+        if value == 0 or value == "0":
+            return queryset
+        return queryset.filter(
+            user__groups__id=value,
+            user__is_active=True
+        )
+
+    role_id = django_filters.NumberFilter(method='role_id_filtering')
+
+    def role_ids_filtering(self, queryset, name, value):
+        pks_string = value
+        pks_arr = pks_string.split(",")
+        if pks_arr != ['']:
+            queryset = queryset.filter(
+                user__groups__in=pks_arr,
+                user__is_active=True
+            )
+            queryset = queryset.order_by('user__last_name', 'user__first_name').distinct()
+
+        return queryset
+
+    role_ids = django_filters.CharFilter(method='role_ids_filtering')
+
     class Meta:
         model = Staff
         fields = [
@@ -145,4 +170,6 @@ class StaffFilter(django_filters.FilterSet):
             'last_name',
             'email',
             'telephone',
+            'role_id',
+            'role_ids',
         ]
