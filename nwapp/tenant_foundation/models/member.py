@@ -416,7 +416,6 @@ class Member(models.Model):
         from shared_foundation.models import SharedGroup
         from tenant_foundation.models import AreaCoordinator
 
-        role_id = defaults.get('role_id', None)
         has_signed_area_coordinator_agreement = defaults.get('has_signed_area_coordinator_agreement', None)
         has_signed_conflict_of_interest_agreement = defaults.get('has_signed_conflict_of_interest_agreement', None)
         has_signed_code_of_conduct_agreement = defaults.get('has_signed_code_of_conduct_agreement', None)
@@ -431,7 +430,6 @@ class Member(models.Model):
 
         # Defensive code.
         assert self.user != None
-        assert isinstance(role_id, int)
         assert isinstance(has_signed_area_coordinator_agreement, bool)
         assert isinstance(has_signed_conflict_of_interest_agreement, bool)
         assert isinstance(has_signed_code_of_conduct_agreement, bool)
@@ -498,7 +496,6 @@ class Member(models.Model):
         from shared_foundation.models import SharedGroup
         from tenant_foundation.models import Associate
 
-        role_id = defaults.get('role_id', None)
         has_signed_associate_agreement = defaults.get('has_signed_associate_agreement', None)
         has_signed_conflict_of_interest_agreement = defaults.get('has_signed_conflict_of_interest_agreement', None)
         has_signed_code_of_conduct_agreement = defaults.get('has_signed_code_of_conduct_agreement', None)
@@ -513,7 +510,6 @@ class Member(models.Model):
 
         # Defensive code.
         assert self.user != None
-        assert isinstance(role_id, int)
         assert isinstance(has_signed_associate_agreement, bool)
         assert isinstance(has_signed_conflict_of_interest_agreement, bool)
         assert isinstance(has_signed_code_of_conduct_agreement, bool)

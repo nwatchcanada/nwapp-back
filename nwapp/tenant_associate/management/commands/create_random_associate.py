@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
 from django.db import transaction
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import Truncator
 
@@ -61,7 +62,7 @@ class Command(BaseCommand):
                 'has_signed_conflict_of_interest_agreement': True,
                 'has_signed_code_of_conduct_agreement': True,
                 'has_signed_confidentiality_agreement': True,
-                'police_check_date': None,
+                'police_check_date': timezone.now(),
                 'created_by': None,
                 'created_from': None,
                 'created_from_is_public': False,
