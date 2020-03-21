@@ -104,7 +104,7 @@ python manage.py create_shared_organization london \
        "https://www.coplogic.ca/dors/en/filing/selectincidenttype?dynparam=1584326750929";
 python manage.py create_random_district "london" 50;
 python manage.py create_random_watch "london" 500;
-python manage.py create_random_member "london" 250;
+python manage.py create_random_member "london" 1000;
 python manage.py create_random_area_coordinator "london" 100;
 python manage.py create_random_associate "london" 100;
 python manage.py create_random_task_item "london" 250;
