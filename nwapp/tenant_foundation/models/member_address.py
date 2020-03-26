@@ -1,7 +1,7 @@
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.core.validators import EmailValidator
-from django.db import models
+from django.contrib.gis.db import models
 from django.db.models import Q
 from django.db import transaction
 from django.utils.text import Truncator
@@ -164,6 +164,18 @@ class MemberAddress(models.Model):
         help_text=_('-'),
         null=True,
         blank=True,
+    )
+    position = models.PointField(
+        srid=4326,
+        geography=True,
+        null=True,
+        blank=True,
+    )
+    needs_geolocating = models.BooleanField(
+        _("Needs Geolocating"),
+        help_text=_('Field controls if system need to geolocate the current address to get a new longitude and latitude coordinates. Any address change results in this field being changed to `True`.'),
+        default=True,
+        blank=True
     )
 
     # AUDITING FIELDS

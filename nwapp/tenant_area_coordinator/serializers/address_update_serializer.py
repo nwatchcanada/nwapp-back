@@ -55,6 +55,7 @@ class AreaCoordinatorAddressUpdateSerializer(serializers.Serializer):
         instance.street_type_other = validated_data.get('street_type_other', None)
         instance.street_direction = validated_data.get('street_direction', None)
         instance.postal_code = validated_data.get('postal_code', None)
+        instance.needs_geolocating = True
         instance.save()
         logger.info("Updated area_coordinator address.")
 
