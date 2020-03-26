@@ -21,6 +21,7 @@ from tenant_foundation.models import (
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
 )
 from tenant_foundation.serializers import TagListCreateSerializer
+from tenant_associate.serializers.governing_district_retrieve_serializer import GoverningDistrictRetrieveSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -106,6 +107,7 @@ class AssociateRetrieveSerializer(serializers.Serializer):
     over_18_years_household_count = serializers.IntegerField(source="user.member.metric.over_18_years_household_count", read_only=True,)
     organization_employee_count = serializers.IntegerField(source="user.member.metric.organization_employee_count", read_only=True,)
     organization_founding_year = serializers.IntegerField(source="user.member.metric.organization_founding_year", read_only=True,)
+    governing = serializers.SerializerMethodField()
 
     # ------ AUDITING ------ #
 
@@ -125,4 +127,16 @@ class AssociateRetrieveSerializer(serializers.Serializer):
         try:
             return obj.user.member.avatar_image.image_file.url
         except Exception as e:
+            return
+
+    def get_governing(self, obj):
+        try:
+            s = GoverningDistrictRetrieveSerializer(
+               obj.governing.all(),
+               many=True,
+               context=self.context
+            )
+            return s.data
+        except Exception as e:
+            print(e)
             return None
