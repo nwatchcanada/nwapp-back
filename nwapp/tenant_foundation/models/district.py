@@ -118,6 +118,18 @@ class District(models.Model):
         null=True,
         blank=True,
     )
+    governors = models.ManyToManyField(
+        "Associate",
+        help_text=_('The associates which are responsible for the operation of the district.'),
+        blank=True,
+        related_name="governing"
+    )
+    tags = models.ManyToManyField(
+        "Tag",
+        help_text=_('The tags associated with this district.'),
+        blank=True,
+        related_name="districts"
+    )
 
     # RESIDENTIAL FIELDS
 

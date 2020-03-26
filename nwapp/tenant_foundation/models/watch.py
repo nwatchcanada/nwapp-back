@@ -186,6 +186,12 @@ class Watch(models.Model):
         blank=True,
         related_name="watches"
     )
+    governors = models.ManyToManyField(
+        "AreaCoordinator",
+        help_text=_('The area coordinator which are responsible for the operation of the district.'),
+        blank=True,
+        related_name="governing"
+    )
     deactivation_reason = models.PositiveSmallIntegerField(
         _("Deactivation reason"),
         help_text=_('The reason why this watch was deactivated.'),

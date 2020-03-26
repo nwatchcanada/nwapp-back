@@ -9,6 +9,7 @@ urlpatterns = (
     path('api/v1/associates/operation/archive', AssociateArchiveOperationAPIView.as_view(), name='nwapp_associates_archive_operation_api_endpoint'),
     path('api/v1/associates/operation/promote', AssociatePromoteOperationAPIView.as_view(), name='nwapp_associates_promote_operation_api_endpoint'),
     path('api/v1/associates/operation/demote', AssociateDemoteOperationAPIView.as_view(), name='nwapp_associates_demote_operation_api_endpoint'),
+    path('api/v1/associates/operation/district', AssociateDistrictOperationAPIView.as_view(), name='nwapp_associate_district_operation_api_endpoint'),
     path('api/v1/associate-comments', AssociateCommentListCreateAPIView.as_view(), name='nwapp_associate_comment_list_create_api_endpoint'),
     path('api/v1/associate-files', AssociateFileUploadListCreateAPIView.as_view(), name='nwapp_associate_file_upload_list_create_api_endpoint'),
     path('api/v1/associate/<slug>', AssociateRetrieveAPIView.as_view(), name='nwapp_associates_retrieve_api_endpoint'),
