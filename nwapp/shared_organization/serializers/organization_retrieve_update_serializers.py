@@ -102,12 +102,6 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
 class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
 
     # OVERRIDE THE MODEL FIELDS AND ENFORCE THE FOLLOWING CUSTOM VALIDATION RULES.
-    schema_name = serializers.CharField(
-        required=True,
-        allow_blank=False,
-        validators=[UniqueValidator(queryset=SharedOrganization.objects.all())],
-    )
-
     name = serializers.CharField(
         required=True,
         allow_blank=False,
