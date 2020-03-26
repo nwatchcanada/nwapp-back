@@ -1,7 +1,7 @@
 # Mkdocs
 
 ```
-virtualenv -p python3.6 env_docs
+virtualenv -p python3.7 env_docs
 source env_docs/bin/activate
 pip install mkdocs
 mkdocs --version

@@ -1,7 +1,7 @@
 This article explains the libraries that our project uses. Before you begin, be sure to setup the virtual envrionment:
 
 ```
-virtualenv -p python3.6 env
+virtualenv -p python3.7 env
 source env/bin/activate
 ```
 
@@ -17,8 +17,17 @@ export CPPFLAGS="-I/usr/local/opt/curl/include -I/user/local/opt/openssl/include
 The following are a complete list of all the third-party library and frameworks our project is using.
 
 ```
+pip install six                           # Six is a Python 2 and 3 compatibility library
 pip install django                        # Our MVC Framework
 pip install django-environ                # Environment Variables with 12factorization
+pip install psycopg2                      # PostgresSQL Database Access
+pip install psycopg2-binary               # Postgres SQL ODBC
+pip install postgis
+pip install gdal==2.4         
+(Note: https://gis.stackexchange.com/questions/306473/getting-ogr-to-work-on-a-mac)
+(Note: https://gis.stackexchange.com/questions/308294/compile-error-with-gdal-on-macosx)
+(Note: https://stackoverflow.com/questions/38630474/error-while-installing-gdal)
+(Note: https://www.kyngchaos.com/software/frameworks/)
 pip install django-tenants                # Django tenants using PostgreSQL Schemas
 pip install Pillow                        # Req: ImageField
 pip install argon2-cffi                   # Argon2 Hashing Algorithm

@@ -22,7 +22,7 @@ cd nwapp-back
 (2) Setup our virtual environment
 
 ```bash
-virtualenv -p python3.6 env
+virtualenv -p python3.7 env
 ```
 
 (3) Now lets activate virtual environment
