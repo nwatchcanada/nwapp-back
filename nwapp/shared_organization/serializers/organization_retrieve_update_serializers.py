@@ -43,6 +43,10 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         allow_blank=False,
     )
 
+    street_type = serializers.IntegerField(
+        read_only=True,
+    )
+
     street_type_label = serializers.CharField(
         read_only=True,
         source="get_pretty_street_type",
@@ -121,6 +125,10 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
     police_report_url = serializers.CharField(
         required=False,
         allow_blank=True,
+    )
+
+    street_type = serializers.IntegerField(
+        required=True,
     )
 
     class Meta:
