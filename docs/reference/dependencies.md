@@ -23,7 +23,7 @@ pip install django-environ                # Environment Variables with 12factori
 pip install psycopg2                      # PostgresSQL Database Access
 pip install psycopg2-binary               # Postgres SQL ODBC
 pip install postgis
-pip install gdal==2.4         
+pip install gdal        
 (Note: https://gis.stackexchange.com/questions/306473/getting-ogr-to-work-on-a-mac)
 (Note: https://gis.stackexchange.com/questions/308294/compile-error-with-gdal-on-macosx)
 (Note: https://stackoverflow.com/questions/38630474/error-while-installing-gdal)
