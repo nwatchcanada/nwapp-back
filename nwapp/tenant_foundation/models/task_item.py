@@ -136,6 +136,30 @@ class TaskItem(models.Model):
         default=get_todays_date,
         db_index=True
     )
+    member = models.ForeignKey(
+        "Member",
+        help_text=_('The associate related to this task item.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    area_coordinator = models.ForeignKey(
+        "AreaCoordinator",
+        help_text=_('The area coordinator related to this task item.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    associate = models.ForeignKey(
+        "Associate",
+        help_text=_('The associate related to this task item.'),
+        related_name="task_items",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     district = models.ForeignKey(
         "District",
         help_text=_('The district whom this task item belongs to.'),
@@ -337,17 +361,14 @@ class TaskItem(models.Model):
         return str(text)
 
     @staticmethod
-    def seed(tenant, length=25, type_of=None):
+    def seed(tenant, length=25):
         from faker import Faker
         results = []
         faker = Faker('en_CA')
         for i in range(0,length):
             try:
                 from shared_foundation.models import SharedUser, SharedGroup
-
-                if type_of == None:
-                    type_of = faker.pyint(min_value=1, max_value=5, step=1)
-
+                type_of = faker.pyint(min_value=1, max_value=5, step=1)
                 if type_of == TaskItem.TYPE_OF.ASSIGN_AREA_COORDINATOR_TO_WATCH or type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH:
                     from tenant_foundation.models import Watch
 
@@ -364,19 +385,18 @@ class TaskItem(models.Model):
                     results.append(task_item)
 
                 elif type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT:
-                    from tenant_foundation.models import District
+                    from tenant_foundation.models import Associate
 
-                    district = District.objects.filter(
-                        task_items__isnull=True
-                    ).first()
-                    random_days_count = faker.pyint(min_value=0, max_value=10, step=1)
-                    task_item = TaskItem.objects.create(
-                        type_of=type_of,
-                        state=TaskItem.STATE.UNASSIGNED,
-                        due_date=get_todays_date(random_days_count),
-                        district=district,
-                    )
-                    results.append(task_item)
+                    associate = Associate.objects.random()
+                    if associate:
+                        random_days_count = faker.pyint(min_value=0, max_value=10, step=1)
+                        task_item = TaskItem.objects.create(
+                            type_of=type_of,
+                            state=TaskItem.STATE.UNASSIGNED,
+                            due_date=get_todays_date(random_days_count),
+                            associate=associate,
+                        )
+                        results.append(task_item)
 
                 elif type_of == TaskItem.TYPE_OF.ACTION_INCIDENT_ITEM or type_of == TaskItem.TYPE_OF.ACTION_CONCERNT_ITEM:
                     from tenant_foundation.models import Item

@@ -1,14 +1,16 @@
 import phonenumbers
+from random import randint
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.db import models
 from django.db.models import Q
 from django.db import transaction
 from django.utils.text import Truncator
+from django.db.models.aggregates import Count
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
-from shared_foundation.models import SharedUser
+from shared_foundation.models import SharedUser, SharedGroup
 
 
 class AssociateManager(models.Manager):
@@ -38,6 +40,19 @@ class AssociateManager(models.Manager):
         # For more details please read:
         # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
         return Associate.objects.annotate(search=SearchVector('user__member__indexed_text'),).filter(search=keyword)
+
+    def random(self):
+        """
+        Function will get a single random object from the datbase.
+        Special thanks via: https://stackoverflow.com/a/2118712
+        """
+        count = self.filter(
+            user__groups__id=SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE
+        ).aggregate(
+            count=Count('user_id')
+        )['count']
+        random_index = randint(0, count - 1)
+        return self.all()[random_index]
 
 
 class Associate(models.Model):

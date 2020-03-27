@@ -45,6 +45,15 @@ class MemberManager(models.Manager):
         # https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/search/
         return Member.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
 
+    def random(self):
+        """
+        Function will get a single random object from the datbase.
+        Special thanks via: https://stackoverflow.com/a/2118712
+        """
+        count = self.aggregate(count=Count('id'))['count']
+        random_index = randint(0, count - 1)
+        return self.all()[random_index]
+
 
 class Member(models.Model):
     """
