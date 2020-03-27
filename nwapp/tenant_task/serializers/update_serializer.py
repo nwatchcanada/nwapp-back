@@ -17,7 +17,7 @@ from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumb
 from shared_foundation.models import SharedUser
 # from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    TaskItem, AreaCoordinator, Associate, Item, ItemComment
+    TaskItem, AreaCoordinator, Associate, Item, ItemComment, District
 )
 
 
@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 class TaskItemUpdateSerializer(serializers.Serializer):
     area_coordinator_slug = serializers.SlugField(required=False, allow_blank=True, allow_null=True,)
     associate_slug = serializers.SlugField(required=False, allow_blank=True, allow_null=True,)
+    district_slug = serializers.SlugField(required=False, allow_blank=True, allow_null=True,)
     will_action = serializers.BooleanField(required=False,  allow_null=True,)
     comment = serializers.CharField(required=False, allow_blank=True, allow_null=True,)
     reason = serializers.IntegerField(required=False, allow_null=True,)
@@ -44,6 +45,13 @@ class TaskItemUpdateSerializer(serializers.Serializer):
         if type_of in [TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH, TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_WATCH]:
             if value == None or value == "":
                 raise serializers.ValidationError(_("Please specify the associate."))
+        return value
+
+    def validate_district_slug(self, value):
+        type_of = self.context.get("type_of")
+        if type_of in [TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT, TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT]:
+            if value == None or value == "":
+                raise serializers.ValidationError(_("Please specify the district."))
         return value
 
     def update(self, instance, validated_data):
@@ -88,21 +96,33 @@ class TaskItemUpdateSerializer(serializers.Serializer):
             logger.info("Closing task for assigning associate to watch.")
 
         elif type_of == TaskItem.TYPE_OF.ASSIGN_ASSOCIATE_TO_DISTRICT:
-            slug = validated_data.get("associate_slug")
-            associate = Associate.objects.get(user__slug=slug)
-            associate.user.member.district = instance.district
-            associate.user.member.last_modified_by = request.user
-            associate.user.member.last_modified_from = request.client_ip
-            associate.user.member.last_modified_from_is_public = request.client_ip_is_routable
-            associate.user.member.save()
-            logger.info("Assigned associate to district.")
+            slug = validated_data.get("district_slug", None)
+            district = District.objects.filter(slug=slug).first() #TODO: CONTINUE
+
+            district.governors.add(instance.associate)
+            district.last_modified_by = request.user
+            district.last_modified_from = request.client_ip
+            district.last_modified_from_is_public = request.client_ip_is_routable
+            district.save()
+            logger.info("Part 1: Assigned associate to district.")
+
+            instance.associate.last_modified_by = request.user
+            instance.associate.last_modified_from = request.client_ip
+            instance.associate.last_modified_from_is_public = request.client_ip_is_routable
+            instance.associate.save()
+            logger.info("Part 2: Assigned associate to district.")
 
             instance.state = TaskItem.STATE.CLOSED
+            instance.district = district
             instance.last_modified_by = request.user
             instance.last_modified_from = request.client_ip
             instance.last_modified_from_is_public = request.client_ip_is_routable
             instance.save()
-            logger.info("Closing task for assigning associate to district.")
+            logger.info("Part 3: Closing task for assigning associate to district.")
+
+            # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
+            #     "developerError": "Programmer did not implement yet."
+            # })
 
         elif type_of == TaskItem.TYPE_OF.ACTION_INCIDENT_ITEM:
             item = instance.item
