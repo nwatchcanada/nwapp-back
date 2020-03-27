@@ -75,6 +75,9 @@ class MemberContactUpdateSerializer(serializers.Serializer):
         instance.is_ok_to_text = validated_data.get('is_ok_to_text', instance.is_ok_to_text)
         instance.organization_name = validated_data.get('organization_name', instance.organization_name)
         instance.organization_type_of = validated_data.get('organization_type_of', instance.organization_type_of)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
         instance.primary_phone = validated_data.get('primary_phone', instance.primary_phone)
         instance.secondary_phone = validated_data.get('secondary_phone', instance.secondary_phone)
         instance.last_modified_by = request.user
