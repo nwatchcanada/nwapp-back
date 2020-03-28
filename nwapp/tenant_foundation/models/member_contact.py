@@ -284,6 +284,7 @@ class MemberContact(models.Model):
     #             raise Exception("Method name not found.")
     #     except AttributeError:
     #         pass
-    #
-    # def invalidate_all(self):
-    #     self.invalidate("primary_phone_e164")
+
+    def invalidate_all(self):
+        pass
+        # self.invalidate("primary_phone_e164")

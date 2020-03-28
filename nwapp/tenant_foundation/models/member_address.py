@@ -171,11 +171,23 @@ class MemberAddress(models.Model):
         null=True,
         blank=True,
     )
-    needs_geolocating = models.BooleanField(
+    needs_geocoding = models.BooleanField(
         _("Needs Geolocating"),
         help_text=_('Field controls if system need to geolocate the current address to get a new longitude and latitude coordinates. Any address change results in this field being changed to `True`.'),
         default=True,
         blank=True
+    )
+    geocoding_succeeded_at = models.DateTimeField(
+        _("Geocoding Succeeded At"),
+        help_text=_('The date and time the geocding process succeeded.'),
+        blank=True,
+        null=True,
+    )
+    geocoding_failed_at = models.DateTimeField(
+        _("Geocoding Failed At"),
+        help_text=_('The date and time the geocding process failed.'),
+        blank=True,
+        null=True,
     )
 
     # AUDITING FIELDS

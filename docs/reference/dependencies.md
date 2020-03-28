@@ -51,9 +51,8 @@ pip install freezegun                     # Python datetime override library
 pip install sorl-thumbnail                # Thumbnails for Django
 pip install django-storages               # Collection of custom storage backends for Django.
 pip install boto3                         # AWS S3 Bindings
-
 pip install django-phonenumber-field      # Telephone field using Google's libphonenumber
-
+pip install geopy                         # Geo-location and geocoding web services.
 ```
 
 DigitalOcean Tutorials:

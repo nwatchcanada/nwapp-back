@@ -68,6 +68,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     postal_code = serializers.CharField(source="address.postal_code", read_only=True,)
     address = serializers.CharField(source="address.street_address", read_only=True,)
     google_maps_url = serializers.URLField(source="address.google_maps_url", read_only=True,)
+    position = serializers.SerializerMethodField()
 
     # ------ MEMBER WATCH ------ #
 
@@ -148,4 +149,13 @@ class MemberRetrieveSerializer(serializers.Serializer):
         try:
             return obj.avatar_image.image_file.url
         except Exception as e:
+            return None
+
+    def get_position(self, obj):
+        try:
+            lng = obj.address.position.x
+            lat = obj.address.position.y
+            return [lng, lat,]
+        except Exception as e:
+            print(e)
             return None

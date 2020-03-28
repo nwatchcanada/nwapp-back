@@ -9,10 +9,7 @@ def save_member_user(sender, instance, **kwargs):
     """
     Function will update the user profile with the member's fields post save.
     """
-    instance.user.first_name = instance.first_name
-    instance.user.last_name = instance.last_name
-    instance.user.email = instance.email
-    instance.user.save()
+    pass
 
 
 @receiver(post_save, sender=Member)

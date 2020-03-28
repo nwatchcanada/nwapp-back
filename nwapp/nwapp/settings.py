@@ -522,6 +522,13 @@ THUMBNAIL_FORCE_OVERWRITE = True
 
 
 '''
+GOOGLE MAP API
+https://developers.google.com/maps/documentation/geocoding/get-api-key
+'''
+GOOGLE_MAP_API_KEY = env("GOOGLE_MAP_API_KEY")
+
+
+'''
 Application Specific Variables
 https://github.com/nwapp/nwapp-back
 '''
