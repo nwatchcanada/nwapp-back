@@ -37,6 +37,11 @@ class MemberAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         )
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
+
+        import django_rq
+        from tenant_member.tasks import geocode_member_address_func
+        django_rq.enqueue(geocode_member_address_func, request.tenant.schema_name, slug)
+
         read_serializer = MemberRetrieveSerializer(
             object.member,
             many=False,

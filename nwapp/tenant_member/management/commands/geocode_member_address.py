@@ -50,8 +50,10 @@ class Command(BaseCommand):
             member.address.geocoding_succeeded_at = timezone.now()
             # print(location.raw) # For debugging purposes only.
             self.stdout.write(
-                self.style.SUCCESS(_('Succeeded geocoding member %(slug)s')%{
+                self.style.SUCCESS(_('Succeeded geocoding member %(slug)s with latitude and longitude of %(lt)s, %(ln)s')%{
                     'slug': member.user.slug,
+                    'ln':location.longitude,
+                    'lt':location.latitude,
                 })
             )
         else:
@@ -98,5 +100,5 @@ class Command(BaseCommand):
 
         # For debugging purposes.
         self.stdout.write(
-            self.style.SUCCESS(_('Successfully finished'))
+            self.style.SUCCESS(_('Successfully finished geocoding'))
         )

@@ -157,5 +157,5 @@ class MemberRetrieveSerializer(serializers.Serializer):
             lat = obj.address.position.y
             return [lng, lat,]
         except Exception as e:
-            print(e)
+            # print("get_position",e)
             return None
