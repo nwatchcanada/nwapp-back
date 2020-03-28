@@ -37,6 +37,7 @@ class Command(BaseCommand):
         # from geopy.geocoders import GoogleV3
         # geolocator = GoogleV3(api_key=settings.GOOGLE_MAP_API_KEY)
 
+        # Note: https://geopy.readthedocs.io/en/stable/#
         from geopy.geocoders import Nominatim
         geolocator = Nominatim(user_agent="nwApp")
 
