@@ -6,9 +6,9 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.contrib.postgres.indexes import BrinIndex
+from django.contrib.gis.db import models
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.db import models
 from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.utils import timezone
@@ -218,6 +218,20 @@ class SharedOrganization(TenantMixin):
         _("Police Report URL"),
         help_text=_('The URL of the police reporting service used to submit crime reports.'),
         max_length=255,
+        null=True,
+        blank=True,
+    )
+    default_position = models.PointField(
+        _("Default Position"),
+        help_text=_('The centre coordinates to apply for every map rendered on the user\'s screen.'),
+        srid=4326,
+        geography=True,
+        null=True,
+        blank=True,
+    )
+    default_zoom = models.FloatField(
+        _("Default Map Zoom"),
+        help_text=_('The centre zoom to apply for every map rendered on the user\'s screen.'),
         null=True,
         blank=True,
     )

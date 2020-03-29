@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.postgres.search import SearchVector, SearchVectorField
-from django.db import models
+from django.contrib.gis.db import models
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _

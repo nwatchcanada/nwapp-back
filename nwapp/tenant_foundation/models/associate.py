@@ -2,7 +2,7 @@ import phonenumbers
 from random import randint
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.postgres.search import SearchVector, SearchVectorField
-from django.db import models
+from django.contrib.gis.db import models
 from django.db.models import Q
 from django.db import transaction
 from django.utils.text import Truncator

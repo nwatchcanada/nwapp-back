@@ -6,7 +6,7 @@ from djmoney.money import Money
 from datetime import date, datetime, timedelta
 from sorl.thumbnail import ImageField
 from django.conf import settings
-from django.db import models
+from django.contrib.gis.db import models
 from django.db import transaction
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.utils import timezone

@@ -5,7 +5,7 @@ import uuid
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import models
+from django.contrib.gis.db import models
 from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.utils import timezone

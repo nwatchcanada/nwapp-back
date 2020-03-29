@@ -19,10 +19,14 @@ $(env) python manage.py create_shared_organization london \
        "" \
        "N6J4X4" \
        "America/Toronto" \
-       "https://www.coplogic.ca/dors/en/filing/selectincidenttype?dynparam=1584326750929";
+       "https://www.coplogic.ca/dors/en/filing/selectincidenttype?dynparam=1584326750929" \
+       "42.983611" \
+       "-81.249722" \
+       "13"
 """
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.contrib.gis.geos import Point
 from django.contrib.sites.models import Site
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
@@ -57,6 +61,9 @@ class Command(BaseCommand):
         parser.add_argument('postal_code', nargs='+', type=str)
         parser.add_argument('timezone_name', nargs='+', type=str)
         parser.add_argument('police_report_url', nargs='+', type=str)
+        parser.add_argument('default_latitude', nargs='+', type=str)
+        parser.add_argument('default_longitude', nargs='+', type=str)
+        parser.add_argument('default_zoom', nargs='+', type=str)
 
     def get(self, options, key):
         try:
@@ -94,6 +101,10 @@ class Command(BaseCommand):
         postal_code = self.get(options, 'postal_code')
         timezone_name = self.get(options, 'timezone_name')
         police_report_url = self.get(options, 'police_report_url')
+        default_latitude = float(self.get(options, 'default_latitude'))
+        default_longitude = float(self.get(options, 'default_longitude'))
+        default_zoom = float(self.get(options, 'default_zoom'))
+        default_position = Point(default_latitude,default_longitude)
 
         # For debugging purposes only.
         self.stdout.write(
@@ -115,6 +126,9 @@ class Command(BaseCommand):
             Postal Code: %(postal_code)s
             Timezone: %(timezone_name)s
             Police Report URL: %(police_report_url)s
+            Lati: %(lati)s
+            Long: %(long)s
+            Zoom: %(zoom)s
             '''
             ) % {
                 'schema_name': schema_name,
@@ -133,6 +147,9 @@ class Command(BaseCommand):
                 'postal_code': postal_code,
                 'timezone_name': timezone_name,
                 'police_report_url': police_report_url,
+                'lati': default_latitude,
+                'long': default_longitude,
+                'zoom': default_zoom
             })
         )
 
@@ -153,7 +170,7 @@ class Command(BaseCommand):
                              country, city, province, street_number, street_name,
                              apartment_unit, street_type, street_type_other,
                              street_direction, postal_code, timezone_name,
-                             police_report_url)
+                             police_report_url, default_position, default_zoom)
 
         # Used for debugging purposes.
         self.stdout.write(
@@ -164,7 +181,7 @@ class Command(BaseCommand):
                          country, city, province, street_number, street_name,
                          apartment_unit, street_type, street_type_other,
                          street_direction, postal_code, timezone_name,
-                         police_report_url):
+                         police_report_url, default_position, default_zoom):
         """
         Functin will create a new tenant based on the parameters.
         """
@@ -187,6 +204,8 @@ class Command(BaseCommand):
             postal_code=postal_code,
             timezone_name=timezone_name,
             police_report_url=police_report_url,
+            default_position=default_position,
+            default_zoom=default_zoom,
         )
         tenant.save()
 

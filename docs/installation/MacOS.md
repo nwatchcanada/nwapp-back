@@ -101,7 +101,10 @@ python manage.py create_shared_organization london \
        "" \
        "N6J4X4" \
        "America/Toronto" \
-       "https://www.coplogic.ca/dors/en/filing/selectincidenttype?dynparam=1584326750929";
+       "https://www.coplogic.ca/dors/en/filing/selectincidenttype?dynparam=1584326750929" \
+       "42.983611" \
+       "-81.249722" \
+       "13";
 python manage.py create_random_district "london" 50;
 python manage.py create_random_watch "london" 500;
 python manage.py create_random_member "london" 1000;

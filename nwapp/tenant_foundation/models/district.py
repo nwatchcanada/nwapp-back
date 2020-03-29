@@ -4,7 +4,7 @@ from random import randint
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import models
+from django.contrib.gis.db import models
 from django.db import transaction
 from django.db.models.aggregates import Count
 from django.db.models import Q
