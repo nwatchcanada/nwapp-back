@@ -139,7 +139,7 @@ class AreaCoordinatorFilter(django_filters.FilterSet):
 
     def has_position_filtering(self, queryset, name, value):
         return queryset.filter(
-            ~Q(member__address__position=None)
+            ~Q(user__member__address__position=None)
         )
 
     has_position = django_filters.CharFilter(method='has_position_filtering')

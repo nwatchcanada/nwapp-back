@@ -64,6 +64,7 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
     postal_code = serializers.CharField(source="user.member.address.postal_code", read_only=True,)
     address = serializers.CharField(source="user.member.address.street_address", read_only=True,)
     google_maps_url = serializers.URLField(source="user.member.address.google_maps_url", read_only=True,)
+    position = serializers.SerializerMethodField()
 
     # ------ MEMBER WATCH ------ #
 
@@ -125,4 +126,13 @@ class AreaCoordinatorRetrieveSerializer(serializers.Serializer):
         try:
             return obj.user.member.avatar_image.image_file.url
         except Exception as e:
+            return None
+
+    def get_position(self, obj):
+        try:
+            lng = obj.user.member.address.position.x
+            lat = obj.user.member.address.position.y
+            return [lng, lat,]
+        except Exception as e:
+            # print("get_position", e)
             return None
