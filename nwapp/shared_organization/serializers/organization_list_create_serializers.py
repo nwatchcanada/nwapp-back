@@ -13,6 +13,7 @@ from django.utils.http import urlquote
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
+from drf_extra_fields.geo_fields import PointField
 
 from shared_foundation.models import SharedOrganization
 from shared_organization.tasks import create_organization_func
@@ -48,6 +49,8 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
         required=False,
         allow_blank=True,
     )
+    default_position = PointField(required=False)
+    default_zoom = serializers.IntegerField(required=False,)
 
     class Meta:
         model = SharedOrganization
@@ -73,6 +76,8 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
             'street_type_other',
             'street_direction',
             'postal_code',
+            'default_position',
+            'default_zoom',
 
             # Tenancy
             'schema_name'

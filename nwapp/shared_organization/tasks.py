@@ -40,6 +40,8 @@ def create_organization_func(validated_data):
     postal_code = validated_data.get('postal_code', None)
     timezone_name = validated_data.get('timezone_name', None)
     police_report_url = validated_data.get('police_report_url', None)
+    default_position = validated_data.get('default_position', None)
+    default_zoom = validated_data.get('default_zoom', None)
 
     if street_type == "" or street_type == None:
         street_type = "-"
@@ -66,6 +68,8 @@ def create_organization_func(validated_data):
         "\npostal_code", postal_code,
         "\ntimezone_name", timezone_name,
         "\npolice_report_url", police_report_url,
+        "\default_position", default_position,
+        "\default_zoom", default_zoom,
         "\n"
     )
 
@@ -86,7 +90,9 @@ def create_organization_func(validated_data):
         street_direction=street_direction,
         postal_code=postal_code,
         timezone_name=timezone_name,
-        police_report_url=police_report_url
+        police_report_url=police_report_url,
+        default_position=default_position,
+        default_zoom=default_zoom
     )
     tenant.save()
 

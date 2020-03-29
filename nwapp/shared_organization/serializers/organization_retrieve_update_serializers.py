@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from dateutil import tz
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.contrib.gis.geos import Point
 from django.contrib.auth import authenticate
 from django.db.models import Q, Prefetch
 from django.utils.translation import ugettext_lazy as _
@@ -13,6 +14,8 @@ from django.utils.http import urlquote
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
+from drf_extra_fields.geo_fields import PointField
+
 from shared_foundation.models import SharedOrganization
 
 
@@ -61,6 +64,8 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         required=False,
         allow_blank=True,
     )
+    default_position = PointField(required=False)
+    default_zoom = serializers.IntegerField(required=False,)
 
     class Meta:
         model = SharedOrganization
@@ -88,6 +93,8 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
             'street_direction',
             'street_direction_label',
             'postal_code',
+            'default_position',
+            'default_zoom',
 
             # Tenancy
             'schema_name'
@@ -120,10 +127,11 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         required=False,
         allow_blank=True,
     )
-
     street_type = serializers.IntegerField(
         required=True,
     )
+    default_position = PointField(required=False)
+    default_zoom = serializers.IntegerField(required=False,)
 
     class Meta:
         model = SharedOrganization
@@ -149,6 +157,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
             'street_type_other',
             'street_direction',
             'postal_code',
+            'default_position',
+            'default_zoom',
 
             # Tenancy
             'schema_name'
@@ -180,7 +190,8 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.street_type_other = validated_data.get('street_type_other', instance.street_type_other)
         instance.street_direction = validated_data.get('street_direction', instance.street_direction)
         instance.postal_code = validated_data.get('postal_code', instance.postal_code)
-
+        instance.default_position = validated_data.get('default_position', instance.default_position)
+        instance.default_zoom = validated_data.get('default_zoom', instance.default_zoom)
         instance.last_modified_by = self.context['last_modified_by']
         instance.last_modified_from = self.context['last_modified_from']
         instance.last_modified_from_is_public = self.context['last_modified_from_is_public']
