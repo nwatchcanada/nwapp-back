@@ -161,6 +161,14 @@ class Badge(models.Model):
         default=False,
         blank=True
     )
+    created_from_position = models.PointField(
+        _("Created from position"),
+        help_text=_('The latitude and longitude coordinates for the creator.'),
+        srid=4326,
+        geography=True,
+        null=True,
+        blank=True,
+    )
     last_modified_at = models.DateTimeField(auto_now=True)
     last_modified_by = models.ForeignKey(
         SharedUser,
@@ -181,6 +189,14 @@ class Badge(models.Model):
         help_text=_('Is modifier a public IP and is routable.'),
         default=False,
         blank=True
+    )
+    last_modified_from_position = models.PointField(
+        _("Last modified from position"),
+        help_text=_('The latitude and longitude coordinates for the last modified user.'),
+        srid=4326,
+        geography=True,
+        null=True,
+        blank=True,
     )
 
     """

@@ -84,6 +84,14 @@ class MemberComment(models.Model):
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_from_position = models.PointField(
+        _("Created from position"),
+        help_text=_('The latitude and longitude coordinates for the creator.'),
+        srid=4326,
+        geography=True,
+        null=True,
+        blank=True,
+    )
 
     """
     MODEL FUNCTIONS
