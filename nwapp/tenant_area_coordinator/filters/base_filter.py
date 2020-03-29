@@ -137,6 +137,13 @@ class AreaCoordinatorFilter(django_filters.FilterSet):
 
     telephone = django_filters.CharFilter(method='telephonel_filtering')
 
+    def has_position_filtering(self, queryset, name, value):
+        return queryset.filter(
+            ~Q(member__address__position=None)
+        )
+
+    has_position = django_filters.CharFilter(method='has_position_filtering')
+
     class Meta:
         model = AreaCoordinator
         fields = [
@@ -145,4 +152,5 @@ class AreaCoordinatorFilter(django_filters.FilterSet):
             'last_name',
             'email',
             'telephone',
+            'has_position',
         ]
