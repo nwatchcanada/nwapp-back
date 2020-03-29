@@ -68,8 +68,8 @@ def create_organization_func(validated_data):
         "\npostal_code", postal_code,
         "\ntimezone_name", timezone_name,
         "\npolice_report_url", police_report_url,
-        "\default_position", default_position,
-        "\default_zoom", default_zoom,
+        "\ndefault_position", default_position,
+        "\ndefault_zoom", default_zoom,
         "\n"
     )
 
