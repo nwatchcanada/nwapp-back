@@ -138,5 +138,5 @@ class AssociateRetrieveSerializer(serializers.Serializer):
             )
             return s.data
         except Exception as e:
-            print(e)
+            # print("get_governing |", e)
             return None

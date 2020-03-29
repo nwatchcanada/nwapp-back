@@ -37,6 +37,11 @@ class AssociateAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         )
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
+
+        import django_rq
+        from tenant_associate.tasks import geocode_associate_address_func
+        django_rq.enqueue(geocode_associate_address_func, request.tenant.schema_name, slug)
+
         read_serializer = AssociateRetrieveSerializer(
             object.member,
             many=False,
