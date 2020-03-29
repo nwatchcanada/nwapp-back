@@ -149,6 +149,13 @@ class MemberFilter(django_filters.FilterSet):
 
     telephone = django_filters.CharFilter(method='telephonel_filtering')
 
+    def has_position_filtering(self, queryset, name, value):
+        return queryset.filter(
+            ~Q(address__position=None)
+        )
+
+    has_position = django_filters.CharFilter(method='has_position_filtering')
+
     class Meta:
         model = Member
         fields = [
@@ -159,4 +166,5 @@ class MemberFilter(django_filters.FilterSet):
             'telephone',
             'role_id',
             'role_ids',
+            'has_position',
         ]

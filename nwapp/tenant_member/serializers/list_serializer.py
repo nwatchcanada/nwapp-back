@@ -98,6 +98,7 @@ class MemberListSerializer(serializers.Serializer):
         read_only=True,
         source="user.role_id"
     )
+    position = serializers.SerializerMethodField()
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
@@ -106,3 +107,12 @@ class MemberListSerializer(serializers.Serializer):
             'created_by', 'last_modified_by'
         )
         return queryset
+
+    def get_position(self, obj):
+        try:
+            lng = obj.address.position.x
+            lat = obj.address.position.y
+            return [lng, lat,]
+        except Exception as e:
+            # print("get_position", e)
+            return None
