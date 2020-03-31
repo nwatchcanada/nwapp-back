@@ -65,8 +65,8 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
 
         # Run the following functions in the background so our API performance
         # would not be impacted with not-import computations.
-        django_rq.enqueue(geocode_member_address_func, request.tenant.schema_name, member.slug)
-        django_rq.enqueue(geoip2_member_address_audit_func, request.tenant, member)
+        django_rq.enqueue(geoip2_member_audit_func, request.tenant, member)
+        django_rq.enqueue(geoip2_member_address_audit_func, request.tenant, member.address)
 
         retrieve_serializer = MemberRetrieveSerializer(member, many=False)
         return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)

@@ -16,11 +16,6 @@ def geocode_member_address_func(schema_name, member_slug):
     call_command('geocode_member_address', schema_name, member_slug, verbosity=0)
 
 
-# @job
-# def geoip2_member_audit_func(schema_name, member_slug):
-#     call_command('geoip2_member_audit', schema_name, member_slug, verbosity=0)
-
-
 @job
 def geoip2_member_audit_func(organization, member):
     organization.activate_tenant()

@@ -87,4 +87,4 @@ class AreaCoordinatorArchiveOperationSerializer(serializers.Serializer):
         # })
 
         # Return the validated results.
-        return validated_data
+        return area_coordinator
