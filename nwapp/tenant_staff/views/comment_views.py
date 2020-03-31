@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -19,6 +20,7 @@ from tenant_staff.serializers import (
     StaffCommentCreateSerializer
 )
 from tenant_foundation.models import StaffComment
+from tenant_staff.tasks import geoip2_staff_comment_audit_func
 
 
 class StaffCommentListCreateAPIView(generics.ListCreateAPIView):
@@ -63,6 +65,10 @@ class StaffCommentListCreateAPIView(generics.ListCreateAPIView):
         )
         write_serializer.is_valid(raise_exception=True)
         obj = write_serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geoip2_staff_comment_audit_func, request.tenant, obj)
 
         read_serializer = StaffCommentListSerializer(
             obj,

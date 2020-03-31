@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
@@ -10,7 +11,8 @@ from rest_framework.response import Response
 
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_staff.permissions import CanRetrieveUpdateDestroyStaffPermission
-from tenant_staff.serializers import StaffArchiveOperationSerializer
+from tenant_staff.serializers import StaffArchiveOperationSerializer, StaffRetrieveSerializer
+from tenant_staff.tasks import geoip2_staff_audit_func
 
 
 class StaffArchiveOperationAPIView(generics.CreateAPIView):
@@ -32,5 +34,11 @@ class StaffArchiveOperationAPIView(generics.CreateAPIView):
             }
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        staff = serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geoip2_staff_audit_func, request.tenant, staff)
+
+        read_serializer = StaffRetrieveSerializer(staff, many=False,)
+        return Response(read_serializer.data, status=status.HTTP_200_OK)

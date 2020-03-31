@@ -38,7 +38,7 @@ class MemberPromoteOperationAPIView(generics.CreateAPIView):
 
         # Run the following functions in the background so our API performance
         # would not be impacted with not-import computations.
-        django_rq.enqueue(geoip2_member_address_audit_func, request.tenant, member)
+        django_rq.enqueue(geoip2_member_audit_func, request.tenant, member)
 
         read_serializer = MemberRetrieveSerializer(member, many=False,)
         return Response(read_serializer.data, status=status.HTTP_201_CREATED)

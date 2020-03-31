@@ -14,15 +14,15 @@ from tenant_foundation.models import Associate, AssociateAddress
 
 
 class Command(BaseCommand):
-    help = _('Command will attempt to lookup the longitude and latitude of the associate\'s address from a third-party geocoding API web-service.')
+    help = _('Command will attempt to lookup the longitude and latitude of the staff\'s address from a third-party geocoding API web-service.')
 
     def add_arguments(self, parser):
         """
         Run manually in console:
-        python manage.py geocode_associate_address "london" "ryan-adams"
+        python manage.py geocode_staff_address "london" "ryan-adams"
         """
         parser.add_argument('schema_name', nargs='+', type=str)
-        parser.add_argument('associate_slug', nargs='+', type=str)
+        parser.add_argument('staff_slug', nargs='+', type=str)
 
     @transaction.atomic
     def process(self, area_coordinator_address):
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             area_coordinator_address.geocoding_succeeded_at = timezone.now()
             # print(location.raw) # For debugging purposes only.
             self.stdout.write(
-                self.style.SUCCESS(_('Succeeded geocoding associate %(slug)s with latitude and longitude of %(lt)s, %(ln)s')%{
+                self.style.SUCCESS(_('Succeeded geocoding staff %(slug)s with latitude and longitude of %(lt)s, %(ln)s')%{
                     'slug': area_coordinator_address.member.user.slug,
                     'ln':location.longitude,
                     'lt':location.latitude,
@@ -59,7 +59,7 @@ class Command(BaseCommand):
         else:
             area_coordinator_address.geocoding_failed_at = timezone.now()
             self.stdout.write(
-                self.style.WARNING(_('Failed geocoding associate %(slug)s')%{
+                self.style.WARNING(_('Failed geocoding staff %(slug)s')%{
                     'slug': area_coordinator_address.member.user.slug,
                 })
             )
@@ -74,7 +74,7 @@ class Command(BaseCommand):
 
         # Get the user inputs.
         schema_name = options['schema_name'][0]
-        associate_slug = options['associate_slug'][0]
+        staff_slug = options['staff_slug'][0]
 
         try:
             organization = SharedOrganization.objects.get(schema_name=schema_name)
@@ -84,15 +84,15 @@ class Command(BaseCommand):
         # Connection will set it back to our tenant.
         connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
-        # Lookup our associate.
+        # Lookup our staff.
         area_coordinator_address = AssociateAddress.objects.filter(
-            member__user__slug=associate_slug
+            member__user__slug=staff_slug
         ).first()
         if area_coordinator_address is None:
-            raise CommandError(_('Associate\'s address does not exist!'))
+            raise CommandError(_('Staff\'s address does not exist!'))
 
         if area_coordinator_address.needs_geocoding is False:
-            raise CommandError(_('Associate\'s geo-location was already found.'))
+            raise CommandError(_('Staff\'s geo-location was already found.'))
 
         # Process.
         freezer = freeze_time(area_coordinator_address.last_modified_at)

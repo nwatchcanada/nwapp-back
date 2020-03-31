@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django.db import transaction
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
@@ -19,6 +20,7 @@ from tenant_staff.serializers import (
     StaffRetrieveSerializer
 )
 from tenant_foundation.models import Staff
+from tenant_staff.tasks import geocode_staff_address_func, geoip2_staff_audit_func
 
 
 class StaffListCreateAPIView(generics.ListCreateAPIView):
@@ -64,5 +66,11 @@ class StaffListCreateAPIView(generics.ListCreateAPIView):
         });
         post_serializer.is_valid(raise_exception=True)
         staff = post_serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geoip2_staff_audit_func, request.tenant, staff)
+        django_rq.enqueue(geoip2_staff_address_audit_func, request.tenant, staff.address)
+
         retrieve_serializer = StaffRetrieveSerializer(staff, many=False)
         return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)

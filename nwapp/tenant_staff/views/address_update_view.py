@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django.conf.urls import url, include
 from django.db import transaction
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -10,6 +11,7 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 from tenant_foundation.models import StaffAddress
 from tenant_staff.permissions import CanRetrieveUpdateDestroyStaffNodePermission
 from tenant_staff.serializers import StaffRetrieveSerializer, StaffAddressUpdateSerializer
+from tenant_staff.tasks import geocode_staff_address_func, geoip2_staff_address_audit_func
 
 
 class StaffAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -37,6 +39,12 @@ class StaffAddressUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         )
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geocode_staff_address_func, request.tenant.schema_name, slug)
+        django_rq.enqueue(geoip2_staff_address_audit_func, request.tenant, object)
+
         read_serializer = StaffRetrieveSerializer(
             object.member,
             many=False,
