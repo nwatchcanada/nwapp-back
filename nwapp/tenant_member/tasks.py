@@ -63,3 +63,16 @@ def geoip2_member_metric_audit_func(organization, member_metric):
     if member_metric.last_modified_from:
         member_metric.last_modified_from_position = get_point_from_ip(member_metric.last_modified_from)
     member_metric.save()
+
+
+@job
+def geoip2_member_comment_audit_func(organization, member_comment):
+    organization.activate_tenant()
+
+    if member_comment.comment:
+        comment = member_comment.comment
+        if comment.created_from:
+            comment.created_from_position = get_point_from_ip(comment.created_from)
+        if comment.last_modified_from:
+            comment.last_modified_from_position = get_point_from_ip(comment.last_modified_from)
+        comment.save()
