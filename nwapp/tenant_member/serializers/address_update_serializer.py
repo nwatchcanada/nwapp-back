@@ -16,7 +16,6 @@ from rest_framework.validators import UniqueValidator
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.drf.fields import E164PhoneNumberField
 from shared_foundation.models import SharedUser
-# from tenant_foundation.constants import *
 from tenant_foundation.models import (
     Member, MemberContact, MemberAddress, MemberMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
@@ -43,8 +42,9 @@ class MemberAddressUpdateSerializer(serializers.Serializer):
         """
         Override the `update` function to add extra functinality.
         """
-        # ------ MEMBER ADDRESS ------ #
         request = self.context.get('request')
+
+        # ------ MEMBER ADDRESS ------ #
         instance.country = validated_data.get('country', None)
         instance.province = validated_data.get('province', None)
         instance.city = validated_data.get('city', None)

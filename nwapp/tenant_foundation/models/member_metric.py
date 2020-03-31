@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
 from shared_foundation.models import SharedUser
+from shared_foundation.utils import get_point_from_ip
 
 # Override the validator to have our custom message.
 email_validator = EmailValidator(message=_("Invalid email"))
@@ -320,6 +321,10 @@ class MemberMetric(models.Model):
         '''
         Override the `save` function to support extra functionality of our model.
         '''
+        if self.created_from:
+            self.created_from_position = get_point_from_ip(self.created_from)
+        if self.last_modified_from:
+            self.last_modified_from_position = get_point_from_ip(self.last_modified_from)
 
         '''
         Finally call the parent function which handles saving so we can carry

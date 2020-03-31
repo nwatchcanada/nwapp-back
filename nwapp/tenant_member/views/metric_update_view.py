@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django.conf.urls import url, include
 from django.db import transaction
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -10,6 +11,7 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 from tenant_foundation.models import MemberMetric
 from tenant_member.permissions import CanRetrieveUpdateDestroyMemberMetricPermission
 from tenant_member.serializers import MemberRetrieveSerializer, MemberMetricsUpdateSerializer
+from tenant_member.tasks import geocode_member_address_func
 
 
 class MemberMetricUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -31,5 +33,10 @@ class MemberMetricUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         write_serializer = MemberMetricsUpdateSerializer(object, data=request.data, context={'request': request,})
         write_serializer.is_valid(raise_exception=True)
         object = write_serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geocode_member_address_func, request.tenant.schema_name, slug)
+
         read_serializer = MemberRetrieveSerializer(object.member, many=False, context={'request': request,})
         return Response(read_serializer.data, status=status.HTTP_200_OK)

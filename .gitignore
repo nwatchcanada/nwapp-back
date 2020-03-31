@@ -203,3 +203,6 @@ private_notes.txt
 nwapp/nwapp/static
 nwapp/staticfiles
 nwapp/static
+
+# Do not save our `GeoIP2` database.
+nwapp/geoip

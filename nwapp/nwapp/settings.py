@@ -81,6 +81,7 @@ SHARED_APPS = ( # (Django-Tenants)
     # 'phonenumber_field',
     'storages',
     'sorl.thumbnail',
+    'geoip2',
     # . . .
 
     # Our Apps
@@ -527,6 +528,14 @@ https://developers.google.com/maps/documentation/geocoding/get-api-key
 '''
 GOOGLE_MAP_API_KEY = env("GOOGLE_MAP_API_KEY")
 
+
+'''
+GeoIP2
+https://docs.djangoproject.com/en/3.0/ref/contrib/gis/geoip2/#django.contrib.gis.geoip2.GeoIP2
+'''
+GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
+GEOIP_COUNTRY = "GeoLite2-Country.mmdb"
+GEOIP_CITY = "GeoLite2-City.mmdb"
 
 '''
 Application Specific Variables

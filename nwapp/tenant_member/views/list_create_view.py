@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
@@ -18,6 +19,7 @@ from tenant_member.serializers import (
     MemberRetrieveSerializer
 )
 from tenant_foundation.models import Member
+from tenant_member.tasks import geocode_member_address_func
 
 
 class MemberListCreateAPIView(generics.ListCreateAPIView):
@@ -60,5 +62,10 @@ class MemberListCreateAPIView(generics.ListCreateAPIView):
         });
         post_serializer.is_valid(raise_exception=True)
         member = post_serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geocode_member_address_func, request.tenant.schema_name, member.slug)
+
         retrieve_serializer = MemberRetrieveSerializer(member, many=False)
         return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)

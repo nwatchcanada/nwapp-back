@@ -53,6 +53,7 @@ pip install django-storages               # Collection of custom storage backend
 pip install boto3                         # AWS S3 Bindings
 pip install django-phonenumber-field      # Telephone field using Google's libphonenumber
 pip install geopy                         # Geo-location and geocoding web services.
+pip install geoip2                        # Geography IP Lookup Database Handler
 ```
 
 DigitalOcean Tutorials:

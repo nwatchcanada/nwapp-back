@@ -9,6 +9,11 @@ You must have the following applications installed before proceeding. If you are
 * ``redis``
 * ``PostGres``
 
+You *must* download the GZIP binary files ``GeoLite2 City`` and ``GeoLite2 Country`` from [this link](https://dev.maxmind.com/geoip/geoip2/geolite2/). Please unzip those files in the ``./nwapp/geoip`` folder so you should have the following:
+
+* ``nwapp-back/nwapp/geoip/GeoLite2-City.mmdb``
+* ``nwapp-back/nwapp/geoip/GeoLite2-Country.mmdb``
+
 # 2. Code Setup
 The following section explains how to setup the application.
 
