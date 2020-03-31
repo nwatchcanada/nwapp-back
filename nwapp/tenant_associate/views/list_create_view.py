@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django_rq
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf.urls import url, include
@@ -18,6 +19,7 @@ from tenant_associate.serializers import (
     AssociateRetrieveSerializer
 )
 from tenant_foundation.models import Associate
+from tenant_associate.tasks import geocode_associate_address_func, geoip2_associate_audit_func
 
 
 class AssociateListCreateAPIView(generics.ListCreateAPIView):
@@ -62,5 +64,11 @@ class AssociateListCreateAPIView(generics.ListCreateAPIView):
         });
         post_serializer.is_valid(raise_exception=True)
         associate = post_serializer.save()
+
+        # Run the following functions in the background so our API performance
+        # would not be impacted with not-import computations.
+        django_rq.enqueue(geoip2_associate_audit_func, request.tenant, associate)
+        django_rq.enqueue(geoip2_associate_address_audit_func, request.tenant, associate.address)
+
         retrieve_serializer = AssociateRetrieveSerializer(associate, many=False)
         return Response(retrieve_serializer.data, status=status.HTTP_201_CREATED)
