@@ -16,9 +16,9 @@ def geocode_member_address_func(schema_name, member_slug):
     call_command('geocode_member_address', schema_name, member_slug, verbosity=0)
 
 
-@job
-def geoip2_member_audit_func(schema_name, member_slug):
-    call_command('geoip2_member_audit', schema_name, member_slug, verbosity=0)
+# @job
+# def geoip2_member_audit_func(schema_name, member_slug):
+#     call_command('geoip2_member_audit', schema_name, member_slug, verbosity=0)
 
 
 @job
@@ -30,7 +30,7 @@ def geoip2_member_audit_func(organization, member):
     if member.last_modified_from:
         member.last_modified_from_position = get_point_from_ip(member.last_modified_from)
     member.save()
-    
+
 
 @job
 def geoip2_member_address_audit_func(organization, member_address):
