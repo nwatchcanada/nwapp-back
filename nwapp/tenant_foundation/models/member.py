@@ -347,6 +347,9 @@ class Member(models.Model):
         from tenant_foundation.models import MemberComment
         from tenant_foundation.models import Watch
         from tenant_foundation.models import StreetAddressRange
+        from tenant_foundation.models import HowHearAboutUsItem
+        from tenant_foundation.models import ExpectationItem
+        from tenant_foundation.models import MeaningItem
         results = []
         faker = Faker('en_CA')
         for i in range(0,length):
@@ -403,21 +406,21 @@ class Member(models.Model):
                     postal_code=faker.postalcode(),
                 )
                 member_metric = MemberMetric.objects.create(
-                    member=member,
-                    # how_did_you_hear=
-                    # how_did_you_hear_other=
-                    # expectation=
-                    # expectation_other=
-                    # meaning=
-                    # meaning_other=
+                    member = member,
+                    how_did_you_hear = HowHearAboutUsItem.objects.random(),
+                    how_did_you_hear_other = faker.company(),
+                    expectation = ExpectationItem.objects.random(),
+                    expectation_other = faker.company(),
+                    meaning = MeaningItem.objects.random(),
+                    meaning_other = faker.company(),
                     # gender=
                     # willing_to_volunteer=
-                    # another_household_member_registered=
+                    another_household_member_registered=False,
                     year_of_birth=faker.pyint(min_value=1920, max_value=1990, step=1),
-                    # total_household_count=
-                    # over_18_years_household_count=
-                    # organization_employee_count=
-                    # organization_founding_year=
+                    total_household_count=faker.pyint(min_value=2, max_value=6, step=1),
+                    over_18_years_household_count = faker.pyint(min_value=0, max_value=1, step=1),
+                    organization_employee_count = faker.pyint(min_value=0, max_value=10, step=1),
+                    organization_founding_year=faker.pyint(min_value=1920, max_value=1990, step=1),
                 )
                 results.append(member)
             except Exception as e:
