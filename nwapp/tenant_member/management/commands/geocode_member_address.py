@@ -66,23 +66,12 @@ class Command(BaseCommand):
         member.address.save()
 
     def handle(self, *args, **options):
-        # Connection needs first to be at the public schema, as this is where
-        # the database needs to be set before creating a new tenant. If this is
-        # not done then django-tenants will raise a "Can't create tenant outside
-        # the public schema." error.
-        connection.set_schema_to_public() # Switch to Public.
-
         # Get the user inputs.
         schema_name = options['schema_name'][0]
         member_slug = options['member_slug'][0]
 
-        try:
-            organization = SharedOrganization.objects.get(schema_name=schema_name)
-        except SharedOrganization.DoesNotExist:
+        if SharedOrganization.activate_tenant_by_schema(schema_name) == False:
             raise CommandError(_('Organization does not exist!'))
-
-        # Connection will set it back to our tenant.
-        connection.set_schema(organization.schema_name, True) # Switch to Tenant.
 
         # Lookup our member.
         member = Member.objects.filter(user__slug=member_slug).first()

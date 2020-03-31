@@ -9,6 +9,7 @@ from django.contrib.postgres.indexes import BrinIndex
 from django.contrib.gis.db import models
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.db import connection # Used for django tenants.
 from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.utils import timezone
@@ -321,6 +322,35 @@ class SharedOrganization(TenantMixin):
 
     def get_pretty_street_direction(self):
         return str(dict(SharedOrganization.STREET_DIRECTION_CHOICES).get(self.street_direction))
+
+    def activate_tenant(self):
+        # Connection needs first to be at the public schema, as this is where
+        # the database needs to be set before creating a new tenant. If this is
+        # not done then django-tenants will raise a "Can't create tenant outside
+        # the public schema." error.
+        connection.set_schema_to_public() # Switch to Public.
+
+        # Connection will set it back to our tenant.
+        connection.set_schema(self.schema_name, True) # Switch to Tenant.
+
+    @staticmethod
+    def activate_tenant_by_schema(schema_name):
+        try:
+            # Connection needs first to be at the public schema, as this is where
+            # the database needs to be set before creating a new tenant. If this is
+            # not done then django-tenants will raise a "Can't create tenant outside
+            # the public schema." error.
+            connection.set_schema_to_public() # Switch to Public.
+
+            # Lookup the tenant in our database.
+            organization = SharedOrganization.objects.get(schema_name=schema_name)
+
+            # Connection will set it back to our tenant.
+            connection.set_schema(organization.schema_name, True) # Switch to Tenant.
+
+            return True
+        except SharedOrganization.DoesNotExist:
+            return False
 
 
 class SharedOrganizationDomain(DomainMixin):

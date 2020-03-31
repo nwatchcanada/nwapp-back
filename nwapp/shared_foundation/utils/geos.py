@@ -15,6 +15,3 @@ def get_point_from_ip(ip_address):
     except Exception as e:
         print("get_point_from_ip | ip:", ip_address, "| e:", e)
     return None
-
-    # TODO: Update documentation to support our `GeoIP2` library
-    # TODO: Use a background function to handle looking up lat/long.

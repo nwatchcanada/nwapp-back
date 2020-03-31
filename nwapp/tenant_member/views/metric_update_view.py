@@ -11,7 +11,7 @@ from shared_foundation.drf.permissions import SharedUserIsActivePermission, Disa
 from tenant_foundation.models import MemberMetric
 from tenant_member.permissions import CanRetrieveUpdateDestroyMemberMetricPermission
 from tenant_member.serializers import MemberRetrieveSerializer, MemberMetricsUpdateSerializer
-from tenant_member.tasks import geocode_member_address_func
+from tenant_member.tasks import geocode_member_address_func, geoip2_member_metric_audit_func
 
 
 class MemberMetricUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -37,6 +37,7 @@ class MemberMetricUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
         # Run the following functions in the background so our API performance
         # would not be impacted with not-import computations.
         django_rq.enqueue(geocode_member_address_func, request.tenant.schema_name, slug)
+        django_rq.enqueue(geoip2_member_metric_audit_func, request.tenant, object)
 
         read_serializer = MemberRetrieveSerializer(object.member, many=False, context={'request': request,})
         return Response(read_serializer.data, status=status.HTTP_200_OK)
