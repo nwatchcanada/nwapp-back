@@ -24,9 +24,9 @@ class SharedOrganizationRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestr
         """
         Retrieve
         """
-        order = get_object_or_404(SharedOrganization, schema_name=schema_name)
-        self.check_object_permissions(request, order)  # Validate permissions.
-        serializer = SharedOrganizationRetrieveSerializer(order, many=False)
+        object = get_object_or_404(SharedOrganization, schema_name=schema_name)
+        self.check_object_permissions(request, object)  # Validate permissions.
+        serializer = SharedOrganizationRetrieveSerializer(object, many=False)
         # queryset = serializer.setup_eager_loading(self, queryset)
         return Response(
             data=serializer.data,

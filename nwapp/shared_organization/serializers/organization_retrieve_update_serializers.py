@@ -64,7 +64,7 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         required=False,
         allow_blank=True,
     )
-    default_position = PointField(required=False)
+    default_position = serializers.SerializerMethodField()
     default_zoom = serializers.IntegerField(required=False,)
 
     class Meta:
@@ -104,6 +104,15 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         """ Perform necessary eager loading of data. """
         queryset = queryset.prefetch_related()
         return queryset
+
+    def get_default_position(self, obj):
+        try:
+            lat = obj.default_position.x
+            lng = obj.default_position.y
+            return [lat, lng]
+        except Exception as e:
+            # print("get_position",e)
+            return None
 
 
 class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):

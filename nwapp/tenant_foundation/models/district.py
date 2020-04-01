@@ -130,6 +130,20 @@ class District(models.Model):
         blank=True,
         related_name="districts"
     )
+    boundry_position = models.PointField(
+        _("Boundry Position"),
+        help_text=_('The centre coordinates to apply for every map rendered on the user\'s screen.'),
+        srid=4326,
+        geography=True,
+        null=True,
+        blank=True,
+    )
+    boundry_zoom = models.FloatField(
+        _("Boundry Map Zoom"),
+        help_text=_('The centre zoom to apply for every map rendered on the user\'s screen.'),
+        null=True,
+        blank=True,
+    )
     boundry_polygon = models.PolygonField(
         _("Boundry Polygon"),
         help_text=_('The polygon of the watch\'s boundry.'),

@@ -14,6 +14,7 @@ from rest_framework.validators import UniqueValidator
 
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
+from shared_foundation.utils import get_arr_from_point, get_multi_arr_from_polygon
 from shared_foundation.models import SharedUser
 from tenant_foundation.models import District
 
@@ -37,9 +38,18 @@ class DistrictRetrieveSerializer(serializers.Serializer):
         source="logo_image.image_file",
         allow_null=True,
     )
+    boundry_zoom = serializers.IntegerField(read_only=True,)
+    boundry_position = serializers.SerializerMethodField()
+    boundry_polygon = serializers.SerializerMethodField()
 
     # ------ AUDITING ------ #
     created_at = serializers.DateTimeField(read_only=True, allow_null=False,)
     created_by = serializers.CharField(source="created_by.get_full_name", allow_null=True, read_only=True,)
     last_modified_by = serializers.CharField(source="last_modified_by.get_full_name", allow_null=True, read_only=True,)
     last_modified__at = serializers.DateTimeField(read_only=True, allow_null=False,)
+
+    def get_boundry_position(self, obj):
+        return get_arr_from_point(obj.boundry_position)
+
+    def get_boundry_polygon(self, obj):
+        return get_multi_arr_from_polygon(obj.boundry_polygon)
