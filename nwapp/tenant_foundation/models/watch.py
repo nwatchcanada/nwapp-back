@@ -207,6 +207,13 @@ class Watch(models.Model):
         null=True,
         default=""
     )
+    boundry = models.PolygonField(
+        _("Boundry"),
+        help_text=_('The polygon of the watch\'s boundry.'),
+        blank=True,
+        null=True,
+        spatial_index=True,
+    )
 
     # SEARCHABLE FIELDS
 

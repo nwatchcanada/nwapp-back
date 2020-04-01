@@ -130,6 +130,13 @@ class District(models.Model):
         blank=True,
         related_name="districts"
     )
+    boundry = models.PolygonField(
+        _("Boundry"),
+        help_text=_('The polygon of the watch\'s boundry.'),
+        blank=True,
+        null=True,
+        spatial_index=True,
+    )
 
     # RESIDENTIAL FIELDS
 

@@ -171,6 +171,7 @@ class MemberAddress(models.Model):
         geography=True,
         null=True,
         blank=True,
+        spatial_index=True,
     )
     needs_geocoding = models.BooleanField(
         _("Needs Geolocating"),
