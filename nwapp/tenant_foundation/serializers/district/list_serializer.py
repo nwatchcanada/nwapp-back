@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
+from shared_foundation.utils import get_arr_from_point, get_multi_arr_from_polygon
 from tenant_foundation.models import District
 
 
@@ -33,6 +34,12 @@ class DistrictListSerializer(serializers.Serializer):
     type_of = serializers.ChoiceField(
         allow_null=False,
         choices=District.TYPE_OF_CHOICES,
+        read_only=True,
+    )
+    type_of_code = serializers.CharField(
+        source="get_type_of_code",
+        allow_blank=True,
+        allow_null=True,
         read_only=True,
     )
     name = serializers.CharField(
@@ -73,6 +80,9 @@ class DistrictListSerializer(serializers.Serializer):
         allow_null=True,
         read_only=True,
     )
+    boundry_zoom = serializers.IntegerField(read_only=True,)
+    boundry_position = serializers.SerializerMethodField()
+    boundry_polygon = serializers.SerializerMethodField()
 
     def setup_eager_loading(cls, queryset):
         """ Perform necessary eager loading of data. """
@@ -80,3 +90,9 @@ class DistrictListSerializer(serializers.Serializer):
             'created_by', 'last_modified_by',
         )
         return queryset
+
+    def get_boundry_position(self, obj):
+        return get_arr_from_point(obj.boundry_position)
+
+    def get_boundry_polygon(self, obj):
+        return get_multi_arr_from_polygon(obj.boundry_polygon)
