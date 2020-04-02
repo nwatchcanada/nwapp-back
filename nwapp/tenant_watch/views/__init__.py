@@ -4,3 +4,4 @@ from tenant_watch.views.comment_views import WatchCommentListCreateAPIView
 from tenant_watch.views.update_info_views import WatchInformationUpdateAPIView
 from tenant_watch.views.update_street_views import WatchStreetMembershipUpdateAPIView
 from tenant_watch.views.archive_operation_views import WatchArchiveOperationAPIView
+from tenant_watch.views.operations.boundary_operation_view import WatchBoundaryOperationAPIView

@@ -146,13 +146,11 @@ class District(models.Model):
     )
     boundry_polygon = models.PolygonField(
         _("Boundry Polygon"),
-        help_text=_('The polygon of the watch\'s boundry.'),
+        help_text=_('The polygon of the district\'s boundry.'),
         blank=True,
         null=True,
         spatial_index=True,
     )
-    #TODO: boundryPosition
-    #TODO: boundryZoom
 
     # RESIDENTIAL FIELDS
 

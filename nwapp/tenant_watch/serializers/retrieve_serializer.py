@@ -15,6 +15,7 @@ from rest_framework.validators import UniqueValidator
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
 from shared_foundation.models import SharedUser
+from shared_foundation.utils import get_arr_from_point, get_multi_arr_from_polygon
 # from tenant_foundation.constants import *
 from tenant_foundation.models import Watch, Tag, StreetAddressRange
 from tenant_foundation.serializers import TagListCreateSerializer
@@ -48,6 +49,9 @@ class WatchRetrieveSerializer(serializers.Serializer):
     )
     deactivation_reason_other = serializers.CharField(read_only=True, allow_null=True, allow_blank=True)
     deactivation_reason_label = serializers.CharField(read_only=True, source="get_deactivation_reason_label")
+    boundry_zoom = serializers.IntegerField(read_only=True,)
+    boundry_position = serializers.SerializerMethodField()
+    boundry_polygon = serializers.SerializerMethodField()
 
     def get_street_membership(self, watch_obj):
         """
@@ -64,3 +68,9 @@ class WatchRetrieveSerializer(serializers.Serializer):
         except Exception as e:
             print(e)
             return []
+
+    def get_boundry_position(self, obj):
+        return get_arr_from_point(obj.boundry_position)
+
+    def get_boundry_polygon(self, obj):
+        return get_multi_arr_from_polygon(obj.boundry_polygon)

@@ -17,6 +17,7 @@ from rest_framework.validators import UniqueValidator
 from drf_extra_fields.geo_fields import PointField
 
 from shared_foundation.models import SharedOrganization
+from shared_foundation.utils import get_arr_from_point
 
 
 logger = logging.getLogger(__name__)
@@ -106,13 +107,7 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         return queryset
 
     def get_default_position(self, obj):
-        try:
-            lat = obj.default_position.x
-            lng = obj.default_position.y
-            return [lat, lng]
-        except Exception as e:
-            # print("get_position",e)
-            return None
+        return get_arr_from_point(obj.default_position)
 
 
 class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):

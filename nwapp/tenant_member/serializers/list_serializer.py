@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
-# from tenant_foundation.constants import *
+from shared_foundation.utils import get_arr_from_point
 from tenant_foundation.models import Member
 
 
@@ -109,10 +109,4 @@ class MemberListSerializer(serializers.Serializer):
         return queryset
 
     def get_position(self, obj):
-        try:
-            lng = obj.address.position.x
-            lat = obj.address.position.y
-            return [lng, lat,]
-        except Exception as e:
-            # print("get_position", e)
-            return None
+        return get_arr_from_point(obj.address.position)

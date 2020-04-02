@@ -14,4 +14,5 @@ urlpatterns = (
     path('api/v1/watch/<slug>/street', WatchStreetMembershipUpdateAPIView.as_view(), name='nwapp_watchs_street_update_api_endpoint'),
     path('api/v1/watch/<slug>/info', WatchInformationUpdateAPIView.as_view(), name='nwapp_watchs_info_update_api_endpoint'),
     # path('api/v1/watch/<slug>/metrics', WatchMetricUpdateAPIView.as_view(), name='nwapp_watchs_metric_update_api_endpoint'),
+    path('api/v1/watch/<slug>/operation/boundary', WatchBoundaryOperationAPIView.as_view(), name='nwapp_watch_boundary_operation_api_endpoint'),
 )

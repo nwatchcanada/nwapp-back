@@ -15,7 +15,7 @@ from rest_framework.validators import UniqueValidator
 from shared_foundation.constants import MEMBER_GROUP_ID
 from shared_foundation.drf.fields import E164PhoneNumberField, NationalPhoneNumberField
 from shared_foundation.models import SharedUser
-# from tenant_foundation.constants import *
+from shared_foundation.utils import get_arr_from_point
 from tenant_foundation.models import (
     Associate, AssociateContact, AssociateAddress, AssociateMetric,
     Tag, HowHearAboutUsItem, ExpectationItem, MeaningItem
@@ -143,10 +143,4 @@ class AssociateRetrieveSerializer(serializers.Serializer):
             return None
 
     def get_position(self, obj):
-        try:
-            lng = obj.user.member.address.position.x
-            lat = obj.user.member.address.position.y
-            return [lng, lat,]
-        except Exception as e:
-            # print("get_position", e)
-            return None
+        return get_arr_from_point(obj.user.member.address.position)
