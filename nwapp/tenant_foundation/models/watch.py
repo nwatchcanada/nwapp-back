@@ -372,6 +372,9 @@ class Watch(models.Model):
     def get_searchable_content(self):
         return self.indexed_text
 
+    def invalidate_all(self):
+        pass
+
     @staticmethod
     def seed(length):
         from faker import Faker

@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import Truncator
 
 from shared_foundation.constants import *
-from shared_foundation.models import SharedUser
+from shared_foundation.models import SharedUser, SharedGroup
 
 
 class UnifiedSearchItemManager(models.Manager):
@@ -45,7 +45,7 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             item = UnifiedSearchItem.objects.get(member=member)
             item.slug=member.user.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.MEMBER
+            item.type_of=UnifiedSearchItem.get_type_of_member(member)
             item.member=member
             item.description=str(member)
             item.text=member.indexed_text
@@ -61,7 +61,7 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=member.user.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.MEMBER,
+                type_of=UnifiedSearchItem.get_type_of_member(member),
                 member=member,
                 description=str(member),
                 text=member.indexed_text,
@@ -88,7 +88,7 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             item = UnifiedSearchItem.objects.get(area_coordinator=area_coordinator)
             item.slug=area_coordinator.user.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.MEMBER
+            item.type_of=UnifiedSearchItem.TYPE_OF.AREA_COORDINATOR
             item.area_coordinator=area_coordinator
             item.description=str(area_coordinator)
             item.text=area_coordinator.indexed_text
@@ -104,7 +104,7 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=area_coordinator.user.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.MEMBER,
+                type_of=UnifiedSearchItem.TYPE_OF.AREA_COORDINATOR,
                 area_coordinator=area_coordinator,
                 description=str(area_coordinator),
                 text=area_coordinator.indexed_text,
@@ -126,7 +126,7 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             item = UnifiedSearchItem.objects.get(associate=associate)
             item.slug = associate.user.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.ASSOCIATE
+            item.type_of=UnifiedSearchItem.TYPE_OF.ASSOCIATE
             item.description=str(associate)
             item.associate=associate
             item.text=associate.indexed_text
@@ -142,7 +142,7 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=associate.user.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.ASSOCIATE,
+                type_of=UnifiedSearchItem.TYPE_OF.ASSOCIATE,
                 associate=associate,
                 description=str(associate),
                 text=associate.indexed_text,
@@ -164,7 +164,7 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             item = UnifiedSearchItem.objects.get(staff=staff)
             item.slug = staff.user.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.STAFF
+            item.type_of=UnifiedSearchItem.TYPE_OF.STAFF
             item.staff=staff
             item.description=str(staff)
             item.text=staff.indexed_text
@@ -180,7 +180,7 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=staff.user.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.STAFF,
+                type_of=UnifiedSearchItem.TYPE_OF.STAFF,
                 staff=staff,
                 description=str(staff),
                 text=staff.indexed_text,
@@ -202,7 +202,7 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             found_item = UnifiedSearchItem.objects.get(item=item)
             found_item.slug = item.slug
-            found_item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.ITEM
+            found_item.type_of=UnifiedSearchItem.TYPE_OF.ITEM
             found_item.item=item
             found_item.description="Work Order #"+str(item.id)
             found_item.text=item.indexed_text
@@ -217,7 +217,7 @@ class UnifiedSearchItemManager(models.Manager):
             found_item.save()
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.ITEM,
+                type_of=UnifiedSearchItem.TYPE_OF.ITEM,
                 slug=slug,
                 item=item,
                 description="Work Order #"+str(item.id),
@@ -240,15 +240,15 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             item = UnifiedSearchItem.objects.get(watch=watch)
             item.slug = watch.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.WATCH
+            item.type_of=UnifiedSearchItem.TYPE_OF.WATCH
             item.watch=watch
             item.description=str(watch)
             item.text=watch.indexed_text
-            item.created_at=watch.created
+            item.created_at=watch.created_at
             item.created_by=watch.created_by
             item.created_from=watch.created_from
             item.created_from_is_public=watch.created_from_is_public
-            item.last_modified_at=watch.last_modified
+            item.last_modified_at=watch.last_modified_at
             item.last_modified_by=watch.last_modified_by
             item.last_modified_from=watch.last_modified_from
             item.last_modified_from_is_public=watch.last_modified_from_is_public
@@ -256,15 +256,15 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=watch.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.WATCH,
+                type_of=UnifiedSearchItem.TYPE_OF.WATCH,
                 watch=watch,
                 description=str(watch),
                 text=watch.indexed_text,
-                created_at=watch.created,
+                created_at=watch.created_at,
                 created_by=watch.created_by,
                 created_from=watch.created_from,
                 created_from_is_public=watch.created_from_is_public,
-                last_modified_at=watch.last_modified,
+                last_modified_at=watch.last_modified_at,
                 last_modified_by=watch.last_modified_by,
                 last_modified_from=watch.last_modified_from,
                 last_modified_from_is_public=watch.last_modified_from_is_public,
@@ -278,7 +278,7 @@ class UnifiedSearchItemManager(models.Manager):
             was_created = False
             item = UnifiedSearchItem.objects.get(district=district)
             item.slug = district.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.DISTRICT
+            item.type_of=UnifiedSearchItem.TYPE_OF.DISTRICT
             item.district=district
             item.description=str(district)
             item.text=district.indexed_text
@@ -294,7 +294,7 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=district.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.DISTRICT,
+                type_of=UnifiedSearchItem.TYPE_OF.DISTRICT,
                 district=district,
                 description=str(district),
                 text=district.indexed_text,
@@ -315,7 +315,7 @@ class UnifiedSearchItemManager(models.Manager):
         try:
             item = UnifiedSearchItem.objects.get(file=file)
             item.slug = file.slug
-            item.type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.FILE
+            item.type_of=UnifiedSearchItem.TYPE_OF.FILE
             item.file=file
             item.description=str(file)
             item.text=file.indexed_text
@@ -332,7 +332,7 @@ class UnifiedSearchItemManager(models.Manager):
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
                 slug=file.slug,
-                type_of=UnifiedSearchItem.UNIFIED_SEARCH_ITEM_TYPE_OF.FILE,
+                type_of=UnifiedSearchItem.TYPE_OF.FILE,
                 file=file,
                 description=str(file),
                 text=file.indexed_text,
@@ -368,27 +368,29 @@ class UnifiedSearchItem(models.Model):
     CONSTANTS
     '''
 
-    class UNIFIED_SEARCH_ITEM_TYPE_OF:
+    class TYPE_OF:
         MEMBER = 1
-        ASSOCIATE = 2
-        STAFF = 3
-        ITEM = 4
-        WATCH = 5
-        DISTRICT = 6
-        FILE = 7
+        AREA_COORDINATOR = 2
+        ASSOCIATE = 3
+        STAFF = 4
+        ITEM = 5
+        WATCH = 6
+        DISTRICT = 7
+        FILE = 8
 
     '''
     CHOICES
     '''
 
-    UNIFIED_SEARCH_ITEM_TYPE_OF_CHOICES = (
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.MEMBER, _('Customer')),
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.ASSOCIATE, _('Associate')),
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.STAFF, _('Staff')),
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.ITEM, _('Item')),
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.WATCH, _('Watch')),
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.DISTRICT, _('District')),
-        (UNIFIED_SEARCH_ITEM_TYPE_OF.FILE, _('File')),
+    TYPE_OF_CHOICES = (
+        (TYPE_OF.MEMBER, _('Customer')),
+        (TYPE_OF.AREA_COORDINATOR, _('Area Coordinator')),
+        (TYPE_OF.ASSOCIATE, _('Associate')),
+        (TYPE_OF.STAFF, _('Staff')),
+        (TYPE_OF.ITEM, _('Item')),
+        (TYPE_OF.WATCH, _('Watch')),
+        (TYPE_OF.DISTRICT, _('District')),
+        (TYPE_OF.FILE, _('File')),
     )
 
     """
@@ -431,7 +433,7 @@ class UnifiedSearchItem(models.Model):
     type_of = models.PositiveSmallIntegerField(
         _("Type of"),
         help_text=_('The type of item this is.'),
-        choices=UNIFIED_SEARCH_ITEM_TYPE_OF_CHOICES,
+        choices=TYPE_OF_CHOICES,
         db_index=True,
     )
     description = models.CharField(
@@ -600,3 +602,22 @@ class UnifiedSearchItem(models.Model):
         Run our `save` function.
         '''
         super(UnifiedSearchItem, self).save(*args, **kwargs)
+
+    @staticmethod
+    def get_type_of_member(member):
+        try:
+            role_id = member.user.role_id
+            if role_id == SharedGroup.GROUP_MEMBERSHIP.MEMBER:
+                return UnifiedSearchItem.TYPE_OF.MEMBER
+            elif role_id == SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR:
+                return UnifiedSearchItem.TYPE_OF.AREA_COORDINATOR
+            elif role_id == SharedGroup.GROUP_MEMBERSHIP.ASSOCIATE:
+                return UnifiedSearchItem.TYPE_OF.ASSOCIATE
+            elif role_id == SharedGroup.GROUP_MEMBERSHIP.FRONTLINE_STAFF:
+                return UnifiedSearchItem.TYPE_OF.STAFF
+            elif role_id == SharedGroup.GROUP_MEMBERSHIP.MANAGER:
+                return UnifiedSearchItem.TYPE_OF.STAFF
+            print("get_type_of_member | unsupported member role")
+        except Exception as e:
+            print("get_type_of_member | exception:", e)
+        return -1
