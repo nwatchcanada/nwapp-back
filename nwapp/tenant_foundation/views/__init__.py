@@ -28,3 +28,5 @@ from tenant_foundation.views.announcements.retrieve_update_delete_views import A
 
 from tenant_foundation.views.resource_item.list_create_views import ResourceItemListCreateAPIView
 from tenant_foundation.views.resource_item.retrieve_update_delete_views import ResourceItemRetrieveUpdateDestroyAPIView
+
+from tenant_foundation.views.unified_search_item.list_view import UnifiedSearchItemListAPIView

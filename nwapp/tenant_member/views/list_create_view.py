@@ -19,7 +19,11 @@ from tenant_member.serializers import (
     MemberRetrieveSerializer
 )
 from tenant_foundation.models import Member
-from tenant_member.tasks import geocode_member_address_func, geoip2_member_audit_func
+from tenant_member.tasks import (
+    geocode_member_address_func,
+    geoip2_member_audit_func,
+    geoip2_member_address_audit_func
+)
 
 
 class MemberListCreateAPIView(generics.ListCreateAPIView):

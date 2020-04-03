@@ -68,7 +68,6 @@ class WatchCreateSerializer(serializers.Serializer):
             description = description,
             district = district,
             is_virtual = is_virtual,
-            is_archived = False,
             created_by=request.user,
             created_from=request.client_ip,
             created_from_is_public=request.client_ip_is_routable,

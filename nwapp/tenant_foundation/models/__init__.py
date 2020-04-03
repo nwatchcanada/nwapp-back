@@ -48,3 +48,5 @@ from tenant_foundation.models.item import Item
 from tenant_foundation.models.item_comment import ItemComment
 
 from tenant_foundation.models.task_item import TaskItem
+
+from tenant_foundation.models.unified_search_item import UnifiedSearchItem
