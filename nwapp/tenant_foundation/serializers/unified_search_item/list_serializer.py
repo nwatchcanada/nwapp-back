@@ -27,6 +27,21 @@ class UnifiedSearchItemListSerializer(serializers.ModelSerializer):
             'last_modified_at',
         )
 
+    def setup_eager_loading(cls, queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.prefetch_related(
+            'member',
+            'area_coordinator',
+            'associate',
+            'staff',
+            'item',
+            'watch',
+            'district',
+            'created_by',
+            'last_modified_by'
+        )
+        return queryset
+
     def get_tags(self, obj):
         try:
             s = TagListCreateSerializer(obj.tags.all(), many=True)

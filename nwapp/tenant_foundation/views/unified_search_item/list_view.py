@@ -35,6 +35,10 @@ class UnifiedSearchItemListAPIView(generics.ListAPIView):
         # Fetch all the queries.
         queryset = UnifiedSearchItem.objects.all().order_by('-last_modified_at')
 
+        # Fetch all the queries.
+        s = self.get_serializer_class()
+        queryset = s.setup_eager_loading(self, queryset)
+
         # The following code will use the 'django-filter'
         filter = UnifiedSearchItemFilter(self.request.GET, queryset=queryset)
         queryset = filter.qs
