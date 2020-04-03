@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ipware import get_client_ip
+import django_rq
 import django_filters
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,6 +26,7 @@ from tenant_item.serializers import (
     ResourceItemCreateSerializer, ResourceItemRetrieveSerializer
 )
 from tenant_foundation.models import Item, ItemType
+from tenant_item.tasks import geoip2_item_audit_func
 
 
 class ItemListCreateAPIView(generics.ListCreateAPIView):
@@ -139,3 +140,7 @@ class ItemListCreateAPIView(generics.ListCreateAPIView):
             return Response(data={
                 'error': "The type of value is unsupported."
             }, status=status.HTTP_400_BAD_REQUEST)
+
+        # # Run the following functions in the background so our API performance #TODO: IMPLEMENT
+        # # would not be impacted with not-import computations.
+        # django_rq.enqueue(geoip2_item_audit_func, request.tenant, task)

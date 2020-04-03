@@ -33,7 +33,7 @@ class StaffAddressUpdateSerializer(serializers.Serializer):
     city = serializers.CharField(write_only=True,)
     street_number = serializers.CharField(write_only=True,)
     street_name =serializers.CharField(write_only=True,)
-    apartment_unit = serializers.CharField(write_only=True,)
+    apartment_unit = serializers.CharField(write_only=True, required=False, allow_null=True, allow_blank=True,)
     street_type = serializers.ChoiceField(choices=StaffAddress.STREET_TYPE_CHOICES,write_only=True,)
     street_type_other = serializers.CharField(required=False, allow_null=True, allow_blank=True,write_only=True,)
     street_direction = serializers.ChoiceField(choices=StaffAddress.STREET_DIRECTION_CHOICES,write_only=True,)
