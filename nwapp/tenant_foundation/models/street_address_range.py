@@ -83,6 +83,11 @@ class StreetAddressRange(models.Model):
         SOUTH_WEST = 7
         WEST = 8
 
+    class STREET_NUMBER_RANGE_TYPE:
+        ALL = 1
+        ODD = 2
+        EVEN = 3
+
     '''
     CHOICES
     '''
@@ -108,6 +113,12 @@ class StreetAddressRange(models.Model):
         (STREET_DIRECTION.WEST, _('West')),
     )
 
+    STREET_NUMBER_RANGE_TYPE_CHOICES = (
+        (STREET_NUMBER_RANGE_TYPE.ALL, _('All')),
+        (STREET_NUMBER_RANGE_TYPE.ODD, _('Odd')),
+        (STREET_NUMBER_RANGE_TYPE.EVEN, _('Even')),
+    )
+
     '''
     OBJECT MANAGERS
     '''
@@ -125,6 +136,13 @@ class StreetAddressRange(models.Model):
     street_number_end = models.PositiveSmallIntegerField(
         _("Street Number End"),
         help_text=_('Please select the street number end range.'),
+    )
+    street_number_range_type = models.PositiveSmallIntegerField(
+        _("Street Number Range Type"),
+        help_text=_('Please select the street number range type.'),
+        choices=STREET_NUMBER_RANGE_TYPE_CHOICES,
+        default=STREET_NUMBER_RANGE_TYPE.ALL,
+        blank=True,
     )
     street_numbers = IntegerRangeField(
         _("Street Numbers"),
