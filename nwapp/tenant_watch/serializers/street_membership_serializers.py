@@ -29,6 +29,7 @@ class StreetAddressRangeRetrieveSerializer(serializers.Serializer):
     slug = serializers.SlugField()
     street_number_start = serializers.IntegerField()
     street_number_end = serializers.IntegerField()
+    street_number_range_type = serializers.IntegerField()
     street_name = serializers.CharField()
     street_type = serializers.IntegerField()
     street_type_other = serializers.CharField()
@@ -42,6 +43,7 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
     street_address = serializers.CharField(source="__str__", read_only=True,)
     street_number_start = serializers.IntegerField()
     street_number_end = serializers.IntegerField()
+    street_number_range_type = serializers.IntegerField()
     street_name = serializers.CharField()
     street_type = serializers.IntegerField()
     street_type_other = serializers.CharField(
@@ -68,6 +70,7 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
         watch = self.context.get('watch')
         street_number_start = validated_data.get('street_number_start')
         street_number_end = validated_data.get('street_number_end')
+        street_number_range_type = validated_data.get('street_number_range_type')
         street_name = validated_data.get('street_name')
         street_type = validated_data.get('street_type')
         street_type_other = validated_data.get('street_type_other', "")
@@ -77,6 +80,7 @@ class StreetAddressRangeCreateSerializer(serializers.Serializer):
             watch = watch,
             street_number_start = street_number_start,
             street_number_end = street_number_end,
+            street_number_range_type = street_number_range_type,
             street_name = street_name,
             street_type = street_type,
             street_type_other = street_type_other,
@@ -96,6 +100,7 @@ class StreetAddressRangeUpdateSerializer(serializers.Serializer):
     street_address = serializers.CharField(source="__str__", read_only=True,)
     street_number_start = serializers.IntegerField(write_only=True,)
     street_number_end = serializers.IntegerField(write_only=True,)
+    street_number_range_type = serializers.IntegerField(write_only=True,)
     street_name = serializers.CharField(write_only=True,)
     street_type = serializers.IntegerField(write_only=True,)
     street_type_other = serializers.CharField(
@@ -123,6 +128,7 @@ class StreetAddressRangeUpdateSerializer(serializers.Serializer):
         watch = self.context.get('watch')
         instance.street_number_start = validated_data.get('street_number_start')
         instance.street_number_end = validated_data.get('street_number_end')
+        instance.street_number_range_type = validated_data.get('street_number_range_type')
         instance.street_name = validated_data.get('street_name')
         instance.street_type = validated_data.get('street_type')
         instance.street_type_other = validated_data.get('street_type_other', "")
