@@ -5,7 +5,7 @@ from random import randint
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import IntegerRangeField
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.gis.db import models
 from django.db import transaction
 from django.db.models import Q
@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedUser
 from shared_foundation.utils.string import get_referral_code
+from shared_foundation.utils.number import get_special_range
 
 # def get_expiry_date(days=2):
 #     """Returns the current date plus paramter number of days."""
@@ -144,9 +145,9 @@ class StreetAddressRange(models.Model):
         default=STREET_NUMBER_RANGE_TYPE.ALL,
         blank=True,
     )
-    street_numbers = IntegerRangeField(
-        _("Street Numbers"),
-        help_text=_('Please select the range of street numbers. Note: Internal implementation.'),
+    street_numbers = ArrayField(
+        models.PositiveSmallIntegerField(),
+        help_text=_('The street numbers in our range. Note: Internal implementation.'),
         blank=True,
         null=True,
     )
@@ -310,8 +311,12 @@ class StreetAddressRange(models.Model):
                 slug = slugify(text)+"-"+get_referral_code(16)
             self.slug = slug
 
-        # Update our range.
-        self.street_numbers = (self.street_number_start, self.street_number_end)
+        # Internal implementation of generating our street numbers.
+        self.street_numbers = get_special_range(
+            self.street_number_start,
+            self.street_number_end,
+            self.street_number_range_type
+        )
 
         '''
         Finally call the parent function which handles saving so we can carry
@@ -353,6 +358,7 @@ class StreetAddressRange(models.Model):
         return missing_slugs_arr
 
     @staticmethod
+    @transaction.atomic
     def seed(length=1, watch=None):
         from faker import Faker
         from tenant_foundation.models import Watch
@@ -365,7 +371,7 @@ class StreetAddressRange(models.Model):
                 watch = watch if watch != None else Watch.objects.random()
                 street_number_start = faker.random_int(min=1, max=100, step=1)
                 street_number_end = faker.random_int(min=100, max=1000, step=1)
-                street_numbers = range(street_number_start, street_number_end)
+                street_number_range_type = faker.random_int(min=1, max=3, step=1)
                 street_name = faker.company()
                 street_type = faker.random_int(min=2, max=6, step=1)
                 street_type_other = None
@@ -377,7 +383,7 @@ class StreetAddressRange(models.Model):
                     watch=watch,
                     street_number_start = street_number_start,
                     street_number_end = street_number_end,
-                    street_numbers = street_numbers,
+                    street_number_range_type = street_number_range_type,
                     street_name = street_name,
                     street_type = street_type,
                     street_type_other = street_type_other,
@@ -388,5 +394,5 @@ class StreetAddressRange(models.Model):
                 # Append to our result array.
                 results.append(street_address_range)
             except Exception as e:
-                print(e)
+                print(" StreetAddressRange | seed | e:", e)
         return results

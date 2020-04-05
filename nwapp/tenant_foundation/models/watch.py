@@ -42,13 +42,12 @@ class WatchManager(models.Manager):
         )
 
     def search_nearby_address(self, street_number, street_name, street_type, street_type_other):
-        from psycopg2.extras import NumericRange
         from tenant_foundation.models import StreetAddressRange
 
         # Special thanks via
-        # https://docs.djangoproject.com/en/3.0/ref/contrib/postgres/fields/#containment-functions
+        # https://docs.djangoproject.com/en/3.0/ref/contrib/postgres/fields/#contains
         addresses = StreetAddressRange.objects.filter(
-            Q(street_numbers__contains=NumericRange(street_number, street_number))
+            Q(street_numbers__contains=[street_number])
             &Q(street_name=street_name)
             &Q(is_archived=False)
         )
@@ -376,6 +375,7 @@ class Watch(models.Model):
         pass
 
     @staticmethod
+    @transaction.atomic
     def seed(length):
         from faker import Faker
         from tenant_foundation.models import District
@@ -407,5 +407,5 @@ class Watch(models.Model):
                 # Append to our result array.
                 results.append(watch)
             except Exception as e:
-                print(e)
+                print("Watch | seed | e:", e)
         return results

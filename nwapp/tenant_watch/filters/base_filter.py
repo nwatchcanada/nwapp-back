@@ -156,7 +156,12 @@ class WatchFilter(django_filters.FilterSet):
                     # print(type_of, street_number, street_name, street_type, street_type_other)
 
                     # Lookup all the watches with the nearby address.
-                    search_queryset = Watch.objects.search_nearby_address(street_number, street_name, street_type, street_type_other)
+                    search_queryset = Watch.objects.search_nearby_address(
+                        street_number,
+                        street_name,
+                        street_type,
+                        street_type_other
+                    )
 
                     # Lookup all the virtual watches pertaining the type of.
                     virtual_queryset = Watch.objects.filter(is_virtual=True, type_of=type_of,)
@@ -175,6 +180,8 @@ class WatchFilter(django_filters.FilterSet):
                     return union_queryset.order_by("name")
                 except Exception as e:
                     print("search_nearby_address_filtering |", e)
+            else:
+                print("search_nearby_address_filtering | Length not 5 | address_arr:", address_arr )
         return base_queryset
 
     search_nearby_address = django_filters.CharFilter(method='search_nearby_address_filtering')
