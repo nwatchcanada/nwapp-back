@@ -33,7 +33,11 @@ class WatchCreateSerializer(serializers.Serializer):
         allow_null=True,
         required=False,
     )
-    name = serializers.CharField()
+    name = serializers.CharField(
+        validators=[
+            UniqueValidator(queryset=Watch.objects.all())
+        ],
+    )
     description = serializers.CharField()
     district = serializers.SlugField()
     street_membership = serializers.JSONField()
