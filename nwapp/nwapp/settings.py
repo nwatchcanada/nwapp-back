@@ -120,6 +120,7 @@ TENANT_APPS = ( # (Django-Tenants)
     'tenant_watch.apps.TenantWatchConfig',
     'tenant_item.apps.TenantItemConfig',
     'tenant_task.apps.TenantTaskConfig',
+    'tenant_etl.apps.TenantEtlConfig',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS] # (Django-Tenants)

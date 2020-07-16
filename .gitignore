@@ -206,3 +206,6 @@ nwapp/static
 
 # Do not save our `GeoIP2` database.
 nwapp/geoip
+
+# Do not save csv
+nwapp/tenant_etl/csv/*
