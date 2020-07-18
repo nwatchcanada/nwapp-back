@@ -41,6 +41,9 @@ class UnifiedSearchItemManager(models.Manager):
         return UnifiedSearchItem.objects.annotate(search=SearchVector('indexed_text'),).filter(search=keyword)
 
     def update_or_create_member(self, member):
+        if member is None:
+            return None, False
+
         try:
             was_created = False
             item = UnifiedSearchItem.objects.get(member=member)

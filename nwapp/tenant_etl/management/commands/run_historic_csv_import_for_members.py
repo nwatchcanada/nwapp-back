@@ -15,8 +15,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
 from django.utils.translation import ugettext_lazy as _
 
-from shared_foundation.models import SharedOrganization, SharedUser
-from tenant_foundation.models import District, Watch, AreaCoordinator, Member
+from shared_foundation.models import SharedOrganization, SharedUser, SharedGroup
+from tenant_foundation.models import District, Watch, AreaCoordinator, Member, MemberContact
 
 
 """
@@ -213,16 +213,15 @@ class Command(BaseCommand):
 
             # Create the profile.
             if role == "Member" or role == "member":
-                self.process_member(user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+                self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
             elif role == "Area Coordinator" or role == "area Coordinator":
-                self.process_area_coordinator(user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+                self.process_area_coordinator(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
             else:
                 raise CommandError(_('Role `%(n)s` not supported!')%{
                     'n': str(role),
                 })
 
     def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
-        print("Create user")
         has_email = email != None and email != ""
         if has_email is False:
             email = franchise.schema_name + "-uid"+str(uid)+"@nwapp.ca"
@@ -253,7 +252,6 @@ class Command(BaseCommand):
         return user
 
     def update_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
-        print("Update user")
         user = SharedUser.objects.get(id=uid)
         user.first_name = first_name
         user.last_name = last_name
@@ -265,16 +263,120 @@ class Command(BaseCommand):
         )
         return user
 
-    def process_area_coordinator(self, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+    def process_area_coordinator(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+        # Set group membership
+        user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
+
         self.stdout.write(
             self.style.WARNING(_('Successfully processed area coordinator for watch `%(watch_name)s`.')%{
                 'watch_name': watch_name,
             })
         )
 
-    def process_member(self, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+    def process_member(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+        # Set group membership.
+        user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
+
+        # Lookup the member.
+        member = Member.objects.filter(user=user).first()
+
+        # Create the member profile if it does not exist, else update it here.
+        if member is None:
+            member = Member.objects.create(
+                user=user,
+                type_of=watch.type_of,
+                watch=watch,
+                indexed_text=get_random_string(32),
+            )
+            self.stdout.write(
+                self.style.SUCCESS(_('Successfully created member with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+        else:
+            self.stdout.write(
+                self.style.WARNING(_('Skipped update for member with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+
+        member_contact = MemberContact.objects.filter(member=member).first()
+        if member_contact is None:
+            member_contact = MemberContact.objects.create(
+                member=member,
+                is_ok_to_email=True,
+                is_ok_to_text=True,
+                # organization_name=organization_name,
+                # organization_type_of=organization_type_of,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                email=user.email,
+                primary_phone=phone,
+                secondary_phone=None,
+            )
+            self.stdout.write(
+                self.style.SUCCESS(_('Successfully created member contact with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+        else:
+            member_contact.is_ok_to_email=True
+            member_contact.is_ok_to_text=True
+            # member.organization_name=organization_name
+            # member.organization_type_of=organization_type_of
+            member_contact.first_name=user.first_name
+            member_contact.last_name=user.last_name
+            member_contact.email=user.email
+            member_contact.primary_phone=phone
+            member_contact.secondary_phone=None
+            member_contact.save()
+            self.stdout.write(
+                self.style.WARNING(_('Successfully updated member contact with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+
+            # member_address = MemberAddress.objects.create(
+            #     member=member,
+            #     country="Canada",
+            #     province="Ontario",
+            #     city=faker.city(),
+            #     street_number=faker.pyint(
+            #         min_value=street_address.street_number_start,
+            #         max_value=street_address.street_number_end,
+            #         step=1
+            #     ),
+            #     street_name=street_address.street_name,
+            #     apartment_unit=faker.pyint(
+            #         min_value=1,
+            #         max_value=1000,
+            #         step=1
+            #     ),
+            #     street_type=street_address.street_type,
+            #     street_type_other=street_address.street_type_other,
+            #     street_direction=street_address.street_direction,
+            #     postal_code=faker.postalcode(),
+            # )
+            # member_metric = MemberMetric.objects.create(
+            #     member = member,
+            #     how_did_you_hear = HowHearAboutUsItem.objects.random(),
+            #     how_did_you_hear_other = faker.company(),
+            #     expectation = ExpectationItem.objects.random(),
+            #     expectation_other = faker.company(),
+            #     meaning = MeaningItem.objects.random(),
+            #     meaning_other = faker.company(),
+            #     # gender=
+            #     # willing_to_volunteer=
+            #     another_household_member_registered=False,
+            #     year_of_birth=faker.pyint(min_value=1920, max_value=1990, step=1),
+            #     total_household_count=faker.pyint(min_value=2, max_value=6, step=1),
+            #     over_18_years_household_count = faker.pyint(min_value=0, max_value=1, step=1),
+            #     organization_employee_count = faker.pyint(min_value=0, max_value=10, step=1),
+            #     organization_founding_year=faker.pyint(min_value=1920, max_value=1990, step=1),
+            # )
+
         self.stdout.write(
-            self.style.WARNING(_('Successfully processed member for watch `%(watch_name)s`.')%{
+            self.style.WARNING(_('Successfully processed member for watch `%(watch_name)s`.\n')%{
                 'watch_name': watch_name,
             })
         )
