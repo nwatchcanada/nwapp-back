@@ -5,6 +5,8 @@ import sys
 import re
 import os.path as ospath
 import codecs
+import random
+import string
 from decimal import *
 from django.db.models import Sum
 from django.conf import settings
@@ -13,14 +15,19 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
 from django.utils.translation import ugettext_lazy as _
 
-from shared_foundation.models import SharedOrganization
-from tenant_foundation.models import District, Watch
+from shared_foundation.models import SharedOrganization, SharedUser
+from tenant_foundation.models import District, Watch, AreaCoordinator, Member
 
 
 """
 Run manually in console:
 python manage.py run_historic_csv_import_for_members "london" ""
 """
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 
 class Command(BaseCommand):
@@ -149,40 +156,42 @@ class Command(BaseCommand):
                     # )
 
                     # Begin importing...
-                    self.run_import_from_dict(row_dict, i)
+                    self.run_import_from_dict(franchise, row_dict, i)
 
-    def run_import_from_dict(self, row_dict, index):
-        print(row_dict) # For debugging purposes.
+    def run_import_from_dict(self, franchise, row_dict, index):
+        # print(row_dict) # For debugging purposes.
 
-        role = row_dict[0] # Unique ID #
-        watch_name = row_dict[1] # Watch Name
-        first_name = row_dict[2] # Ward
-        last_name = row_dict[3] # Description
-        unit_number = row_dict[4]
-        street_number = row_dict[5]
-        street_name = row_dict[6]
-        street_type = row_dict[7]
-        direction = row_dict[8]
-        phone = row_dict[9]
-        city = row_dict[10]
-        province = row_dict[11]
-        postal = row_dict[12]
-        email = row_dict[13]
+        uid = row_dict[0] # Unique ID
+        role = row_dict[1] #
+        watch_name = row_dict[2] # Watch Name
+        first_name = row_dict[3] # Ward
+        last_name = row_dict[4] # Description
+        unit_number = row_dict[5]
+        street_number = row_dict[6]
+        street_name = row_dict[7]
+        street_type = row_dict[8]
+        direction = row_dict[9]
+        phone = row_dict[10]
+        city = row_dict[11]
+        province = row_dict[12]
+        postal = row_dict[13]
+        email = row_dict[14]
 
-        print("role:", role)
-        print("watch_name:", watch_name)
-        print("first_name:", first_name)
-        print("last_name:", last_name)
-        print("unit_number:", unit_number)
-        print("street_number:", street_number)
-        print("street_name:", street_name)
-        print("street_type:", street_type)
-        print("direction:", direction)
-        print("city:", city)
-        print("phone:", phone)
-        print("province:", province)
-        print("postal:", postal)
-        print("email:", email)
+        # print("uid:", uid)
+        # print("role:", role)
+        # print("watch_name:", watch_name)
+        # print("first_name:", first_name)
+        # print("last_name:", last_name)
+        # print("unit_number:", unit_number)
+        # print("street_number:", street_number)
+        # print("street_name:", street_name)
+        # print("street_type:", street_type)
+        # print("direction:", direction)
+        # print("city:", city)
+        # print("phone:", phone)
+        # print("province:", province)
+        # print("postal:", postal)
+        # print("email:", email)
 
         watch = Watch.objects.filter(name=watch_name).first()
         if watch is None:
@@ -195,14 +204,77 @@ class Command(BaseCommand):
                 })
             )
         else:
-            self.stdout.write(
-                self.style.SUCCESS(_('Successfully updated member for watch`%(watch_name)s`.')%{
-                    'watch_name': watch_name,
+            # Create the user account.
+            user = SharedUser.objects.filter(id=uid).first()
+            if user is None:
+                user = self.create_shared_user(franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+            else:
+                user = self.update_shared_user(franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+
+            # Create the profile.
+            if role == "Member" or role == "member":
+                self.process_member(user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+            elif role == "Area Coordinator" or role == "area Coordinator":
+                self.process_area_coordinator(user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+            else:
+                raise CommandError(_('Role `%(n)s` not supported!')%{
+                    'n': str(role),
                 })
-            )
 
-    def create_profile(self):
-        pass
+    def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+        print("Create user")
+        has_email = email != None and email != ""
+        if has_email is False:
+            email = franchise.schema_name + "-uid"+str(uid)+"@nwapp.ca"
+        user = SharedUser.objects.create(
+            id=uid,
+            tenant=franchise,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            is_active=True,
+            is_superuser=False,
+            is_staff=False,
+            was_email_activated=True,
+        )
 
-    def update_profile(self):
-        pass
+        password = None
+
+        # Generate and assign the password.
+        user.set_password(password)
+        user.save()
+
+        self.stdout.write(
+            self.style.SUCCESS(_('Successfully created shared user with ID # %(uid)s.')%{
+                'uid': str(uid),
+            })
+        )
+
+        return user
+
+    def update_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+        print("Update user")
+        user = SharedUser.objects.get(id=uid)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+        self.stdout.write(
+            self.style.WARNING(_('Successfully updated shared user with ID # %(uid)s.')%{
+                'uid': str(uid),
+            })
+        )
+        return user
+
+    def process_area_coordinator(self, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+        self.stdout.write(
+            self.style.WARNING(_('Successfully processed area coordinator for watch `%(watch_name)s`.')%{
+                'watch_name': watch_name,
+            })
+        )
+
+    def process_member(self, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+        self.stdout.write(
+            self.style.WARNING(_('Successfully processed member for watch `%(watch_name)s`.')%{
+                'watch_name': watch_name,
+            })
+        )
