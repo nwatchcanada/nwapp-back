@@ -16,7 +16,7 @@ from django.db import connection # Used for django tenants.
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation.models import SharedOrganization, SharedUser, SharedGroup
-from tenant_foundation.models import District, Watch, AreaCoordinator, Member, MemberContact
+from tenant_foundation.models import District, Watch, AreaCoordinator, Member, MemberContact, MemberAddress, MemberMetric, StreetAddressRange
 
 
 """
@@ -29,6 +29,39 @@ def get_random_string(length):
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
 
+def get_street_type_code(street_type):
+    if street_type == StreetAddressRange.STREET_TYPE.AVENUE:
+        return StreetAddressRange.STREET_TYPE.AVENUE
+    elif street_type == StreetAddressRange.STREET_TYPE.DRIVE:
+        return StreetAddressRange.STREET_TYPE.DRIVE
+    elif street_type == StreetAddressRange.STREET_TYPE.ROAD:
+        return StreetAddressRange.STREET_TYPE.ROAD
+    elif street_type == StreetAddressRange.STREET_TYPE.STREET:
+        return StreetAddressRange.STREET_TYPE.STREET
+    elif street_type == StreetAddressRange.STREET_TYPE.WAY:
+        return StreetAddressRange.STREET_TYPE.WAY
+    else:
+        return StreetAddressRange.STREET_TYPE.OTHER
+
+def get_street_direction_code(street_direction):
+    if street_direction == StreetAddressRange.STREET_DIRECTION.EAST:
+        return StreetAddressRange.STREET_DIRECTION.EAST
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.NORTH:
+        return StreetAddressRange.STREET_DIRECTION.NORTH
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.NORTH_EAST:
+        return StreetAddressRange.STREET_DIRECTION.NORTH_EAST
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.NORTH_WEST:
+        return StreetAddressRange.STREET_DIRECTION.NORTH_WEST
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.SOUTH:
+        return StreetAddressRange.STREET_DIRECTION.SOUTH
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.SOUTH_EAST:
+        return StreetAddressRange.STREET_DIRECTION.SOUTH_EAST
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.SOUTH_WEST:
+        return StreetAddressRange.STREET_DIRECTION.SOUTH_WEST
+    elif street_direction == StreetAddressRange.STREET_DIRECTION.WEST:
+        return StreetAddressRange.STREET_DIRECTION.WEST
+    else:
+        return StreetAddressRange.STREET_DIRECTION.NONE
 
 class Command(BaseCommand):
     help = _('Command will load up historical data for members.')
@@ -193,6 +226,14 @@ class Command(BaseCommand):
         # print("postal:", postal)
         # print("email:", email)
 
+        # The following code will convert the specific values into our
+        # encoded formatted database values.
+        street_type_code = get_street_type_code(street_type)
+        street_type_other = ""
+        if street_type_code == StreetAddressRange.STREET_TYPE.OTHER:
+            street_type_other = street_type
+        street_direction = get_street_direction_code(direction)
+
         watch = Watch.objects.filter(name=watch_name).first()
         if watch is None:
             # raise CommandError(_('Watch does not exist with name `%(n)s`!')%{
@@ -207,21 +248,21 @@ class Command(BaseCommand):
             # Create the user account.
             user = SharedUser.objects.filter(id=uid).first()
             if user is None:
-                user = self.create_shared_user(franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+                user = self.create_shared_user(franchise, uid, role, watch_name, first_name, last_name, email)
             else:
-                user = self.update_shared_user(franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+                user = self.update_shared_user(franchise, uid, role, watch_name, first_name, last_name, email)
 
             # Create the profile.
             if role == "Member" or role == "member":
-                self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+                self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
             elif role == "Area Coordinator" or role == "area Coordinator":
-                self.process_area_coordinator(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email)
+                self.process_area_coordinator(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
             else:
                 raise CommandError(_('Role `%(n)s` not supported!')%{
                     'n': str(role),
                 })
 
-    def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+    def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, email):
         has_email = email != None and email != ""
         if has_email is False:
             email = franchise.schema_name + "-uid"+str(uid)+"@nwapp.ca"
@@ -251,7 +292,7 @@ class Command(BaseCommand):
 
         return user
 
-    def update_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+    def update_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, email):
         user = SharedUser.objects.get(id=uid)
         user.first_name = first_name
         user.last_name = last_name
@@ -263,7 +304,7 @@ class Command(BaseCommand):
         )
         return user
 
-    def process_area_coordinator(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+    def process_area_coordinator(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, direction, phone, city, province, postal, email):
         # Set group membership
         user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
 
@@ -273,7 +314,7 @@ class Command(BaseCommand):
             })
         )
 
-    def process_member(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, direction, phone, city, province, postal, email):
+    def process_member(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
         # Set group membership.
         user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
 
@@ -336,44 +377,72 @@ class Command(BaseCommand):
                 })
             )
 
-            # member_address = MemberAddress.objects.create(
-            #     member=member,
-            #     country="Canada",
-            #     province="Ontario",
-            #     city=faker.city(),
-            #     street_number=faker.pyint(
-            #         min_value=street_address.street_number_start,
-            #         max_value=street_address.street_number_end,
-            #         step=1
-            #     ),
-            #     street_name=street_address.street_name,
-            #     apartment_unit=faker.pyint(
-            #         min_value=1,
-            #         max_value=1000,
-            #         step=1
-            #     ),
-            #     street_type=street_address.street_type,
-            #     street_type_other=street_address.street_type_other,
-            #     street_direction=street_address.street_direction,
-            #     postal_code=faker.postalcode(),
-            # )
-            # member_metric = MemberMetric.objects.create(
-            #     member = member,
-            #     how_did_you_hear = HowHearAboutUsItem.objects.random(),
-            #     how_did_you_hear_other = faker.company(),
-            #     expectation = ExpectationItem.objects.random(),
-            #     expectation_other = faker.company(),
-            #     meaning = MeaningItem.objects.random(),
-            #     meaning_other = faker.company(),
-            #     # gender=
-            #     # willing_to_volunteer=
-            #     another_household_member_registered=False,
-            #     year_of_birth=faker.pyint(min_value=1920, max_value=1990, step=1),
-            #     total_household_count=faker.pyint(min_value=2, max_value=6, step=1),
-            #     over_18_years_household_count = faker.pyint(min_value=0, max_value=1, step=1),
-            #     organization_employee_count = faker.pyint(min_value=0, max_value=10, step=1),
-            #     organization_founding_year=faker.pyint(min_value=1920, max_value=1990, step=1),
-            # )
+        member_address = MemberAddress.objects.filter(member=member).first()
+        if member_address is None:
+            member_address = MemberAddress.objects.create(
+                member=member,
+                country="Canada",
+                province="Ontario",
+                city=city,
+                street_number=street_number,
+                street_name=street_name,
+                apartment_unit=unit_number,
+                street_type=street_type,
+                street_type_other=street_type_other,
+                street_direction=street_direction,
+                postal_code=postal,
+            )
+            self.stdout.write(
+                self.style.SUCCESS(_('Successfully created member address with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+        else:
+            member_address.city=city
+            member_address.street_number=street_number
+            member_address.street_name=street_name
+            member_address.apartment_unit=unit_number
+            member_address.street_type=street_type
+            member_address.street_type_other=street_type_other
+            member_address.street_direction=street_direction
+            member_address.postal_code=postal
+            member_address.save()
+            self.stdout.write(
+                self.style.WARNING(_('Successfully updated member address with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+
+        member_address = MemberMetric.objects.filter(member=member).first()
+        if member_address is None:
+            member_metric = MemberMetric.objects.create(
+                member = member,
+                # how_did_you_hear = HowHearAboutUsItem.objects.random(),
+                # how_did_you_hear_other = faker.company(),
+                # expectation = ExpectationItem.objects.random(),
+                # expectation_other = faker.company(),
+                # meaning = MeaningItem.objects.random(),
+                # meaning_other = faker.company(),
+                # gender=
+                # willing_to_volunteer=
+                # another_household_member_registered=False,
+                # year_of_birth=faker.pyint(min_value=1920, max_value=1990, step=1),
+                # total_household_count=faker.pyint(min_value=2, max_value=6, step=1),
+                # over_18_years_household_count = faker.pyint(min_value=0, max_value=1, step=1),
+                # organization_employee_count = faker.pyint(min_value=0, max_value=10, step=1),
+                # organization_founding_year=faker.pyint(min_value=1920, max_value=1990, step=1),
+            )
+            self.stdout.write(
+                self.style.SUCCESS(_('Successfully created member metric with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
+        else:
+            self.stdout.write(
+                self.style.WARNING(_('Skipped updating member metric with ID # %(uid)s.')%{
+                    'uid': uid,
+                })
+            )
 
         self.stdout.write(
             self.style.WARNING(_('Successfully processed member for watch `%(watch_name)s`.\n')%{
