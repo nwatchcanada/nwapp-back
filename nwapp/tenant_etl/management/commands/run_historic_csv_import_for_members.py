@@ -9,10 +9,11 @@ import random
 import string
 from decimal import *
 from django.db.models import Sum
+from django.db.models import Q
+from django.db import connection # Used for django tenants.
 from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
-from django.db import connection # Used for django tenants.
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
@@ -198,6 +199,11 @@ class Command(BaseCommand):
     def run_import_from_dict(self, franchise, row_dict, index):
         # print(row_dict) # For debugging purposes.
 
+        # for u in SharedUser.objects.all():
+        #     print("Delete:", u)
+        #     u.delete()
+        # exit()
+
         uid = row_dict[0] # Unique ID
         role = row_dict[1] #
         watch_name = row_dict[2] # Watch Name
@@ -230,6 +236,10 @@ class Command(BaseCommand):
         # print("postal:", postal)
         # print("email:", email)
 
+        # BUGFIX
+        if  role == "captain" or role == "Captain" or role == "Co-Captain":
+            role = "Area Coordinator"
+
         # The following code will convert the specific values into our
         # encoded formatted database values.
         street_type_code = get_street_type_code(street_type)
@@ -250,27 +260,32 @@ class Command(BaseCommand):
             )
         else:
             # Create the user account.
-            user = SharedUser.objects.filter(id=uid).first()
+            user = SharedUser.objects.filter(
+                Q(id=uid)|
+                Q(email=email)
+            ).first()
             if user is None:
                 user = self.create_shared_user(franchise, uid, role, watch_name, first_name, last_name, email)
             else:
-                user = self.update_shared_user(franchise, uid, role, watch_name, first_name, last_name, email)
+                user = self.update_shared_user(franchise, user, uid, role, watch_name, first_name, last_name, email)
 
             # Create the profile.
             if role == "Member" or role == "member":
                 user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
+            if role == "Area Coordinator" or role == "area Coordinator":
+                user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
 
             # All users have a base members account.
             member = self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
 
             if role == "Area Coordinator" or role == "area Coordinator":
-                user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
                 self.process_area_coordinator(member, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
 
     def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, email):
         has_email = email != None and email != ""
         if has_email is False:
             email = franchise.schema_name + "-uid"+str(uid)+"@nwapp.ca"
+
         user = SharedUser.objects.create(
             id=uid,
             tenant=franchise,
@@ -297,8 +312,7 @@ class Command(BaseCommand):
 
         return user
 
-    def update_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, email):
-        user = SharedUser.objects.get(id=uid)
+    def update_shared_user(self, franchise, user, uid, role, watch_name, first_name, last_name, email):
         user.first_name = first_name
         user.last_name = last_name
         user.save()

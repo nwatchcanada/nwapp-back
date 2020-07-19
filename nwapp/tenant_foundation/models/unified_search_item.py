@@ -56,9 +56,10 @@ class UnifiedSearchItemManager(models.Manager):
         if indexed_text is None or indexed_text is "":
             indexed_text = get_random_string(32)
 
-        try:
+        item = UnifiedSearchItem.objects.filter(member__user=member.user).first()
+        if item is not None:
             was_created = False
-            item = UnifiedSearchItem.objects.get(member=member)
+
             # item.slug=member.user.slug+"-"+get_random_string(16)
             item.type_of=UnifiedSearchItem.get_type_of_member(member)
             item.member=member
@@ -73,7 +74,7 @@ class UnifiedSearchItemManager(models.Manager):
             item.last_modified_from=member.last_modified_from
             item.last_modified_from_is_public=member.last_modified_from_is_public
             item.save()
-        except UnifiedSearchItem.DoesNotExist:
+        else:
             item = UnifiedSearchItem.objects.create(
                 slug=member.user.slug+"-"+get_random_string(16),
                 type_of=UnifiedSearchItem.get_type_of_member(member),
@@ -110,11 +111,11 @@ class UnifiedSearchItemManager(models.Manager):
             item.area_coordinator=area_coordinator
             item.description=str(area_coordinator)
             item.text=indexed_text
-            item.created_at=area_coordinator.created
+            item.created_at=area_coordinator.created_at
             item.created_by=area_coordinator.created_by
             item.created_from=area_coordinator.created_from
             item.created_from_is_public=area_coordinator.created_from_is_public
-            item.last_modified_at=area_coordinator.last_modified
+            item.last_modified_at=area_coordinator.last_modified_at
             item.last_modified_by=area_coordinator.last_modified_by
             item.last_modified_from=area_coordinator.last_modified_from
             item.last_modified_from_is_public=area_coordinator.last_modified_from_is_public
@@ -173,11 +174,11 @@ class UnifiedSearchItemManager(models.Manager):
                 associate=associate,
                 description=str(associate),
                 text=indexed_text,
-                created_at=associate.created,
+                created_at=associate.created_at,
                 created_by=associate.created_by,
                 created_from=associate.created_from,
                 created_from_is_public=associate.created_from_is_public,
-                last_modified_at=associate.last_modified,
+                last_modified_at=associate.last_modified_at,
                 last_modified_by=associate.last_modified_by,
                 last_modified_from=associate.last_modified_from,
                 last_modified_from_is_public=associate.last_modified_from_is_public,
@@ -200,11 +201,11 @@ class UnifiedSearchItemManager(models.Manager):
             item.staff=staff
             item.description=str(staff)
             item.text=staff.indexed_text
-            item.created_at=staff.created
+            item.created_at=staff.created_at
             item.created_by=staff.created_by
             item.created_from=staff.created_from
             item.created_from_is_public=staff.created_from_is_public
-            item.last_modified_at=staff.last_modified
+            item.last_modified_at=staff.last_modified_at
             item.last_modified_by=staff.last_modified_by
             item.last_modified_from=staff.last_modified_from
             item.last_modified_from_is_public=staff.last_modified_from_is_public
@@ -220,7 +221,7 @@ class UnifiedSearchItemManager(models.Manager):
                 created_by=staff.created_by,
                 created_from=staff.created_from,
                 created_from_is_public=staff.created_from_is_public,
-                last_modified_at=staff.last_modified,
+                last_modified_at=staff.last_modified_at,
                 last_modified_by=staff.last_modified_by,
                 last_modified_from=staff.last_modified_from,
                 last_modified_from_is_public=staff.last_modified_from_is_public,
@@ -243,11 +244,11 @@ class UnifiedSearchItemManager(models.Manager):
             found_item.item=item
             found_item.description="Work Order #"+str(item.id)
             found_item.text=item.indexed_text
-            found_item.created_at=item.created
+            found_item.created_at=item.created_at
             found_item.created_by=item.created_by
             found_item.created_from=item.created_from
             found_item.created_from_is_public=item.created_from_is_public
-            found_item.last_modified_at=item.last_modified
+            found_item.last_modified_at=item.last_modified_at
             found_item.last_modified_by=item.last_modified_by
             found_item.last_modified_from=item.last_modified_from
             found_item.last_modified_from_is_public=item.last_modified_from_is_public
@@ -259,11 +260,11 @@ class UnifiedSearchItemManager(models.Manager):
                 item=item,
                 description="Work Order #"+str(item.id),
                 text=item.indexed_text,
-                created_at=item.created,
+                created_at=item.created_at,
                 created_by=item.created_by,
                 created_from=item.created_from,
                 created_from_is_public=item.created_from_is_public,
-                last_modified_at=item.last_modified,
+                last_modified_at=item.last_modified_at,
                 last_modified_by=item.last_modified_by,
                 last_modified_from=item.last_modified_from,
                 last_modified_from_is_public=item.last_modified_from_is_public,

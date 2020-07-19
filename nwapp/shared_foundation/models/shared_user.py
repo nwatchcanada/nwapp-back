@@ -535,7 +535,11 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
 
     @cached_property
     def role_id(self):
-        return self.groups.order_by('-id').first().id
+        try:
+            return self.groups.order_by('-id').first().id
+        except Exception as e:
+            from shared_foundation.models.shared_group import SharedGroup
+            return SharedGroup.GROUP_MEMBERSHIP.NONE
 
     def invalidate_all(self):
         self.invalidate("is_executive")
