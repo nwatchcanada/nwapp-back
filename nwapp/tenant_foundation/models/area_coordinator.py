@@ -71,6 +71,11 @@ class AreaCoordinator(models.Model):
         SOME_REASON = 2
         ANOTHER_REASON = 3
 
+    class TYPE_OF:
+        RESIDENTIAL = 1
+        BUSINESS = 2
+        COMMUNITY_CARES = 3
+
     '''
     CHOICES
     '''
@@ -84,6 +89,12 @@ class AreaCoordinator(models.Model):
         (DEMOTION_REASON.SOME_REASON, _('Some reason')),
         (DEMOTION_REASON.ANOTHER_REASON, _('Another reason')),
         (DEMOTION_REASON.OTHER_REASON, _('Other (Please specify)')),
+    )
+
+    TYPE_OF_CHOICES = (
+        (TYPE_OF.BUSINESS, _('Business')),
+        (TYPE_OF.RESIDENTIAL, _('Residential')),
+        (TYPE_OF.COMMUNITY_CARES, _('Community Cares')),
     )
 
     '''
@@ -104,6 +115,13 @@ class AreaCoordinator(models.Model):
         related_name="area_coordinator",
         on_delete=models.CASCADE,
         primary_key=True,
+    )
+    type_of = models.PositiveSmallIntegerField(
+        _("Type of"),
+        help_text=_('The type of area coordinator this is.'),
+        choices=TYPE_OF_CHOICES,
+        db_index=True,
+        default=TYPE_OF.RESIDENTIAL,
     )
 
     # BUSINESS LOGIC SPECIFIC FIELDS
@@ -205,6 +223,17 @@ class AreaCoordinator(models.Model):
         null=True,
     )
 
+    # MISC
+
+    watch = models.ForeignKey(
+        "Watch",
+        help_text=_('The watch this area coordinator belongs to.'),
+        related_name="area_coordinators",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
     # AUDITING FIELDS
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -264,6 +293,18 @@ class AreaCoordinator(models.Model):
         geography=True,
         null=True,
         blank=True,
+    )
+
+    # SEARCHABLE FIELDS
+
+    indexed_text = models.CharField(
+        _("Indexed Text"),
+        max_length=1023,
+        help_text=_('The searchable content text used by the keyword searcher function.'),
+        blank=True,
+        null=True,
+        db_index=True,
+        unique=True
     )
 
     """

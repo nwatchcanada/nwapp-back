@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import csv
 import pytz
+import string
+import random
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -14,6 +16,12 @@ from django.utils.text import Truncator
 
 from shared_foundation.constants import *
 from shared_foundation.models import SharedUser, SharedGroup
+
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 
 class UnifiedSearchItemManager(models.Manager):
@@ -44,14 +52,18 @@ class UnifiedSearchItemManager(models.Manager):
         if member is None:
             return None, False
 
+        indexed_text = member.indexed_text
+        if indexed_text is None or indexed_text is "":
+            indexed_text = get_random_string(32)
+
         try:
             was_created = False
             item = UnifiedSearchItem.objects.get(member=member)
-            item.slug=member.user.slug
+            # item.slug=member.user.slug+"-"+get_random_string(16)
             item.type_of=UnifiedSearchItem.get_type_of_member(member)
             item.member=member
             item.description=str(member)
-            item.text=member.indexed_text
+            item.text=indexed_text
             item.created_at=member.created_at
             item.created_by=member.created_by
             item.created_from=member.created_from
@@ -63,11 +75,11 @@ class UnifiedSearchItemManager(models.Manager):
             item.save()
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
-                slug=member.user.slug,
+                slug=member.user.slug+"-"+get_random_string(16),
                 type_of=UnifiedSearchItem.get_type_of_member(member),
                 member=member,
                 description=str(member),
-                text=member.indexed_text,
+                text=indexed_text,
                 created_at=member.created_at,
                 created_by=member.created_by,
                 created_from=member.created_from,
@@ -87,14 +99,17 @@ class UnifiedSearchItemManager(models.Manager):
         return item, was_created
 
     def update_or_create_area_coordinator(self, area_coordinator):
+        indexed_text = area_coordinator.indexed_text
+        if indexed_text is None or indexed_text is "":
+            indexed_text = get_random_string(32)
         try:
             was_created = False
             item = UnifiedSearchItem.objects.get(area_coordinator=area_coordinator)
-            item.slug=area_coordinator.user.slug
+            # item.slug=area_coordinator.user.slug+"-"+get_random_string(16)
             item.type_of=UnifiedSearchItem.TYPE_OF.AREA_COORDINATOR
             item.area_coordinator=area_coordinator
             item.description=str(area_coordinator)
-            item.text=area_coordinator.indexed_text
+            item.text=indexed_text
             item.created_at=area_coordinator.created
             item.created_by=area_coordinator.created_by
             item.created_from=area_coordinator.created_from
@@ -106,49 +121,58 @@ class UnifiedSearchItemManager(models.Manager):
             item.save()
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
-                slug=area_coordinator.user.slug,
+                slug=area_coordinator.user.slug+get_random_string(16),
                 type_of=UnifiedSearchItem.TYPE_OF.AREA_COORDINATOR,
                 area_coordinator=area_coordinator,
                 description=str(area_coordinator),
-                text=area_coordinator.indexed_text,
-                created_at=area_coordinator.created,
+                text=indexed_text,
+                created_at=area_coordinator.created_at,
                 created_by=area_coordinator.created_by,
                 created_from=area_coordinator.created_from,
                 created_from_is_public=area_coordinator.created_from_is_public,
-                last_modified_at=area_coordinator.last_modified,
+                last_modified_at=area_coordinator.last_modified_at,
                 last_modified_by=area_coordinator.last_modified_by,
                 last_modified_from=area_coordinator.last_modified_from,
                 last_modified_from_is_public=area_coordinator.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(area_coordinator.tags.all())
+
+        try:
+            item.tags.set(area_coordinator.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
     def update_or_create_associate(self, associate):
+        indexed_text = associate.indexed_text
+        if indexed_text is None or indexed_text is "":
+            indexed_text = get_random_string(32)
+
         try:
             was_created = False
             item = UnifiedSearchItem.objects.get(associate=associate)
-            item.slug = associate.user.slug
+            # item.slug = associate.user.slug+"-"+get_random_string(16)
             item.type_of=UnifiedSearchItem.TYPE_OF.ASSOCIATE
             item.description=str(associate)
             item.associate=associate
-            item.text=associate.indexed_text
-            item.created_at=associate.created
+            item.text=indexed_text
+            item.created_at=associate.created_at
             item.created_by=associate.created_by
             item.created_from=associate.created_from
             item.created_from_is_public=associate.created_from_is_public
-            item.last_modified_at=associate.last_modified
+            item.last_modified_at=associate.last_modified_at
             item.last_modified_by=associate.last_modified_by
             item.last_modified_from=associate.last_modified_from
             item.last_modified_from_is_public=associate.last_modified_from_is_public
             item.save()
         except UnifiedSearchItem.DoesNotExist:
             item = UnifiedSearchItem.objects.create(
-                slug=associate.user.slug,
+                slug=associate.user.slug+"-"+get_random_string(16),
                 type_of=UnifiedSearchItem.TYPE_OF.ASSOCIATE,
                 associate=associate,
                 description=str(associate),
-                text=associate.indexed_text,
+                text=indexed_text,
                 created_at=associate.created,
                 created_by=associate.created_by,
                 created_from=associate.created_from,
@@ -159,7 +183,12 @@ class UnifiedSearchItemManager(models.Manager):
                 last_modified_from_is_public=associate.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(associate.tags.all())
+
+        try:
+            item.tags.set(associate.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
     def update_or_create_staff(self, staff):
@@ -197,7 +226,12 @@ class UnifiedSearchItemManager(models.Manager):
                 last_modified_from_is_public=staff.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(staff.tags.all())
+
+        try:
+            item.tags.set(staff.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
     def update_or_create_item(self, item):
@@ -235,7 +269,12 @@ class UnifiedSearchItemManager(models.Manager):
                 last_modified_from_is_public=item.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(item.tags.all())
+
+        try:
+            item.tags.set(item.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
     def update_or_create_watch(self, watch):
@@ -273,7 +312,12 @@ class UnifiedSearchItemManager(models.Manager):
                 last_modified_from_is_public=watch.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(watch.tags.all())
+
+        try:
+            item.tags.set(watch.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
     def update_or_create_district(self, district):
@@ -311,7 +355,12 @@ class UnifiedSearchItemManager(models.Manager):
                 last_modified_from_is_public=district.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(district.tags.all())
+
+        try:
+            item.tags.set(district.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
     def update_or_create_file(self, file):
@@ -349,7 +398,12 @@ class UnifiedSearchItemManager(models.Manager):
                 last_modified_from_is_public=file.last_modified_from_is_public,
             )
             was_created = True
-        item.tags.set(file.tags.all())
+
+        try:
+            item.tags.set(file.tags.all())
+        except Exception as e:
+            pass
+
         return item, was_created
 
 

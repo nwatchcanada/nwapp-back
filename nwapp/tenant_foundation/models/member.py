@@ -480,6 +480,8 @@ class Member(models.Model):
             user=self.user,
             defaults={
                 'user': self.user,
+                'watch': self.watch,
+                'type_of': self.type_of,
                 'has_signed_area_coordinator_agreement': has_signed_area_coordinator_agreement,
                 'area_coordinator_agreement': area_coordinator_agreement,
                 'area_coordinator_agreement_signed_on': timezone.now(),
@@ -562,6 +564,8 @@ class Member(models.Model):
             user=self.user,
             defaults={
                 'user': self.user,
+                'watch': self.watch,
+                'type_of': self.type_of,
                 'has_signed_associate_agreement': has_signed_associate_agreement,
                 'associate_agreement': associate_agreement,
                 'associate_agreement_signed_on': timezone.now(),

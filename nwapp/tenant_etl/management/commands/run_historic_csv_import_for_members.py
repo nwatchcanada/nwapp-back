@@ -14,9 +14,13 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from shared_foundation.models import SharedOrganization, SharedUser, SharedGroup
-from tenant_foundation.models import District, Watch, AreaCoordinator, Member, MemberContact, MemberAddress, MemberMetric, StreetAddressRange
+from tenant_foundation.models import (
+District, Watch, AreaCoordinator, Member, MemberContact, MemberAddress, MemberMetric, StreetAddressRange,
+AreaCoordinatorContact, AreaCoordinatorAddress, AreaCoordinatorMetric
+)
 
 
 """
@@ -254,13 +258,14 @@ class Command(BaseCommand):
 
             # Create the profile.
             if role == "Member" or role == "member":
-                self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
-            elif role == "Area Coordinator" or role == "area Coordinator":
-                self.process_area_coordinator(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
-            else:
-                raise CommandError(_('Role `%(n)s` not supported!')%{
-                    'n': str(role),
-                })
+                user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
+
+            # All users have a base members account.
+            member = self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
+
+            if role == "Area Coordinator" or role == "area Coordinator":
+                user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
+                self.process_area_coordinator(member, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
 
     def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, email):
         has_email = email != None and email != ""
@@ -304,20 +309,7 @@ class Command(BaseCommand):
         )
         return user
 
-    def process_area_coordinator(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, direction, phone, city, province, postal, email):
-        # Set group membership
-        user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
-
-        self.stdout.write(
-            self.style.WARNING(_('Successfully processed area coordinator for watch `%(watch_name)s`.')%{
-                'watch_name': watch_name,
-            })
-        )
-
     def process_member(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
-        # Set group membership.
-        user.groups.add(SharedGroup.GROUP_MEMBERSHIP.MEMBER)
-
         # Lookup the member.
         member = Member.objects.filter(user=user).first()
 
@@ -446,6 +438,32 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.WARNING(_('Successfully processed member for watch `%(watch_name)s`.\n')%{
+                'watch_name': watch_name,
+            })
+        )
+        return member
+
+    def process_area_coordinator(self, member, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
+        # Lookup the member.
+        ac = AreaCoordinator.objects.filter(user=user).first()
+
+        # Promote the `member` to be an `area coordinator`.
+        area_coordinator = member.promote_to_area_coordinator(defaults={
+            'has_signed_area_coordinator_agreement': True,
+            'has_signed_conflict_of_interest_agreement': True,
+            'has_signed_code_of_conduct_agreement': True,
+            'has_signed_confidentiality_agreement': True,
+            'police_check_date': timezone.now(),
+            'created_by': None,
+            'created_from': None,
+            'created_from_is_public': False,
+            'last_modified_by': None,
+            'last_modified_from': None,
+            'last_modified_from_is_public': False,
+        })
+
+        self.stdout.write(
+            self.style.WARNING(_('Successfully processed area coordinator for watch `%(watch_name)s`.')%{
                 'watch_name': watch_name,
             })
         )

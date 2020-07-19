@@ -256,6 +256,18 @@ class Staff(models.Model):
         blank=True,
     )
 
+    # SEARCHABLE FIELDS
+
+    indexed_text = models.CharField(
+        _("Indexed Text"),
+        max_length=1023,
+        help_text=_('The searchable content text used by the keyword searcher function.'),
+        blank=True,
+        null=True,
+        db_index=True,
+        unique=True
+    )
+
     """
     MODEL FUNCTIONS
     """

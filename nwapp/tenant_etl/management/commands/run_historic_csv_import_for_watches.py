@@ -23,6 +23,8 @@ Run manually in console:
 python manage.py run_historic_csv_import_for_watches "london" ""
 """
 
+CSV_FILENAME = "prod_watchID_with_street_range - WatchID with Street Range"
+
 
 class Command(BaseCommand):
     help = _('Command will load up historical data for watches.')
@@ -119,8 +121,8 @@ class Command(BaseCommand):
 
     def begin_processing(self, schema_name, prefix):
         # Load up the following historic data from CSV files...
-        full_file_path = self.find_filepath_containing("WatchID with Street Range - WatchID with Street Range", prefix)  # Personal Customers
-        print(full_file_path)
+        full_file_path = self.find_filepath_containing(CSV_FILENAME, prefix)  # Personal Customers
+        # print(full_file_path)
 
         # Connection needs first to be at the public schema, as this is where
         # the database needs to be set before creating a new tenant. If this is
@@ -186,87 +188,26 @@ class Command(BaseCommand):
         else:
             return StreetAddressRange.STREET_DIRECTION.NONE
 
-    def create_watch(self, numb, name, ward, type_of, notes, start, finish, street_name, street_type, street_type_other, street_direction, range_type):
-        try:
-            watch = Watch.objects.create(
-                id=numb,
-                name = name,
-                description = district_notes,
-                district = district,
-                type_of = type_of,
-            )
-
-            r = StreetAddressRange.objects.filter(watch=watch).first()
-            if r is None:
-                StreetAddressRange.objects.create(
-                    watch=watch,
-                    street_number_start = start,
-                    street_number_end = finish,
-                    street_number_range_type = StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ALL,
-                    street_type = street_type_code,
-                    street_direction = street_direction,
-                )
-            else:
-                # print("<START>")
-                r.street_number_start = start
-                r.street_number_end = finish
-                r.street_number_range_type = StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ALL # r.range_type = row_dict[10]
-                r.street_type = street_type_code
-                r.street_type_other = street_type_other
-                r.street_direction = street_direction
-                r.save()
-
-            self.style.SUCCESS(_('Successfully imported watch `%(name)s`.')%{
-                'name': name,
-            })
-        except Exception as e:
-            self.style.ERROR(_('Error importing watch `%(name)s` with error %(err)s.')%{
-                'name': name,
-                'err': str(e)
-            })
-
-    def update_watch(self, watch, district, numb, name, ward, type_of, notes, start, finish, street_name, street_type, street_type_other, street_direction, range_type):
-        try:
-            watch.name = name
-            watch.description = notes
-            watch.district = district
-            watch.save()
-
-            r = StreetAddressRange.objects.filter(watch=watch).first()
-            if r is None:
-                StreetAddressRange.objects.create(
-                    watch=watch,
-                    street_number_start = start,
-                    street_number_end = finish,
-                    street_number_range_type = StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ALL,
-                    street_type = street_type,
-                    street_direction = street_direction,
-                )
-            else:
-                # print("<START>")
-                r.street_number_start = start
-                r.street_number_end = finish
-                r.street_number_range_type = StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ALL # r.range_type = row_dict[10]
-                r.street_type = street_type
-                r.street_type_other = street_type_other
-                r.street_direction = street_direction
-
-                r.save()
-
-            self.stdout.write(
-                self.style.WARNING(_('Successfully updated watch `%(name)s`.')%{
-                    'name': name,
-                })
-            )
-        except Exception as e:
-            self.stdout.write(
-                self.style.ERROR(_('Failed updateing watch `%(name)s` because %(e)s.')%{
-                    'name': name, 'e': str(e)
-                })
-            )
+    def get_street_number_range_type_code(self, street_number_range_type):
+        s = str(street_number_range_type).upper()
+        if s == "ALL":
+            return StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ALL
+        elif s == "ODD":
+            return StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ODD
+        elif s == "EVEN":
+            return StreetAddressRange.STREET_NUMBER_RANGE_TYPE.EVEN
+        elif s == "":
+            return StreetAddressRange.STREET_NUMBER_RANGE_TYPE.ALL
+        else:
+            raise CommandError(_('`street_number_range_type` does not exist! %(r)s')%{ 'r': s })
 
     def run_import_from_dict(self, row_dict, index):
         # print(row_dict, index) # For debugging purposes only.
+
+        # for w in Watch.objects.all():
+        #     print("Delete", w.name)
+        #     w.delete()
+        # exit()
 
         numb = row_dict[0] # Watch #
         name = row_dict[1] # Watch Name
@@ -291,7 +232,7 @@ class Command(BaseCommand):
         # print("street_name:", street_name)
         # print("street_type:", street_type)
         # print("street_direction:", street_direction)
-        # print("range_type:", ordering)
+        # print("range_type:", range_type)
         # print()
 
         # Specified `type_of` field.
@@ -302,6 +243,9 @@ class Command(BaseCommand):
             type_of = Watch.TYPE_OF.BUSINESS
         else:
             type_of = Watch.TYPE_OF.COMMUNITY_CARES
+
+        # Get street range type.
+        street_number_range_type = self.get_street_number_range_type_code(range_type)
 
         # Get district
         district = District.objects.filter(name=ward).first()
@@ -316,24 +260,103 @@ class Command(BaseCommand):
             street_type_other = street_type
         street_direction = self.get_street_direction_code(street_direction)
 
-        if type_of == 1:
-            watch = Watch.objects.filter(id=numb).first()
-            if watch is None:
-                self.create_watch(
-                    numb, name, ward, type_of, district_notes, start, finish,
-                    street_name, street_type_code, street_type_other, street_direction,
-                    range_type
+        """
+        The following code will either create or update a `Watch.`
+        """
+        watch = Watch.objects.filter(id=numb).first()
+        if watch is None:
+            try:
+                watch = Watch.objects.create(
+                    id=numb,
+                    name = name,
+                    description = district_notes,
+                    district = district,
+                    type_of = type_of,
                 )
-            else:
-                self.update_watch(
-                    watch, district, numb, name, ward, type_of, district_notes, start, finish,
-                    street_name, street_type_code, street_type_other, street_direction,
-                    range_type
+                self.stdout.write(
+                    self.style.SUCCESS(_('Successfully created watch with ID # %(uid)s with name %(n)s.')%{
+                        'uid': str(watch.id),
+                        'n': name,
+                    })
                 )
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(_('Failed creating watch with ID # %(uid)s with name %(n)s because %(e)s.')%{
+                        'uid': numb,
+                        'n': name,
+                        'e': str(e)
+                    })
+                )
+                return
         else:
-            raise CommandError(_('Could not process for type ID # `%(type)s`.')%{
-                'type': type_of,
-            })
+            watch.name = name
+            watch.description = district_notes
+            watch.district = district
+            watch.type_of = type_of
+            try:
+                watch.save()
+                self.stdout.write(
+                    self.style.WARNING(_('Successfully update watch with ID # %(uid)s with name %(n)s.')%{
+                        'uid': str(watch.id),
+                        'n': name,
+                    })
+                )
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(_('Failed updating watch with ID # %(uid)s with name %(n)s because %(e)s.')%{
+                        'uid': numb,
+                        'n': name,
+                        'e': str(e)
+                    })
+                )
+                return
+
+        """
+        The following code will either create or update a `Street Address Range.`
+        """
+        sar = StreetAddressRange.objects.filter(
+            watch=watch,
+            street_number_start = start,
+            street_number_end = finish,
+            street_name = street_name,
+            street_number_range_type = street_number_range_type,
+            street_type = street_type_code,
+            street_type_other = street_type_other,
+            street_direction = street_direction,
+        ).first()
+        if sar is None:
+            sar = StreetAddressRange.objects.create(
+                watch=watch,
+                street_number_start = start,
+                street_number_end = finish,
+                street_name = street_name,
+                street_number_range_type = street_number_range_type,
+                street_type = street_type_code,
+                street_type_other = street_type_other,
+                street_direction = street_direction,
+            )
+            self.stdout.write(
+                self.style.SUCCESS(_('Successfully created watch street address with ID # %(uid)s inside watch %(n)s.')%{
+                    'uid': str(sar.id),
+                    'n': name,
+                })
+            )
+        else:
+            # print("<START>")
+            sar.street_number_start = start
+            sar.street_number_end = finish
+            sar.street_name = street_name
+            sar.street_number_range_type = street_number_range_type
+            sar.street_type = street_type_code
+            sar.street_type_other = street_type_other
+            sar.street_direction = street_direction
+            sar.save()
+            self.stdout.write(
+                self.style.WARNING(_('Successfully update watch street address with ID # %(uid)s inside watch %(n)s')%{
+                    'uid': str(sar.id),
+                    'n': name,
+                })
+            )
 
         if row_dict[0] == "":
             exit()
