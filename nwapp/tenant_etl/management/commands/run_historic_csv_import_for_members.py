@@ -26,8 +26,11 @@ AreaCoordinatorContact, AreaCoordinatorAddress, AreaCoordinatorMetric
 
 """
 Run manually in console:
-python manage.py run_historic_csv_import_for_members "london" ""
+python manage.py run_historic_csv_import_for_members "london" "prod"
 """
+
+CSV_FILENAME = "members"
+
 
 def get_random_string(length):
     letters = string.ascii_lowercase
@@ -163,7 +166,7 @@ class Command(BaseCommand):
 
     def begin_processing(self, schema_name, prefix):
         # Load up the following historic data from CSV files...
-        full_file_path = self.find_filepath_containing("NWL Member Data - for Bart - NWL Member Data", prefix)  # Personal Customers
+        full_file_path = self.find_filepath_containing(CSV_FILENAME, prefix)  # Personal Customers
         print(full_file_path)
 
         # Connection needs first to be at the public schema, as this is where

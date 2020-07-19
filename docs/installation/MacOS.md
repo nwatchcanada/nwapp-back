@@ -117,6 +117,14 @@ python manage.py create_random_associate "london" 100;
 python manage.py create_random_task_item "london" 250;
 ```
 
+Optional step demonstrating importing data for a specific tenant from a CSV file:
+
+```
+python manage.py run_historic_csv_import_for_districts "london" "prod"
+python manage.py run_historic_csv_import_for_watches "london" "prod"
+python manage.py run_historic_csv_import_for_members "london" "prod"
+```
+
 # 6. Host File Setup
 This project is uses ``django-tenants`` library and is setup to work with multiple domains. As a result, we will need to bind the address **nwapp.ca** to your ``localhost``. To do this follow these instructions.
 

@@ -19,8 +19,10 @@ from tenant_foundation.models import District
 
 """
 Run manually in console:
-python manage.py run_historic_csv_import_for_districts "london" ""
+python manage.py run_historic_csv_import_for_districts "london" "prod"
 """
+
+CSV_FILENAME = "districts"
 
 
 class Command(BaseCommand):
@@ -118,7 +120,7 @@ class Command(BaseCommand):
 
     def begin_processing(self, schema_name, prefix):
         # Load up the following historic data from CSV files...
-        full_file_path = self.find_filepath_containing("NWL_District_Data", prefix)  # Personal Customers
+        full_file_path = self.find_filepath_containing(CSV_FILENAME, prefix)  # Personal Customers
         print(full_file_path)
 
         # Connection needs first to be at the public schema, as this is where

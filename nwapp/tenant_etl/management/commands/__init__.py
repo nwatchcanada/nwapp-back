@@ -1,5 +1,5 @@
 """
 python manage.py run_historic_csv_import_for_districts "london" ""
 python manage.py run_historic_csv_import_for_watches "london" ""
-python manage.py run_historic_csv_import_for_ac "london" ""
+python manage.py run_historic_csv_import_for_members "london" ""
 """

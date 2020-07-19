@@ -20,10 +20,10 @@ from tenant_foundation.models import District, Watch, StreetAddressRange
 
 """
 Run manually in console:
-python manage.py run_historic_csv_import_for_watches "london" ""
+python manage.py run_historic_csv_import_for_watches "london" "prod"
 """
 
-CSV_FILENAME = "prod_watchID_with_street_range - WatchID with Street Range"
+CSV_FILENAME = "watches"
 
 
 class Command(BaseCommand):
