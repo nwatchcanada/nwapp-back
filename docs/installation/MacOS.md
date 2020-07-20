@@ -123,6 +123,7 @@ Optional step demonstrating importing data for a specific tenant from a CSV file
 python manage.py run_historic_csv_import_for_districts "london" "prod"
 python manage.py run_historic_csv_import_for_watches "london" "prod"
 python manage.py run_historic_csv_import_for_members "london" "prod"
+python manage.py sqlsequencereset tenant_foundation shared_foundation
 ```
 
 # 6. Host File Setup
