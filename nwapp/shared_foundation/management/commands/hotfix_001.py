@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection # Used for django tenants.
-from django.db.models import Q, IntegrityError
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from shared_foundation import constants
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         while True:
             try:
                 user = SharedUser.objects.create(tenant_id=1) # Look here!
-            except IntegrityError:
+            except Exception as e:
                 self.stdout.write(
                     self.style.SUCCESS(_('Hotfix 001: Incrementing `id` in `shared_users` table.'))
                 )
