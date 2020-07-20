@@ -23,7 +23,7 @@ Run manually in console:
 python manage.py run_historic_csv_import_for_watches "london" "prod"
 """
 
-CSV_FILENAME = "watches"
+CSV_FILENAME = "watches_plus_uuid"
 
 
 class Command(BaseCommand):
@@ -221,6 +221,7 @@ class Command(BaseCommand):
         street_type_other = None
         street_direction = row_dict[9]
         range_type = row_dict[10]
+        uuid_str = row_dict[11]
 
         # print("#:",numb)
         # print("name:",name)
@@ -233,6 +234,7 @@ class Command(BaseCommand):
         # print("street_type:", street_type)
         # print("street_direction:", street_direction)
         # print("range_type:", range_type)
+        # print("uuid:", uuid_str)
         # print()
 
         # Specified `type_of` field.
@@ -263,11 +265,11 @@ class Command(BaseCommand):
         """
         The following code will either create or update a `Watch.`
         """
-        watch = Watch.objects.filter(id=numb).first()
+        watch = Watch.objects.filter(uuid=uuid_str).first()
         if watch is None:
             try:
                 watch = Watch.objects.create(
-                    id=numb,
+                    uuid=uuid_str,
                     name = name,
                     description = district_notes,
                     district = district,
@@ -289,6 +291,7 @@ class Command(BaseCommand):
                 )
                 return
         else:
+            watch.uuid = uuid_str
             watch.name = name
             watch.description = district_notes
             watch.district = district

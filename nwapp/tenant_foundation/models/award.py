@@ -120,11 +120,14 @@ class Award(models.Model):
 
     # SYSTEM FIELDS
 
-    uuid = models.UUIDField(
+    uuid = models.CharField(
         _("UUID"),
-        help_text=_('The unique identifier we want to release to the public to identify this unique award.'),
+        help_text=_('The unique identifier we want to release to the public to identify this unique record.'),
         default=uuid.uuid4,
-        editable=False
+        editable=False,
+        max_length=63, # Do not change
+        unique=True,
+        db_index=True,
     )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(

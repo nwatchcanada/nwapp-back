@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import csv
+import uuid
 import pytz
 import string
 import random
@@ -481,6 +481,15 @@ class UnifiedSearchItem(models.Model):
 
     # THE FOLLOWING FIELDS ARE USED TO MAP OUR SEARCHABLE ITEM TO AN OBJECT.
 
+    uuid = models.CharField(
+        _("UUID"),
+        help_text=_('The unique identifier we want to release to the public to identify this unique record.'),
+        default=uuid.uuid4,
+        editable=False,
+        max_length=63, # Do not change
+        unique=True,
+        db_index=True,
+    )
     slug = models.CharField(
         _("Slug"),
         max_length=255,

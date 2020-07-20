@@ -29,7 +29,7 @@ Run manually in console:
 python manage.py run_historic_csv_import_for_members "london" "prod"
 """
 
-CSV_FILENAME = "members"
+CSV_FILENAME = "members_plus_uuid"
 
 
 def get_random_string(length):
@@ -200,8 +200,6 @@ class Command(BaseCommand):
                     self.run_import_from_dict(franchise, row_dict, i)
 
     def run_import_from_dict(self, franchise, row_dict, index):
-        # print(row_dict) # For debugging purposes.
-
         # for u in SharedUser.objects.all():
         #     print("Delete:", u)
         #     u.delete()
@@ -222,7 +220,9 @@ class Command(BaseCommand):
         province = row_dict[12]
         postal = row_dict[13]
         email = row_dict[14]
+        uuid_str = row_dict[16]
 
+        # print(row_dict) # For debugging purposes.
         # print("uid:", uid)
         # print("role:", role)
         # print("watch_name:", watch_name)
@@ -238,6 +238,8 @@ class Command(BaseCommand):
         # print("province:", province)
         # print("postal:", postal)
         # print("email:", email)
+        # print("uuid:", uuid_str)
+        # print()
 
         # BUGFIX
         if  role == "captain" or role == "Captain" or role == "Co-Captain":
@@ -263,14 +265,11 @@ class Command(BaseCommand):
             )
         else:
             # Create the user account.
-            user = SharedUser.objects.filter(
-                Q(id=uid)|
-                Q(email=email)
-            ).first()
+            user = SharedUser.objects.filter(Q(uuid=uuid_str)|Q(email=email)).first()
             if user is None:
-                user = self.create_shared_user(franchise, uid, role, watch_name, first_name, last_name, email)
+                user = self.create_shared_user(franchise, uuid_str, role, watch_name, first_name, last_name, email)
             else:
-                user = self.update_shared_user(franchise, user, uid, role, watch_name, first_name, last_name, email)
+                user = self.update_shared_user(franchise, user, uuid_str, role, watch_name, first_name, last_name, email)
 
             # Create the profile.
             if role == "Member" or role == "member":
@@ -279,18 +278,18 @@ class Command(BaseCommand):
                 user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
 
             # All users have a base members account.
-            member = self.process_member(watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
+            member = self.process_member(watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
 
             if role == "Area Coordinator" or role == "area Coordinator":
-                self.process_area_coordinator(member, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
+                self.process_area_coordinator(member, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
 
-    def create_shared_user(self, franchise, uid, role, watch_name, first_name, last_name, email):
+    def create_shared_user(self, franchise, uuid_str, role, watch_name, first_name, last_name, email):
         has_email = email != None and email != ""
         if has_email is False:
-            email = franchise.schema_name + "-uid"+str(uid)+"@nwapp.ca"
+            email = franchise.schema_name + "-"+uuid_str+"@nwapp.ca"
 
         user = SharedUser.objects.create(
-            id=uid,
+            uuid=uuid_str,
             tenant=franchise,
             first_name=first_name,
             last_name=last_name,
@@ -308,25 +307,26 @@ class Command(BaseCommand):
         user.save()
 
         self.stdout.write(
-            self.style.SUCCESS(_('Successfully created shared user with ID # %(uid)s.')%{
-                'uid': str(uid),
+            self.style.SUCCESS(_('Successfully created shared user with UUID %(uuid)s.')%{
+                'uuid': str(uuid_str),
             })
         )
 
         return user
 
-    def update_shared_user(self, franchise, user, uid, role, watch_name, first_name, last_name, email):
+    def update_shared_user(self, franchise, user, uuid_str, role, watch_name, first_name, last_name, email):
         user.first_name = first_name
         user.last_name = last_name
+        user.uuid = uuid_str
         user.save()
         self.stdout.write(
-            self.style.WARNING(_('Successfully updated shared user with ID # %(uid)s.')%{
-                'uid': str(uid),
+            self.style.WARNING(_('Successfully updated shared user with UUID # %(uid)s.')%{
+                'uid': uuid_str,
             })
         )
         return user
 
-    def process_member(self, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
+    def process_member(self, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
         # Lookup the member.
         member = Member.objects.filter(user=user).first()
 
@@ -340,13 +340,13 @@ class Command(BaseCommand):
             )
             self.stdout.write(
                 self.style.SUCCESS(_('Successfully created member with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
         else:
             self.stdout.write(
                 self.style.WARNING(_('Skipped update for member with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
 
@@ -366,7 +366,7 @@ class Command(BaseCommand):
             )
             self.stdout.write(
                 self.style.SUCCESS(_('Successfully created member contact with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
         else:
@@ -381,8 +381,8 @@ class Command(BaseCommand):
             member_contact.secondary_phone=None
             member_contact.save()
             self.stdout.write(
-                self.style.WARNING(_('Successfully updated member contact with ID # %(uid)s.')%{
-                    'uid': uid,
+                self.style.WARNING(_('Successfully updated member contact with UUID %(uid)s.')%{
+                    'uid': uuid_str,
                 })
             )
 
@@ -403,7 +403,7 @@ class Command(BaseCommand):
             )
             self.stdout.write(
                 self.style.SUCCESS(_('Successfully created member address with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
         else:
@@ -418,7 +418,7 @@ class Command(BaseCommand):
             member_address.save()
             self.stdout.write(
                 self.style.WARNING(_('Successfully updated member address with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
 
@@ -443,13 +443,13 @@ class Command(BaseCommand):
             )
             self.stdout.write(
                 self.style.SUCCESS(_('Successfully created member metric with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
         else:
             self.stdout.write(
                 self.style.WARNING(_('Skipped updating member metric with ID # %(uid)s.')%{
-                    'uid': uid,
+                    'uid': uuid_str,
                 })
             )
 
@@ -460,7 +460,7 @@ class Command(BaseCommand):
         )
         return member
 
-    def process_area_coordinator(self, member, watch, user, uid, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
+    def process_area_coordinator(self, member, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
         # Lookup the member.
         ac = AreaCoordinator.objects.filter(user=user).first()
 

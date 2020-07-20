@@ -1,4 +1,5 @@
 import phonenumbers
+import uuid
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.contrib.gis.db import models
@@ -95,6 +96,15 @@ class Staff(models.Model):
         related_name="staff",
         on_delete=models.CASCADE,
         primary_key=True,
+    )
+    uuid = models.CharField(
+        _("UUID"),
+        help_text=_('The unique identifier we want to release to the public to identify this unique record.'),
+        default=uuid.uuid4,
+        editable=False,
+        max_length=63, # Do not change
+        unique=True,
+        db_index=True,
     )
 
     # BUSINESS LOGIC SPECIFIC FIELDS

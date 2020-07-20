@@ -120,6 +120,12 @@ python manage.py create_random_task_item "london" 250;
 Optional step demonstrating importing data for a specific tenant from a CSV file:
 
 ```
+# Only run once!
+python manage.py append_uuid_to_csv "london" "/Users/bmika/python/github.com/nwatchcanada/nwapp-back/nwapp/tenant_etl/csv/prod_districts.csv"
+python manage.py append_uuid_to_csv "london" "/Users/bmika/python/github.com/nwatchcanada/nwapp-back/nwapp/tenant_etl/csv/prod_watches.csv"
+python manage.py append_uuid_to_csv "london" "/Users/bmika/python/github.com/nwatchcanada/nwapp-back/nwapp/tenant_etl/csv/prod_members.csv"
+
+# Import our data
 python manage.py run_historic_csv_import_for_districts "london" "prod"
 python manage.py run_historic_csv_import_for_watches "london" "prod"
 python manage.py run_historic_csv_import_for_members "london" "prod"

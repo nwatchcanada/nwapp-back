@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import csv
+import uuid
 import pytz
 from datetime import date, datetime, timedelta
 from django.conf import settings
@@ -105,6 +105,15 @@ class ItemType(models.Model):
 
     # AUDITING FIELDS
 
+    uuid = models.CharField(
+        _("UUID"),
+        help_text=_('The unique identifier we want to release to the public to identify this unique record.'),
+        default=uuid.uuid4,
+        editable=False,
+        max_length=63, # Do not change
+        unique=True,
+        db_index=True,
+    )
     slug = models.SlugField(
         _("Slug"),
         help_text=_('The unique identifier used externally.'),

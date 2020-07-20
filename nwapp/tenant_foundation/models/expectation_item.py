@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import csv
+import uuid
 import pytz
 from random import randint
 from datetime import date, datetime, timedelta
@@ -107,6 +107,15 @@ class ExpectationItem(models.Model):
         help_text=_('The unique identifier used externally.'),
         max_length=255,
         null=False,
+        unique=True,
+        db_index=True,
+    )
+    uuid = models.CharField(
+        _("UUID"),
+        help_text=_('The unique identifier we want to release to the public to identify this unique record.'),
+        default=uuid.uuid4,
+        editable=False,
+        max_length=63, # Do not change
         unique=True,
         db_index=True,
     )

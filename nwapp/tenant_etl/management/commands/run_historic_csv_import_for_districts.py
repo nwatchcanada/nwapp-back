@@ -22,7 +22,7 @@ Run manually in console:
 python manage.py run_historic_csv_import_for_districts "london" "prod"
 """
 
-CSV_FILENAME = "districts"
+CSV_FILENAME = "districts_plus_uuid"
 
 
 class Command(BaseCommand):
@@ -154,7 +154,7 @@ class Command(BaseCommand):
                     self.run_import_from_dict(row_dict, i)
 
     def run_import_from_dict(self, row_dict, index):
-        # print(row_dict, index)
+        print(row_dict, index)
         type_of = row_dict[0]
         if type_of == "Residential":
             type_of = 1
@@ -169,20 +169,23 @@ class Command(BaseCommand):
             counselor_name = row_dict[3]
             counselor_phone = row_dict[4]
             counselor_email = row_dict[5]
+            uuid_str = row_dict[6]
 
-            print(name)
-            print(description)
-            print(counselor_name)
-            print(counselor_phone)
-            print(counselor_email)
-            print()
+            # print(name)
+            # print(description)
+            # print(counselor_name)
+            # print(counselor_phone)
+            # print(counselor_email)
+            # print(uuid_str)
+            # print()
 
             try:
-                district = District.objects.get(name=name)
+                district = District.objects.get(uuid=uuid_str)
                 district.description = description
                 district.counselor_name = counselor_name
                 district.counselor_phone = counselor_phone
                 district.counselor_email = counselor_email
+                district.uuid = uuid_str
                 district.save()
             except District.DoesNotExist:
                 return District.objects.create(
@@ -192,6 +195,7 @@ class Command(BaseCommand):
                      counselor_name=counselor_name,
                      counselor_email=counselor_email,
                      counselor_phone=counselor_phone,
+                     uuid=uuid_str,
                 )
         else:
             print("unsuported!!")
