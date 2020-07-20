@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
         while True:
             try:
-                user = SharedUser.objects.create() # Look here!
+                user = SharedUser.objects.create(tenant_id=1) # Look here!
             except Exception as e:
                 self.stdout.write(
                     self.style.SUCCESS(_('Hotfix 001: Incrementing `id` in `shared_users` table.'))
