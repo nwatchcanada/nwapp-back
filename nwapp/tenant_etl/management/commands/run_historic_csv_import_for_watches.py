@@ -44,11 +44,21 @@ class Command(BaseCommand):
         prefix = options['csv_prefix'][0]
 
         # Begin importing...
-        self.begin_processing(schema_name, prefix)
+        info = self.begin_processing(schema_name, prefix)
 
         # Used for debugging purposes.
         self.stdout.write(
-            self.style.SUCCESS(_('Successfully imported historic tenant.'))
+            self.style.SUCCESS(_('Successfully imported %(succ)s watches for tenant the tenant with %(err) rejections due to error.')%{
+                'succ': info['success_count'],
+                'err': info['error_count'],
+            })
+        )
+
+        # Return your results.
+        self.stdout.write(
+            self.style.SUCCESS(_('Metrics results:\n%(info)s')%{
+                'info': str(info),
+            })
         )
 
     def strip_chars(self, f):
@@ -138,21 +148,23 @@ class Command(BaseCommand):
         # Connection will set it back to our tenant.
         connection.set_schema(franchise.schema_name, True) # Switch to Tenant.
 
+        # Initialize the variable used to track metrics with our ETL import.
+        info_dict = {
+            'error_count': 0,
+            'success_count': 0,
+            'error_rows': []
+        }
+
         # Begin importing...
         with open(full_file_path, newline='', encoding='utf-8') as csvfile:
+
             csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
             for i, row_dict in enumerate(csvreader):
                 if i > 0:
+                    # Import the single row.
+                    info = self.run_import_from_dict(row_dict, i, info_dict)
 
-                    # # Used for debugging purposes only.
-                    # self.stdout.write(
-                    #     self.style.SUCCESS(_('Importing WorkOrder #%(id)s') % {
-                    #         'id': i
-                    #     })
-                    # )
-
-                    # Begin importing...
-                    self.run_import_from_dict(row_dict, i)
+        return info
 
     def get_street_type_code(self, street_type):
         if street_type == StreetAddressRange.STREET_TYPE.AVENUE:
@@ -201,9 +213,7 @@ class Command(BaseCommand):
         else:
             raise CommandError(_('`street_number_range_type` does not exist! %(r)s')%{ 'r': s })
 
-    def run_import_from_dict(self, row_dict, index):
-        # print(row_dict, index) # For debugging purposes only.
-
+    def run_import_from_dict(self, row_dict, index, info):
         # for w in Watch.objects.all():
         #     print("Delete", w.name)
         #     w.delete()
@@ -221,21 +231,26 @@ class Command(BaseCommand):
         street_type_other = None
         street_direction = row_dict[9]
         range_type = row_dict[10]
-        uuid_str = row_dict[11]
+        uuid_str = row_dict[12]
 
-        # print("#:",numb)
-        # print("name:",name)
-        # print("ward:",ward)
-        # print("district:", district)
-        # print("district_notes:", district_notes)
-        # print("start:",start)
-        # print("finish:",finish)
-        # print("street_name:", street_name)
-        # print("street_type:", street_type)
-        # print("street_direction:", street_direction)
-        # print("range_type:", range_type)
-        # print("uuid:", uuid_str)
-        # print()
+        print(row_dict, index) # For debugging purposes only.
+        print("#:",numb)
+        print("name:",name)
+        print("ward:",ward)
+        print("district:", district)
+        print("district_notes:", district_notes)
+        print("start:",start)
+        print("finish:",finish)
+        print("street_name:", street_name)
+        print("street_type:", street_type)
+        print("street_direction:", street_direction)
+        print("range_type:", range_type)
+        print("uuid:", uuid_str)
+        print()
+
+        # Defensive code to catch empty UUIDs because this is critical to ETL.
+        if uuid_str == None or uuid_str == "":
+            raise CommandError(_('Missing UUID.'))
 
         # Specified `type_of` field.
         type_of = None
@@ -265,7 +280,7 @@ class Command(BaseCommand):
         """
         The following code will either create or update a `Watch.`
         """
-        watch = Watch.objects.filter(uuid=uuid_str).first()
+        watch = Watch.objects.filter(name=name).first()
         if watch is None:
             try:
                 watch = Watch.objects.create(
@@ -289,7 +304,10 @@ class Command(BaseCommand):
                         'e': str(e)
                     })
                 )
-                return
+                info['error_count'] = info['error_count'] + 1
+                info['error_rows'].append(index)
+                exit()
+                return info
         else:
             watch.uuid = uuid_str
             watch.name = name
@@ -312,7 +330,9 @@ class Command(BaseCommand):
                         'e': str(e)
                     })
                 )
-                return
+                info['error_count'] = info['error_count'] + 1
+                info['error_rows'].append(index)
+                return info
 
         """
         The following code will either create or update a `Street Address Range.`
@@ -360,6 +380,12 @@ class Command(BaseCommand):
                     'n': name,
                 })
             )
+
+        # If the code executed to this point then that means we have successfully
+        info['success_count'] = info['success_count'] + 1
+
+        # Return the metrics.
+        return info
 
         if row_dict[0] == "":
             exit()

@@ -89,11 +89,21 @@ class Command(BaseCommand):
         prefix = options['csv_prefix'][0]
 
         # Begin importing...
-        self.begin_processing(schema_name, prefix)
+        info = self.begin_processing(schema_name, prefix)
 
         # Used for debugging purposes.
         self.stdout.write(
-            self.style.SUCCESS(_('Successfully imported historic tenant.'))
+            self.style.SUCCESS(_('Successfully imported %(succ)s watches for tenant the tenant with %(err) rejections due to error.')%{
+                'succ': info['success_count'],
+                'err': info['error_count'],
+            })
+        )
+
+        # Return your results.
+        self.stdout.write(
+            self.style.SUCCESS(_('Metrics results:\n%(info)s')%{
+                'info': str(info),
+            })
         )
 
     def strip_chars(self, f):
@@ -183,6 +193,13 @@ class Command(BaseCommand):
         # Connection will set it back to our tenant.
         connection.set_schema(franchise.schema_name, True) # Switch to Tenant.
 
+        # Initialize the variable used to track metrics with our ETL import.
+        info_dict = {
+            'error_count': 0,
+            'success_count': 0,
+            'error_rows': []
+        }
+
         # Begin importing...
         with open(full_file_path, newline='', encoding='utf-8') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
@@ -197,9 +214,11 @@ class Command(BaseCommand):
                     # )
 
                     # Begin importing...
-                    self.run_import_from_dict(franchise, row_dict, i)
+                    info_dict = self.run_import_from_dict(franchise, row_dict, i, info_dict)
 
-    def run_import_from_dict(self, franchise, row_dict, index):
+        return info_dict
+
+    def run_import_from_dict(self, franchise, row_dict, index, info_dict):
         # for u in SharedUser.objects.all():
         #     print("Delete:", u)
         #     u.delete()
@@ -222,24 +241,24 @@ class Command(BaseCommand):
         email = row_dict[14]
         uuid_str = row_dict[16]
 
-        # print(row_dict) # For debugging purposes.
-        # print("uid:", uid)
-        # print("role:", role)
-        # print("watch_name:", watch_name)
-        # print("first_name:", first_name)
-        # print("last_name:", last_name)
-        # print("unit_number:", unit_number)
-        # print("street_number:", street_number)
-        # print("street_name:", street_name)
-        # print("street_type:", street_type)
-        # print("direction:", direction)
-        # print("city:", city)
-        # print("phone:", phone)
-        # print("province:", province)
-        # print("postal:", postal)
-        # print("email:", email)
-        # print("uuid:", uuid_str)
-        # print()
+        print(row_dict) # For debugging purposes.
+        print("uid:", uid)
+        print("role:", role)
+        print("watch_name:", watch_name)
+        print("first_name:", first_name)
+        print("last_name:", last_name)
+        print("unit_number:", unit_number)
+        print("street_number:", street_number)
+        print("street_name:", street_name)
+        print("street_type:", street_type)
+        print("direction:", direction)
+        print("city:", city)
+        print("phone:", phone)
+        print("province:", province)
+        print("postal:", postal)
+        print("email:", email)
+        print("uuid:", uuid_str)
+        print()
 
         # BUGFIX
         if  role == "captain" or role == "Captain" or role == "Co-Captain":
@@ -263,6 +282,9 @@ class Command(BaseCommand):
                     'n': str(watch_name),
                 })
             )
+
+            info_dict['error_count'] = info_dict['error_count'] + 1
+            info_dict['error_rows'].append(index)
         else:
             # Create the user account.
             user = SharedUser.objects.filter(Q(uuid=uuid_str)|Q(email=email)).first()
@@ -282,6 +304,12 @@ class Command(BaseCommand):
 
             if role == "Area Coordinator" or role == "area Coordinator":
                 self.process_area_coordinator(member, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
+
+            # If the code executed to this point then that means we have successfully
+            info_dict['success_count'] = info_dict['success_count'] + 1
+
+        # Returns the dictionary of the metrics we generated from running the ETL.
+        return info_dict
 
     def create_shared_user(self, franchise, uuid_str, role, watch_name, first_name, last_name, email):
         has_email = email != None and email != ""
