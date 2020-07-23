@@ -231,7 +231,7 @@ class Command(BaseCommand):
         street_type_other = None
         street_direction = row_dict[9]
         range_type = row_dict[10]
-        uuid_str = row_dict[12]
+        uuid_str = row_dict[11]
 
         print(row_dict, index) # For debugging purposes only.
         print("#:",numb)
