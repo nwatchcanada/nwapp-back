@@ -219,6 +219,7 @@ class Command(BaseCommand):
         return info_dict
 
     def run_import_from_dict(self, franchise, row_dict, index, info_dict):
+        # SharedUser.objects.all().delete()
         # for u in SharedUser.objects.all():
         #     print("Delete:", u)
         #     u.delete()
@@ -241,24 +242,30 @@ class Command(BaseCommand):
         email = row_dict[14]
         uuid_str = row_dict[16]
 
-        print(row_dict) # For debugging purposes.
-        print("uid:", uid)
-        print("role:", role)
-        print("watch_name:", watch_name)
-        print("first_name:", first_name)
-        print("last_name:", last_name)
-        print("unit_number:", unit_number)
-        print("street_number:", street_number)
-        print("street_name:", street_name)
-        print("street_type:", street_type)
-        print("direction:", direction)
-        print("city:", city)
-        print("phone:", phone)
-        print("province:", province)
-        print("postal:", postal)
-        print("email:", email)
-        print("uuid:", uuid_str)
-        print()
+        indexed_text = str(watch_name)+" "+str(first_name)+" "+str(last_name)+" "
+        indexed_text += str(street_number)+" "+str(street_name)+" "+str(phone)
+        indexed_text += str(city)+" "+str(province)+" "+str(postal)+" "+str(email)
+        indexed_text += " "+str(uuid_str)
+
+        # print(row_dict) # For debugging purposes.
+        # print("uid:", uid)
+        # print("role:", role)
+        # print("watch_name:", watch_name)
+        # print("first_name:", first_name)
+        # print("last_name:", last_name)
+        # print("unit_number:", unit_number)
+        # print("street_number:", street_number)
+        # print("street_name:", street_name)
+        # print("street_type:", street_type)
+        # print("direction:", direction)
+        # print("city:", city)
+        # print("phone:", phone)
+        # print("province:", province)
+        # print("postal:", postal)
+        # print("email:", email)
+        # print("uuid:", uuid_str)
+        # print("indexed_text:", indexed_text)
+        # print()
 
         # BUGFIX
         if  role == "captain" or role == "Captain" or role == "Co-Captain":
@@ -300,7 +307,7 @@ class Command(BaseCommand):
                 user.groups.add(SharedGroup.GROUP_MEMBERSHIP.AREA_COORDINATOR)
 
             # All users have a base members account.
-            member = self.process_member(watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
+            member = self.process_member(watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email, indexed_text)
 
             if role == "Area Coordinator" or role == "area Coordinator":
                 self.process_area_coordinator(member, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type_code,street_type_other, street_direction, phone, city, province, postal, email)
@@ -354,7 +361,7 @@ class Command(BaseCommand):
         )
         return user
 
-    def process_member(self, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email):
+    def process_member(self, watch, user, uuid_str, role, watch_name, first_name, last_name, unit_number, street_number, street_name, street_type, street_type_other, street_direction, phone, city, province, postal, email, indexed_text):
         # Lookup the member.
         member = Member.objects.filter(user=user).first()
 
@@ -364,8 +371,9 @@ class Command(BaseCommand):
                 user=user,
                 type_of=watch.type_of,
                 watch=watch,
-                indexed_text=get_random_string(32),
+                indexed_text=indexed_text,
             )
+
             self.stdout.write(
                 self.style.SUCCESS(_('Successfully created member with ID # %(uid)s.')%{
                     'uid': uuid_str,

@@ -90,11 +90,11 @@ class MemberFilter(django_filters.FilterSet):
     #
     # available_for_task_item = django_filters.CharFilter(method='available_for_task_item_filtering')
     #
-    # def keyword_filtering(self, queryset, name, value):
-    #     return Member.objects.partial_text_search(value)
-    #
-    # search = django_filters.CharFilter(method='keyword_filtering')
-    #
+    def keyword_filtering(self, queryset, name, value):
+        return Member.objects.partial_text_search(value)
+
+    search = django_filters.CharFilter(method='keyword_filtering')
+
     # def state_filtering(self, queryset, name, value):
     #     return queryset.filter(owner__is_active=value)
     #
