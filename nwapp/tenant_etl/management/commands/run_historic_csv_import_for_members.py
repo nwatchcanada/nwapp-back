@@ -515,6 +515,9 @@ class Command(BaseCommand):
             'last_modified_from_is_public': False,
         })
 
+        # Make sure the watch has reference of the area coordinator they belong to it.
+        watch.governors.add(area_coordinator)
+
         self.stdout.write(
             self.style.WARNING(_('Successfully processed area coordinator for watch `%(watch_name)s`.')%{
                 'watch_name': watch_name,

@@ -20,6 +20,7 @@ from shared_foundation.utils import get_arr_from_point, get_multi_arr_from_polyg
 from tenant_foundation.models import Watch, Tag, StreetAddressRange
 from tenant_foundation.serializers import TagListCreateSerializer
 from tenant_watch.serializers.street_membership_serializers import StreetAddressRangeRetrieveSerializer
+from tenant_area_coordinator.serializers.retrieve_serializer import AreaCoordinatorRetrieveSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -52,6 +53,7 @@ class WatchRetrieveSerializer(serializers.Serializer):
     boundry_zoom = serializers.IntegerField(read_only=True,)
     boundry_position = serializers.SerializerMethodField()
     boundry_polygon = serializers.SerializerMethodField()
+    area_coordinators = AreaCoordinatorRetrieveSerializer(read_only=True, source="governors", many=True,)
 
     def get_street_membership(self, watch_obj):
         """
