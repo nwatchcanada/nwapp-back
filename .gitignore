@@ -174,6 +174,9 @@ env/pip-selfcheck.json
 #—————————————————————————————
 # Application Specific Ignores
 #—————————————————————————————
+# Vagrant
+.vagrant/
+
 # Important Note: Make sure this is the name of the virtualenv directory
 # that you set when you where setting up the project.
 # Do not share our secret configuration file.
