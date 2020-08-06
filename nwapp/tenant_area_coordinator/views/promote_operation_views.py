@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_area_coordinator.permissions import CanRetrieveUpdateDestroyAreaCoordinatorPermission
 from tenant_area_coordinator.serializers import AreaCoordinatorPromoteOperationSerializer, AreaCoordinatorRetrieveSerializer
-from tenant_area_coordinator.tasks import geoip2_area_coordinator_audit_func
+from tenant_area_coordinator.tasks import geoip2_area_coordinator_address_audit_func
 
 
 class AreaCoordinatorPromoteOperationAPIView(generics.CreateAPIView):

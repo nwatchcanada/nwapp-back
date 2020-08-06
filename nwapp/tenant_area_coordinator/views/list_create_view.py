@@ -19,7 +19,7 @@ from tenant_area_coordinator.serializers import (
     AreaCoordinatorRetrieveSerializer
 )
 from tenant_foundation.models import AreaCoordinator
-from tenant_area_coordinator.tasks import geocode_area_coordinator_address_func, geoip2_area_coordinator_audit_func
+from tenant_area_coordinator.tasks import geoip2_area_coordinator_address_audit_func, geoip2_area_coordinator_audit_func
 
 
 class AreaCoordinatorListCreateAPIView(generics.ListCreateAPIView):
