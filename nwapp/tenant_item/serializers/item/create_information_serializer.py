@@ -22,9 +22,11 @@ logger = logging.getLogger(__name__)
 
 class InformationItemCreateSerializer(serializers.Serializer):
     # --- COMMON --- #
-    type_of = serializers.IntegerField(
+    type_of = serializers.ChoiceField(
         required=True,
         allow_null=False,
+        write_only=True,
+        choices=ItemType.CATEGORY_CHOICES
     )
     category = serializers.SlugField(
         required=True,

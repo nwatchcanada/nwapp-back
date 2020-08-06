@@ -21,14 +21,12 @@ logger = logging.getLogger(__name__)
 
 class InformationItemRetrieveSerializer(serializers.Serializer):
     slug = serializers.SlugField()
-    type_of = serializers.IntegerField(
-        required=True,
-        allow_null=False,
-    )
-    category = serializers.SlugField(
-        required=True,
-        allow_null=False,
-    )
+    type_of_text = serializers.CharField(read_only=True,source="type_of.text",)
+    type_of_slug = serializers.CharField(read_only=True,source="type_of.slug",)
+    # category = serializers.SlugField(
+    #     required=True,
+    #     allow_null=False,
+    # )
     description = serializers.CharField(
         required=False,
         allow_null=True,
