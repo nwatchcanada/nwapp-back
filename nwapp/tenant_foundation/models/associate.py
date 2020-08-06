@@ -84,8 +84,10 @@ class Associate(models.Model):
 
     class DEMOTION_REASON:
         OTHER_REASON = 1
-        SOME_REASON = 2
-        ANOTHER_REASON = 3
+        RETIRED_REASON = 2
+        HEALTH_REASON = 3
+        NO_LONGER_WANTS_ROLE_REASON = 4
+        REPRIMAND_REASON = 5
 
     class TYPE_OF:
         RESIDENTIAL = 1
@@ -102,8 +104,10 @@ class Associate(models.Model):
     )
 
     DEMOTION_REASON_CHOICES = (
-        (DEMOTION_REASON.SOME_REASON, _('Some reason')),
-        (DEMOTION_REASON.ANOTHER_REASON, _('Another reason')),
+        (DEMOTION_REASON.RETIRED_REASON, _('Retired')),
+        (DEMOTION_REASON.HEALTH_REASON, _('Health')),
+        (DEMOTION_REASON.NO_LONGER_WANTS_ROLE_REASON, _('No longer wants role')),
+        (DEMOTION_REASON.REPRIMAND_REASON, _('Reprimand')),
         (DEMOTION_REASON.OTHER_REASON, _('Other (Please specify)')),
     )
 
