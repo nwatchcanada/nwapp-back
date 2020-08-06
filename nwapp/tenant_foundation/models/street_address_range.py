@@ -68,10 +68,19 @@ class StreetAddressRange(models.Model):
     class STREET_TYPE:
         OTHER = 1
         AVENUE = 2
-        DRIVE = 3
-        ROAD = 4
-        STREET = 5
-        WAY = 6
+        BOULEVARD = 3
+        COURT = 4
+        CRESCENT = 5
+        DRIVE = 6
+        GATE = 7
+        GROVE = 8
+        HILL = 9
+        LANE = 10
+        PLACE = 11
+        ROAD = 12
+        STREET = 13
+        TERRACE = 14
+        WAY = 15
 
     class STREET_DIRECTION:
         NONE = 0
@@ -95,9 +104,18 @@ class StreetAddressRange(models.Model):
 
     STREET_TYPE_CHOICES = (
         (STREET_TYPE.AVENUE, _('Avenue')),
+        (STREET_TYPE.BOULEVARD, _('Boulevard')),
+        (STREET_TYPE.COURT, _('Court')),
+        (STREET_TYPE.CRESCENT, _('Crescent')),
         (STREET_TYPE.DRIVE, _('Drive')),
+        (STREET_TYPE.GATE, _('Gate')),
+        (STREET_TYPE.GROVE, _('Grove')),
+        (STREET_TYPE.HILL, _('Hill')),
+        (STREET_TYPE.LANE, _('Lane')),
+        (STREET_TYPE.PLACE, _('Place')),
         (STREET_TYPE.ROAD, _('Road')),
         (STREET_TYPE.STREET, _('Street')),
+        (STREET_TYPE.TERRACE, _('Terrace')),
         (STREET_TYPE.WAY, _('Way')),
         (STREET_TYPE.OTHER, _('Other')),
     )

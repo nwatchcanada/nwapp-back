@@ -40,12 +40,30 @@ def get_random_string(length):
 def get_street_type_code(street_type):
     if street_type == StreetAddressRange.STREET_TYPE.AVENUE:
         return StreetAddressRange.STREET_TYPE.AVENUE
+    elif street_type == StreetAddressRange.STREET_TYPE.BOULEVARD:
+        return StreetAddressRange.STREET_TYPE.BOULEVARD
+    elif street_type == StreetAddressRange.STREET_TYPE.COURT:
+        return StreetAddressRange.STREET_TYPE.COURT
+    elif street_type == StreetAddressRange.STREET_TYPE.CRESCENT:
+        return StreetAddressRange.STREET_TYPE.CRESCENT
     elif street_type == StreetAddressRange.STREET_TYPE.DRIVE:
         return StreetAddressRange.STREET_TYPE.DRIVE
+    elif street_type == StreetAddressRange.STREET_TYPE.GATE:
+        return StreetAddressRange.STREET_TYPE.GATE
+    elif street_type == StreetAddressRange.STREET_TYPE.GROVE:
+        return StreetAddressRange.STREET_TYPE.GROVE
+    elif street_type == StreetAddressRange.STREET_TYPE.HILL:
+        return StreetAddressRange.STREET_TYPE.HILL
+    elif street_type == StreetAddressRange.STREET_TYPE.LANE:
+        return StreetAddressRange.STREET_TYPE.LANE
+    elif street_type == StreetAddressRange.STREET_TYPE.PLACE:
+        return StreetAddressRange.STREET_TYPE.PLACE
     elif street_type == StreetAddressRange.STREET_TYPE.ROAD:
         return StreetAddressRange.STREET_TYPE.ROAD
     elif street_type == StreetAddressRange.STREET_TYPE.STREET:
         return StreetAddressRange.STREET_TYPE.STREET
+    elif street_type == StreetAddressRange.STREET_TYPE.TERRACE:
+        return StreetAddressRange.STREET_TYPE.TERRACE
     elif street_type == StreetAddressRange.STREET_TYPE.WAY:
         return StreetAddressRange.STREET_TYPE.WAY
     else:
