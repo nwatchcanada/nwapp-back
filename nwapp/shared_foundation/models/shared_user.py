@@ -508,6 +508,8 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
                 del self.is_member
             if method_name == 'role_id':
                 del self.role_id
+            if method_name == 'role_id':
+                del self.role_label
             else:
                 raise Exception("SharedUser --> invalidate --> Method name not found.")
         except AttributeError:
@@ -550,6 +552,14 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
             from shared_foundation.models.shared_group import SharedGroup
             return SharedGroup.GROUP_MEMBERSHIP.NONE
 
+    @cached_property
+    def role_label(self):
+        try:
+            return self.groups.order_by('-id').first().name
+        except Exception as e:
+            from shared_foundation.models.shared_group import SharedGroup
+            return SharedGroup.GROUP_MEMBERSHIP.NONE
+
     def invalidate_all(self):
         self.invalidate("is_executive")
         self.invalidate("is_management")
@@ -558,3 +568,4 @@ class SharedUser(AbstractBaseUser, PermissionsMixin):
         self.invalidate("is_area_coordinator")
         self.invalidate("is_member")
         self.invalidate("role_id")
+        self.invalidate("role_label")

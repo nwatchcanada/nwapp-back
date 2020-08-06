@@ -39,6 +39,7 @@ class MemberRetrieveSerializer(serializers.Serializer):
     avatar_url = serializers.SerializerMethodField()
     state = serializers.CharField(read_only=True,)
     role_id = serializers.IntegerField(source="user.role_id", read_only=True,)
+    role_label = serializers.CharField(source="get_role_label", read_only=True,)
 
     # ------ MEMBER CONTACT ------ #
 

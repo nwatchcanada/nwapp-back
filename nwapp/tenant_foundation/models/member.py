@@ -285,6 +285,9 @@ class Member(models.Model):
         '''
         return self.user.get_full_name()
 
+    def get_role_label(self):
+        return self.user.role_label
+
     @transaction.atomic
     def save(self, *args, **kwargs):
         '''
