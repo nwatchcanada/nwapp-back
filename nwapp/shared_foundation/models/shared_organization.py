@@ -297,6 +297,16 @@ class SharedOrganization(TenantMixin):
     Methods
     '''
 
+    def to_tenant_dt(self, aware_dt):  #TODO: UNIT TEST
+        """
+        Function will convert the inputted timezone aware datetime object
+        into the timezone specific to this tenant.
+        """
+        try:
+            return aware_dt.astimezone(pytz.timezone(self.timezone_name))
+        except Exception as e:
+            return aware_dt
+
     @transaction.atomic
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         """

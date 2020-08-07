@@ -7,4 +7,5 @@ from shared_foundation.utils.geos import (
     get_multi_arr_from_polygon
 )
 from shared_foundation.utils.string import get_referral_code
+from shared_foundation.utils.string import pretty_dt_string
 from shared_foundation.utils.number import get_special_range
