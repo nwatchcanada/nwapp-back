@@ -38,7 +38,7 @@ def report_02_streaming_csv_view(request):
     today = timezone.now()
     area_coordinators = AreaCoordinator.objects.filter(
         Q(user__is_active=True)
-    )
+    ).select_related("user", "watch", "user__member", "user__member__watch", "user__member__watch__district",)
 
     # Convert our aware datetimes to the specific timezone of the tenant.
     tenant_today = request.tenant.to_tenant_dt(today)
