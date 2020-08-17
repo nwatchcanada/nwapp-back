@@ -14,7 +14,7 @@ from shared_foundation.constants import *
 from shared_foundation.utils import *
 from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    Member
+    District, Associate, AreaCoordinator, Member
 )
 
 """
@@ -36,53 +36,43 @@ class Echo:
 
 def report_04_streaming_csv_view(request):
     today = timezone.now()
-    members = Member.objects.filter(
-        Q(user__is_active=True)
-    ).select_related("user", "watch", "watch__district",)
+    districts = District.objects.all().order_by("id")
 
     # Convert our aware datetimes to the specific timezone of the tenant.
     tenant_today = request.tenant.to_tenant_dt(today)
 
     # Generate our new header.
-    rows = (["District Overview Report","","","","", ""],)
-    rows += (["Report Date:", pretty_dt_string(tenant_today),"", "", "", ""],)
-    rows += (["", "", "", "", "", ""],)
-    rows += (["", "", "", "", "", ""],)
+    rows = (["District Overview Report","","","",],)
+    rows += (["Report Date:", pretty_dt_string(tenant_today),"", "",],)
+    rows += (["", "", "", "", "",],)
+    rows += (["", "", "", "",],)
 
     # Generate the CSV header row.
     rows += ([
-        "Member No.",
-        # "Role",
-        "Member Name",
-        "Ward",
-        "E-Mail",
-        "Primary Phone",
-        "Watch Name",
-        "Join Date",
+        "Name",
+        "Associate Count",
+        "Watch Coun",
+        "Member Count",
         "Tags"
     ],)
 
     # Generate the CSV dataset.
-    for member in members.all():
-    #
-    #     # Preformat our `wsib_number` variable.
-    #     wsib_number = "-" if associate.wsib_number is None else associate.wsib_number
-    #     wsib_number = "-" if len(wsib_number) == 0 else wsib_number
-    #
-    #     # Generate our row.
+    for district in districts.all():
+
+        a_count = Associate.objects.filter(
+            Q(watch__district=district)|
+            Q(user__area_coordinator__watch__district=district)|
+            Q(user__member__watch__district=district)
+        ).count()
+        ac_count = AreaCoordinator.objects.filter(watch__district=district).count()
+        m_count = Member.objects.filter(watch__district=district).count()
+
+        # Generate our row.
         rows += ([
-            member.user_id,
-            str(member),
-            str(member.watch.district.name),
-            member.user.email,
-            str(member.user.member.contact.primary_phone),
-            str(member.user.member.watch),
-            pretty_dt_string(member.user.created_at),
-    #         "-" if associate.commercial_insurance_expiry_date is None else pretty_dt_string(associate.commercial_insurance_expiry_date),
-    #         "-" if associate.auto_insurance_expiry_date is None else pretty_dt_string(associate.auto_insurance_expiry_date),
-    #         wsib_number,
-    #         "-" if associate.wsib_insurance_date is None else pretty_dt_string(associate.wsib_insurance_date),
-    #         associate.get_insurance_requirements()
+            district.name,
+            a_count,
+            ac_count,
+            m_count,
         ],)
 
     pseudo_buffer = Echo()
