@@ -14,7 +14,7 @@ from shared_foundation.constants import *
 from shared_foundation.utils import *
 from tenant_foundation.constants import *
 from tenant_foundation.models import (
-    District, Associate, AreaCoordinator, Member
+    Watch, Associate, AreaCoordinator, Member
 )
 
 """
@@ -36,7 +36,7 @@ class Echo:
 
 def report_05_streaming_csv_view(request):
     today = timezone.now()
-    districts = District.objects.all().order_by("id")
+    watches = Watch.objects.filter(type_of=Watch.TYPE_OF.BUSINESS).order_by("id")
 
     # Convert our aware datetimes to the specific timezone of the tenant.
     tenant_today = request.tenant.to_tenant_dt(today)
@@ -51,25 +51,25 @@ def report_05_streaming_csv_view(request):
     rows += ([
         "Name",
         "Associate Count",
-        "Watch Coun",
+        "Watch Count",
         "Member Count",
         "Tags"
     ],)
 
     # Generate the CSV dataset.
-    for district in districts.all():
+    for watch in watches.all():
 
         a_count = Associate.objects.filter(
-            Q(watch__district=district)|
-            Q(user__area_coordinator__watch__district=district)|
-            Q(user__member__watch__district=district)
+            Q(watch=watch)|
+            Q(user__area_coordinator__watch=watch)|
+            Q(user__member__watch=watch)
         ).count()
-        ac_count = AreaCoordinator.objects.filter(watch__district=district).count()
-        m_count = Member.objects.filter(watch__district=district).count()
+        ac_count = AreaCoordinator.objects.filter(watch=watch).count()
+        m_count = Member.objects.filter(watch=watch).count()
 
         # Generate our row.
         rows += ([
-            district.name,
+            watch.name,
             a_count,
             ac_count,
             m_count,

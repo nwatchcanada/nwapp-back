@@ -51,7 +51,7 @@ def report_04_streaming_csv_view(request):
     rows += ([
         "Name",
         "Associate Count",
-        "Watch Coun",
+        "Watch Count",
         "Member Count",
         "Tags"
     ],)
