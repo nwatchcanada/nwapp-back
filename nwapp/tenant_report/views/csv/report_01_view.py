@@ -38,7 +38,7 @@ def report_01_streaming_csv_view(request):
     today = timezone.now()
     associates = Associate.objects.filter(
         Q(user__is_active=True)
-    ).order_by('-id')
+    )
 
     # Convert our aware datetimes to the specific timezone of the tenant.
     tenant_today = request.tenant.to_tenant_dt(today)
@@ -52,7 +52,7 @@ def report_01_streaming_csv_view(request):
     # Generate the CSV header row.
     rows += ([
         "Member No.",
-        "Role",
+        # "Role",
         "Member Name",
         "Ward",
         "E-Mail",
@@ -62,23 +62,28 @@ def report_01_streaming_csv_view(request):
         "Tags"
     ],)
 
-    # # Generate the CSV dataset.
-    # for associate in associates.all():
+    # Generate the CSV dataset.
+    for associate in associates.all():
     #
     #     # Preformat our `wsib_number` variable.
     #     wsib_number = "-" if associate.wsib_number is None else associate.wsib_number
     #     wsib_number = "-" if len(wsib_number) == 0 else wsib_number
     #
     #     # Generate our row.
-    #     rows += ([
-    #         associate.id,
-    #         str(associate),
+        rows += ([
+            associate.user_id,
+            str(associate),
+            str(associate.user.member.watch.district.name),
+            associate.user.email,
+            str(associate.user.member.contact.primary_phone),
+            str(associate.user.member.watch),
+            pretty_dt_string(associate.user.created_at),
     #         "-" if associate.commercial_insurance_expiry_date is None else pretty_dt_string(associate.commercial_insurance_expiry_date),
     #         "-" if associate.auto_insurance_expiry_date is None else pretty_dt_string(associate.auto_insurance_expiry_date),
     #         wsib_number,
     #         "-" if associate.wsib_insurance_date is None else pretty_dt_string(associate.wsib_insurance_date),
     #         associate.get_insurance_requirements()
-    #     ],)
+        ],)
 
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
@@ -86,5 +91,5 @@ def report_01_streaming_csv_view(request):
         (writer.writerow(row) for row in rows),
         content_type="text/csv"
     )
-    response['Content-Disposition'] = 'attachment; filename="associate_commercial_insurance_due_dates.csv"'
+    response['Content-Disposition'] = 'attachment; filename="associates.csv"'
     return response
