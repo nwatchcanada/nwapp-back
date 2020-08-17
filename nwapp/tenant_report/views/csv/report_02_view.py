@@ -91,5 +91,5 @@ def report_02_streaming_csv_view(request):
         (writer.writerow(row) for row in rows),
         content_type="text/csv"
     )
-    response['Content-Disposition'] = 'attachment; filename="area-coorindators.csv"'
+    response['Content-Disposition'] = 'attachment; filename="area_coorindators.csv"'
     return response
