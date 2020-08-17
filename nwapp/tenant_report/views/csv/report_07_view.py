@@ -34,15 +34,15 @@ class Echo:
         return value
 
 
-def report_06_streaming_csv_view(request):
+def report_07_streaming_csv_view(request):
     today = timezone.now()
-    watches = Watch.objects.filter(type_of=Watch.TYPE_OF.COMMUNITY_CARES).order_by("id")
+    watches = Watch.objects.filter(type_of=Watch.TYPE_OF.RESIDENTIAL).order_by("id")
 
     # Convert our aware datetimes to the specific timezone of the tenant.
     tenant_today = request.tenant.to_tenant_dt(today)
 
     # Generate our new header.
-    rows = (["Community Cares Watches Report","","","",],)
+    rows = (["Residential Report","","","",],)
     rows += (["Report Date:", pretty_dt_string(tenant_today),"", "",],)
     rows += (["", "", "", "", "",],)
     rows += (["", "", "", "",],)
@@ -81,5 +81,5 @@ def report_06_streaming_csv_view(request):
         (writer.writerow(row) for row in rows),
         content_type="text/csv"
     )
-    response['Content-Disposition'] = 'attachment; filename="community_cares.csv"'
+    response['Content-Disposition'] = 'attachment; filename="residential.csv"'
     return response
