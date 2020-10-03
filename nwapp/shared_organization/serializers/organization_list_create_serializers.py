@@ -79,6 +79,15 @@ class SharedOrganizationListCreateSerializer(serializers.ModelSerializer):
             'default_position',
             'default_zoom',
 
+            # Contact Info
+            'email',
+            'phone',
+            'website_url',
+            'facebook_url',
+            'twitter_url',
+            'instagram_url',
+            'youtube_url',
+
             # Tenancy
             'schema_name'
         )

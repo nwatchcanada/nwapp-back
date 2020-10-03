@@ -18,6 +18,7 @@ from django.utils.functional import cached_property
 from django_tenants.models import TenantMixin, DomainMixin
 
 from shared_foundation.constants import TIMEZONE_CHOICES
+from shared_foundation.models.validators import e164_phone_regex
 
 
 class SharedOrganizationManager(models.Manager):
@@ -233,6 +234,60 @@ class SharedOrganization(TenantMixin):
     default_zoom = models.FloatField(
         _("Default Map Zoom"),
         help_text=_('The centre zoom to apply for every map rendered on the user\'s screen.'),
+        null=True,
+        blank=True,
+    )
+
+    #
+    # Contact Information
+    #
+
+    email = models.EmailField(
+        _("Email"),
+        help_text=_('Email address.'),
+        null=True,
+        blank=True,
+    )
+    phone = models.CharField(
+        _("Phone"),
+        help_text=_('The telephone number used by the organization.'),
+        blank=True,
+        null=True,
+        max_length=31,
+        validators=[e164_phone_regex],
+    )
+    website_url = models.URLField(
+        _("Website URL"),
+        help_text=_('The website URL of the organization.'),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    facebook_url = models.URLField(
+        _("Facebook URL"),
+        help_text=_('The Facebook URL of the organization.'),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    twitter_url = models.URLField(
+        _("Twitter URL"),
+        help_text=_('The Twitter URL of the organization.'),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    instagram_url = models.URLField(
+        _("Instagram URL"),
+        help_text=_('The Instagram URL of the organization.'),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    youtube_url = models.URLField(
+        _("YouTube URL"),
+        help_text=_('The YouTube URL of the organization.'),
+        max_length=255,
         null=True,
         blank=True,
     )

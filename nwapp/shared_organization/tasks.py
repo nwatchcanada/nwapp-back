@@ -42,6 +42,13 @@ def create_organization_func(validated_data):
     police_report_url = validated_data.get('police_report_url', None)
     default_position = validated_data.get('default_position', None)
     default_zoom = validated_data.get('default_zoom', None)
+    email = validated_data.get('email', None)
+    phone = validated_data.get('phone', None)
+    website_url = validated_data.get('website_url', None)
+    facebook_url = validated_data.get('facebook_url', None)
+    twitter_url = validated_data.get('twitter_url', None)
+    instagram_url = validated_data.get('instagram_url', None)
+    youtube_url = validated_data.get('youtube_url', None)
 
     if street_type == "" or street_type == None:
         street_type = "-"
@@ -70,6 +77,13 @@ def create_organization_func(validated_data):
         "\npolice_report_url", police_report_url,
         "\ndefault_position", default_position,
         "\ndefault_zoom", default_zoom,
+        "\nemail", email,
+        "\nphone", phone,
+        "\nwebsite_url", website_url,
+        "\nfacebook_url", facebook_url,
+        "\ntwitter_url", twitter_url,
+        "\ninstagram_url", instagram_url,
+        "\nyoutube_url", youtube_url,
         "\n"
     )
 
@@ -92,7 +106,14 @@ def create_organization_func(validated_data):
         timezone_name=timezone_name,
         police_report_url=police_report_url,
         default_position=default_position,
-        default_zoom=default_zoom
+        default_zoom=default_zoom,
+        email=email,
+        phone=phone,
+        website_url=website_url,
+        facebook_url=facebook_url,
+        twitter_url=twitter_url,
+        instagram_url=instagram_url,
+        youtube_url=youtube_url,
     )
     tenant.save()
 

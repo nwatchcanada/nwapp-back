@@ -97,6 +97,15 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
             'default_position',
             'default_zoom',
 
+            # Contact Info
+            'email',
+            'phone',
+            'website_url',
+            'facebook_url',
+            'twitter_url',
+            'instagram_url',
+            'youtube_url',
+
             # Tenancy
             'schema_name'
         )
@@ -107,7 +116,10 @@ class SharedOrganizationRetrieveSerializer(serializers.ModelSerializer):
         return queryset
 
     def get_default_position(self, obj):
-        return get_arr_from_point(obj.default_position)
+        try:
+            return get_arr_from_point(obj.default_position)
+        except Exception as e:
+            return None
 
 
 class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
@@ -164,6 +176,15 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
             'default_position',
             'default_zoom',
 
+            # Contact Info
+            'email',
+            'phone',
+            'website_url',
+            'facebook_url',
+            'twitter_url',
+            'instagram_url',
+            'youtube_url',
+
             # Tenancy
             'schema_name'
         )
@@ -199,6 +220,13 @@ class SharedOrganizationUpdateSerializer(serializers.ModelSerializer):
         instance.last_modified_by = self.context['last_modified_by']
         instance.last_modified_from = self.context['last_modified_from']
         instance.last_modified_from_is_public = self.context['last_modified_from_is_public']
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.website_url = validated_data.get('website_url', instance.website_url)
+        instance.facebook_url = validated_data.get('facebook_url', instance.facebook_url)
+        instance.twitter_url = validated_data.get('twitter_url', instance.twitter_url)
+        instance.instagram_url = validated_data.get('instagram_url', instance.instagram_url)
+        instance.youtube_url = validated_data.get('youtube_url', instance.youtube_url)
         instance.save()
 
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
