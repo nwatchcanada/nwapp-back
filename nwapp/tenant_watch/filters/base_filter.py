@@ -14,7 +14,7 @@ class WatchFilter(django_filters.FilterSet):
         fields=(
             ('id', 'id'),
             ('state', 'state'),
-            # ('contact__first_name', 'first_name'),
+            # ('type_of', 'type_of'),
             # ('contact__last_name', 'last_name'),
             # # ('telephone', 'telephone'),
             # ('contact__email', 'email'),
@@ -191,6 +191,7 @@ class WatchFilter(django_filters.FilterSet):
         fields = [
             'name',
             'state',
+            'type_of',
             # 'search',
             # 'first_name',
             # 'last_name',
