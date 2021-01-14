@@ -9,14 +9,14 @@ def get_special_range(start_number, finish_number, type_of):
     """
     numbers = []
     if type_of == STREET_NUMBER_RANGE_TYPE_ALL:
-        for i in range(start_number, finish_number):
+        for i in range(start_number, finish_number+1):
             numbers.append(i)
     elif type_of == STREET_NUMBER_RANGE_TYPE_ODD:
-        for i in range(start_number, finish_number):
+        for i in range(start_number, finish_number+1):
             if i % 2 != 0:
                 numbers.append(i)
     elif type_of == STREET_NUMBER_RANGE_TYPE_EVEN:
-        for i in range(start_number, finish_number):
+        for i in range(start_number, finish_number+1):
             if i % 2 == 0:
                 numbers.append(i)
     else:
