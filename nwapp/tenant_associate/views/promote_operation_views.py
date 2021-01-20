@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from shared_foundation.drf.permissions import SharedUserIsActivePermission, DisableOptionsPermission, TenantPermission
 from tenant_associate.permissions import CanRetrieveUpdateDestroyAssociatePermission
 from tenant_associate.serializers import AssociatePromoteOperationSerializer, AssociateRetrieveSerializer
-from tenant_associate.tasks import geoip2_associate_audit_func
+from tenant_associate.tasks import geoip2_associate_audit_func, geoip2_associate_address_audit_func
 
 
 class AssociatePromoteOperationAPIView(generics.CreateAPIView):
