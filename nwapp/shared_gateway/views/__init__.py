@@ -2,3 +2,8 @@ from shared_gateway.views.login_view import SharedLoginAPIView
 from shared_gateway.views.logout_view import SharedLogoutAPIView
 from shared_gateway.views.profile_view import SharedProfileRetrieveUpdateAPIView
 from shared_gateway.views.refresh_view import SharedRefreshTokenAPIView
+from shared_gateway.views.email_views import reset_password_email_page
+from shared_gateway.views.email_views import user_activation_email_page
+from shared_gateway.views.email_views import user_was_created_email_page
+from shared_gateway.views.reset_password_view import ResetPasswordAPIView
+from shared_gateway.views.send_password_reset_view import SendPasswordResetAPIView

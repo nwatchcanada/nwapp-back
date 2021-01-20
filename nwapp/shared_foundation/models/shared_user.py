@@ -27,6 +27,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.utils.functional import cached_property
+from django.utils import crypto
 from faker import Faker
 
 from shared_foundation import constants
@@ -37,6 +38,15 @@ from shared_foundation.utils.string import get_referral_code
 def _createHash():
     return hexlify(os.urandom(16))
 
+
+def get_random_string(length=31,
+                      allowed_chars='abcdefghijkmnpqrstuvwxyz'
+                      'ABCDEFGHIJKLMNPQRSTUVWXYZ'
+                      '23456789'):
+    """
+    Random string generator simplified from Django.
+    """
+    return crypto.get_random_string(length, allowed_chars)
 
 def get_expiry_date(days=2):
     """Returns the current date plus paramter number of days."""
