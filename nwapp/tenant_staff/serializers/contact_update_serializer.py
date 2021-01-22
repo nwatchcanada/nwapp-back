@@ -104,6 +104,11 @@ class StaffContactUpdateSerializer(serializers.Serializer):
         instance.member.indexed_text = Member.get_searchable_content(instance.member)
         instance.member.save()
 
+        # Make sure the email is changed of the shared user account.
+        if instance.member.user is not None:
+            instance.member.user.email = validated_data.get('email', instance.email)
+            instance.member.user.save()
+
         # raise serializers.ValidationError({ # Uncomment when not using this code but do not delete!
         #     "error": "Terminating for debugging purposes only."
         # })

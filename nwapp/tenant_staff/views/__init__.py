@@ -10,3 +10,4 @@ from tenant_staff.views.avatar_create_or_update_operation_views import StaffAvat
 from tenant_staff.views.archive_operation_views import StaffArchiveOperationAPIView
 from tenant_staff.views.promote_operation_views import StaffPromoteOperationAPIView
 from tenant_staff.views.demote_operation_views import StaffDemoteOperationAPIView
+from tenant_staff.views.change_password_operation_views import StaffChangePasswordOperationAPIView
