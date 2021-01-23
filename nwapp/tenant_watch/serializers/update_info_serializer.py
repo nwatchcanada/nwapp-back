@@ -35,6 +35,11 @@ class WatchInformationUpdateSerializer(serializers.Serializer):
     description = serializers.CharField()
     district = serializers.SlugField()
     is_virtual = serializers.BooleanField(allow_null=True,)
+    website_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
     facebook_url = serializers.URLField(
         required=False,
         allow_blank=True,
@@ -54,6 +59,7 @@ class WatchInformationUpdateSerializer(serializers.Serializer):
         instance.name = validated_data.get('name')
         instance.description = validated_data.get('description')
         district_slug = validated_data.get('district')
+        instance.website_url = validated_data.get('website_url', None)
         instance.facebook_url = validated_data.get('facebook_url', None)
         instance.district = District.objects.get(slug=district_slug)
         instance.last_modified_by = request.user

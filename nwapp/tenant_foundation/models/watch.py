@@ -230,6 +230,13 @@ class Watch(models.Model):
 
     # SOCIAL MEDIA
 
+    website_url = models.URLField(
+        _("Website URL"),
+        help_text=_('The URL to the website page.'),
+        blank=True,
+        null=True,
+        default='',
+    )
     facebook_url = models.URLField(
         _("Facebook URL"),
         help_text=_('The URL to the Facebook page.'),

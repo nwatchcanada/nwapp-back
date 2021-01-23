@@ -42,6 +42,11 @@ class WatchCreateSerializer(serializers.Serializer):
     district = serializers.SlugField()
     street_membership = serializers.JSONField()
     is_virtual = serializers.BooleanField(allow_null=True,)
+    website_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
     facebook_url = serializers.URLField(
         required=False,
         allow_blank=True,
