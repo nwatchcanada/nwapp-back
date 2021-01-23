@@ -37,6 +37,11 @@ class DistrictUpdateSerializer(serializers.Serializer):
         allow_null=True,
     )
     is_archived = serializers.BooleanField(write_only=True, required=False,)
+    facebook_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     # REACT-DJANGO UPLOAD | STEP 1 OF 4: We define two string fields required (write-only)
     # for accepting our file uploads.
@@ -62,6 +67,7 @@ class DistrictUpdateSerializer(serializers.Serializer):
         instance.counselor_email = validated_data.get('counselor_email', None)
         instance.counselor_phone = validated_data.get('counselor_phone', None)
         instance.website_url = validated_data.get('website_url', None)
+        instance.facebook_url = validated_data.get('facebook_url', None)
         instance.created_by = request.user
         instance.created_from = request.client_ip
         instance.created_from_is_public = request.client_ip_is_routable

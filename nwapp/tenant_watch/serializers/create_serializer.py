@@ -42,6 +42,11 @@ class WatchCreateSerializer(serializers.Serializer):
     district = serializers.SlugField()
     street_membership = serializers.JSONField()
     is_virtual = serializers.BooleanField(allow_null=True,)
+    facebook_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     def validate_district(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
@@ -61,6 +66,8 @@ class WatchCreateSerializer(serializers.Serializer):
         tags = validated_data.get('tags')
         street_membership = validated_data.get('street_membership')
         is_virtual = validated_data.get('is_virtual', False)
+        facebook_url = validated_data.get('facebook_url', None)
+
         if is_virtual == None or is_virtual == "":
             is_virtual = False
 
@@ -78,6 +85,7 @@ class WatchCreateSerializer(serializers.Serializer):
             last_modified_by=request.user,
             last_modified_from=request.client_ip,
             last_modified_from_is_public=request.client_ip_is_routable,
+            facebook_url=facebook_url,
         )
 
         # Attached our tags.

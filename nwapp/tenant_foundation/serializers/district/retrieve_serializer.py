@@ -41,6 +41,11 @@ class DistrictRetrieveSerializer(serializers.Serializer):
     boundry_zoom = serializers.IntegerField(read_only=True,)
     boundry_position = serializers.SerializerMethodField()
     boundry_polygon = serializers.SerializerMethodField()
+    facebook_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     # ------ AUDITING ------ #
     created_at = serializers.DateTimeField(read_only=True, allow_null=False,)

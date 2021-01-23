@@ -54,6 +54,11 @@ class WatchRetrieveSerializer(serializers.Serializer):
     boundry_position = serializers.SerializerMethodField()
     boundry_polygon = serializers.SerializerMethodField()
     area_coordinators = AreaCoordinatorRetrieveSerializer(read_only=True, source="governors", many=True,)
+    facebook_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     def get_street_membership(self, watch_obj):
         """

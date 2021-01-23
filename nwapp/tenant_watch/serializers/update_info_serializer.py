@@ -35,6 +35,11 @@ class WatchInformationUpdateSerializer(serializers.Serializer):
     description = serializers.CharField()
     district = serializers.SlugField()
     is_virtual = serializers.BooleanField(allow_null=True,)
+    facebook_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     def validate_district(self, value):
         #TODO: ADD SECURITY SO NON-EXECUTIVES CANNOT ATTACH TO OTHER USERS.
@@ -49,6 +54,7 @@ class WatchInformationUpdateSerializer(serializers.Serializer):
         instance.name = validated_data.get('name')
         instance.description = validated_data.get('description')
         district_slug = validated_data.get('district')
+        instance.facebook_url = validated_data.get('facebook_url', None)
         instance.district = District.objects.get(slug=district_slug)
         instance.last_modified_by = request.user
         instance.last_modified_from = request.client_ip

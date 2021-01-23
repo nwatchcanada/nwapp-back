@@ -69,6 +69,11 @@ class DistrictCreateSerializer(serializers.Serializer):
         allow_null=True,
         write_only=True,
     )
+    facebook_url = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     # REACT-DJANGO UPLOAD | STEP 1 OF 4: We define two string fields required (write-only)
     # for accepting our file uploads.
@@ -97,6 +102,7 @@ class DistrictCreateSerializer(serializers.Serializer):
         counselor_email = validated_data.get('counselor_email')
         counselor_phone = validated_data.get('counselor_phone')
         website_url = validated_data.get('website_url')
+        facebook_url = validated_data.get('facebook_url', None)
 
         try:
             # Extract our upload file data
@@ -133,6 +139,7 @@ class DistrictCreateSerializer(serializers.Serializer):
             counselor_phone=counselor_phone,
             website_url=website_url,
             logo_image=private_file,
+            facebook_url=facebook_url,
             created_by = request.user,
             created_from = request.client_ip,
             created_from_is_public = request.client_ip_is_routable,
