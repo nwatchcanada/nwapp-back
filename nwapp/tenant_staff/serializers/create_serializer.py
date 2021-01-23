@@ -107,7 +107,7 @@ class StaffCreateSerializer(serializers.Serializer):
     )
     willing_to_volunteer = serializers.IntegerField()
     another_household_staff_registered = serializers.BooleanField()
-    year_of_birth = serializers.IntegerField()
+    year_of_birth = serializers.IntegerField(required=False, allow_null=True,)
     total_household_count = serializers.IntegerField(required=False,)
     over_18_years_household_count = serializers.IntegerField(required=False,)
     organization_employee_count = serializers.IntegerField(required=False,)
