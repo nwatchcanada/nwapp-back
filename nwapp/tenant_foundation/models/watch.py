@@ -228,6 +228,16 @@ class Watch(models.Model):
         spatial_index=True,
     )
 
+    # SOCIAL MEDIA
+
+    facebook_url = models.URLField(
+        _("Facebook URL"),
+        help_text=_('The URL to the Facebook page.'),
+        blank=True,
+        null=True,
+        default='',
+    )
+
     # SEARCHABLE FIELDS
 
     indexed_text = models.CharField(

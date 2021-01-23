@@ -178,6 +178,16 @@ class District(models.Model):
         blank=True,
     )
 
+    # SOCIAL MEDIA
+
+    facebook_url = models.URLField(
+        _("Facebook URL"),
+        help_text=_('The URL to the Facebook page.'),
+        blank=True,
+        null=True,
+        default='',
+    )
+
     # BUSINESS FIELDS
 
     website_url = models.URLField(
