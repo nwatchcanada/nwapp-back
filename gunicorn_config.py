@@ -1,5 +1,5 @@
-command = '/opt/django/nwapp-back/env/bin/gunicorn'
-pythonpath = '/opt/django/nwapp-back/nwapp'
+command = '/home/techops/nwapp-back/env/bin/gunicorn'
+pythonpath = '/home/techops/nwapp-back/nwapp'
 bind = '127.0.0.1:8001'
 workers = 3
 timeout = 600
