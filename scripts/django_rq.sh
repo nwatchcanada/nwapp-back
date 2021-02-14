@@ -5,14 +5,14 @@
 # script:
 
 # (1) This project must be located in the following directory:
-#     "/opt/django/nwapp-back"
+#     "/home/techops/nwapp-back"
 # (2) The "env" variable has already been initialized with the projects
 #     requirements.txt file.
 # (3) The operating system is "CentOS 7".
 # (4) There is a "django" user account created on the "CentOS 7" system.
 #
 
-cd /opt/django/nwapp-back
+cd /home/techops/nwapp-back
 source env/bin/activate
-cd /opt/django/nwapp-back/nwapp
+cd /home/techops/nwapp-back/nwapp
 exec python manage.py rqworker
