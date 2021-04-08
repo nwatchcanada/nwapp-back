@@ -8,7 +8,7 @@ cffi==1.14.0
 chardet==3.0.4
 click==7.1.1
 croniter==0.3.31
-Django==3.0.7
+Django==3.0.14
 django-anymail==7.0.0
 django-cors-headers==3.2.1
 django-environ==0.4.5
